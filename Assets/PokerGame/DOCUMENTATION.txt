@@ -1,0 +1,9 @@
+- Created SO for each card
+- Created system to build a SO inside Unity Editor (it can be done automatically if the assets are tagged/named with a normalized format)
+In this case I received the assets as card_suit0_value00, etc... 
+
+One can always create a script to read these files and based on its name, parse it and create automatically each Scriptable Object for each card on the set.
+In this case I made it manually since the amount of cards is not going to change( as opposed to a Collectible Card Game for example)
+
+If the art would change, it's just a matter of rewriting such script to allow updating the sprite on each SO.
+

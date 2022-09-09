@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c8e70b350e638944a83f6c1c6d6e123, type: 3}
+  m_Name: EarthGod
+  m_EditorClassIdentifier: 
+  id: Earth
+  level: 1
+  health: 100
+  strength: 100
+  stamina: 10
+  agility: 100
+  dexterity: 100
+  defence: 100
+  ChracterSp: {fileID: 21300000, guid: 87219c423ea57ca489d6c0ecab92740b, type: 3}
+  type: 3
+  status: 1
+  weakAgainst: 2
+  tileColor: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}

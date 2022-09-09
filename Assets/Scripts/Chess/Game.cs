@@ -1,0 +1,682 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
+public enum PlayerAction {idle, attack,counterAttack,defend,engage,brace}
+public enum SpellCardPosition {None, petHomePlayer,petHomeOppoent,petBattlePlayer,perBattleOpponent}
+public class Game : MonoBehaviour
+{
+    public GameObject chesspiece;
+    public GameObject movePlate;
+
+
+    public GameObject Board;
+
+    [SerializeField] private GameObject[,] positions = new GameObject[8,8];
+    [SerializeField] private Chessman[] playerBlack = new Chessman[10];
+    [SerializeField] private Chessman[] playerWhite = new Chessman[10];
+
+    private string currentPlayer = "white";
+
+    public bool isLocalPlayerTurn;
+    public GameObject ChessCanvas;
+    public GameObject PVPCanvas;
+    private PhotonView photonView;
+
+    private bool gameOver = false;
+    private static Game game;
+    public CharacterData defChar;
+
+    public GameObject ColorPlate;
+    public GameObject[,] plates = new GameObject[8,8];
+
+    public Color BoardBlack, BoardWhite;
+    public GameObject board;
+
+    public GameObject RematchPopUp, RematchYesNo;
+    public Text RematchTxt;
+
+    public bool RestartButtonClicked;
+
+    public static bool setUpCalled;
+
+    public GameObject PlayerTurnScreen;
+    public Text PlayerTurnScreenText;
+    public string LastAttackerColor = "";
+    public bool IsDefender = false;
+    public int turn = 0;
+    public float HealthDemage = 0;
+    public int BetAmount = 0;
+    public int localBetAmount = 0;
+    public PlayerAction lastAction = PlayerAction.idle;
+    [System.Serializable]
+    public class PlayerTrunName
+    {
+        public Player _player;
+        public bool _isTurn;
+    }
+
+    public List<PlayerTrunName> _playerTurnList = new List<PlayerTrunName>();
+
+    public Player _currnetTurnPlayer;
+   public List<int> PlayerStrengths = new List<int>(2);
+    public List<string> PokerHandResults = new List<string>(2) {"","" };
+    public int MyHighCardValue = 0, OpponentHighCardValue = 0, MySecondHighCardValue=-1,OpponentSecondHighCardValue=-1;
+    public List<int> MyHighCardList = new List<int>() { -1,-1,-1,-1,-1};
+    public List<int> OpponentHighCardList = new List<int>() { -1,-1,-1,-1,-1 };
+    public GameObject loadingScreen;
+
+    public List<Chessman> DestroyedObjects = new List<Chessman>();
+
+    public PlayerType MyType;
+    public static Game Get(){
+        return game;
+    }
+
+    private void Awake()
+    {
+        game = this;
+    }
+
+    public int GetMaxY(){
+        return positions.GetLength(1);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        MyType = PhotonNetwork.LocalPlayer.IsMasterClient ? PlayerType.White : PlayerType.Black;
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PlayerStrengths.Add(0);
+        PlayerStrengths.Add(0);
+        for (int i = 0; i < plates.GetLength(0); i++)
+        {
+            for (int j = 0; j < plates.GetLength(1); j++)
+            {
+                plates[i,j] = Instantiate(ColorPlate,new Vector3((i * 0.66f) - 2.3f, (j * 0.66f) - 2.3f,-0.1f),Quaternion.identity);
+                plates[i,j].transform.SetParent(board.transform);
+                plates[i,j].transform.localScale = Vector3.one+new Vector3(0.15f,0.15f,0.1f);//new Vector3(3.15f,3.15f,1f);
+                plates[i,j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack:BoardWhite;
+            }
+
+        }                                    
+
+        isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
+
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            if (PhotonNetwork.PlayerList[i].IsMasterClient && currentPlayer=="white")
+            {
+                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = true });
+            }
+            else if (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white")
+            {
+                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = false });
+            }
+        }
+
+        photonView = GetComponent<PhotonView>();
+        photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);
+        if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+            Camera.main.transform.Rotate(Vector3.forward,180f);
+            foreach (Transform item in Board.transform)
+            {
+                item.Rotate(Vector3.forward,180f);
+            }
+        }
+        SetPVPMode(false);
+        
+        if(!setUpCalled && PhotonNetwork.LocalPlayer.IsMasterClient){
+            StartCoroutine("setPos");
+            setUpCalled = true;
+        }
+
+        DestroyedObjects = new List<Chessman>();
+
+        StartCoroutine(SetLoadingScreenOnOff(false,1f));
+        // foreach (var item in positions)
+        // {
+        //     Debug.Log(item);
+        // }
+    }
+    public IEnumerator SetLoadingScreenOnOff(bool isOn,float delay) 
+    {
+        yield return new WaitForSeconds(delay);
+        if(PhotonNetwork.IsMasterClient) 
+        {
+            photonView.RPC("SetLoadingScreenOff_RPC",RpcTarget.All,isOn);
+            PhotonNetwork.SendAllOutgoingCommands();
+        }
+    }
+    [PunRPC]
+    public void SetLoadingScreenOff_RPC(bool isOn) 
+    {
+        loadingScreen.SetActive(isOn);
+    }
+
+    public void WinPlayer(int i){
+        photonView.RPC("WinMatch",RpcTarget.All,i);
+    }
+
+    [PunRPC]
+    void WinMatch(int i){
+        if(i == 1){
+            foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.Black))
+            {
+                //Destroy(item.gameObject);
+                if(item.GetComponent<PhotonView>().IsMine){
+                    PhotonNetwork.Destroy(item.gameObject);
+                }
+            }
+        }else if(i == 2){
+            foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
+            {
+                //Destroy(item.gameObject);
+                if(item.GetComponent<PhotonView>().IsMine){
+                    PhotonNetwork.Destroy(item.gameObject);
+                }
+            }
+        }
+
+        StartCoroutine("CheckChessWin");
+    }
+
+    IEnumerator setPos() {
+
+        //if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+        Debug.Log("Spawning Black Pieces");
+        playerBlack = new Chessman[] {
+            Create("black_rook",PieceType.Rook,PlayerType.Black, 7, 6,17), 
+            //Create("black_knight",PieceType.Knight,PlayerType.Black, 1, 7,18),
+            Create("black_king",PieceType.King,PlayerType.Black, 7, 7,21), 
+            Create("black_bishop",PieceType.Bishop,PlayerType.Black, 7, 5,20), 
+            Create("black_queen",PieceType.Queen,PlayerType.Black, 6, 7,19),
+            //Create("black_rook",PieceType.Rook,PlayerType.Black, 7, 7,22), 
+            Create("black_knight",PieceType.Knight,PlayerType.Black, 5, 7,23), 
+            //Create("black_bishop",PieceType.Bishop,PlayerType.Black, 5, 7,30),
+            
+            Create("black_pawn",PieceType.Pawn,PlayerType.Black, 5, 6,29), 
+            Create("black_pawn",PieceType.Pawn,PlayerType.Black, 6, 6,24), 
+            Create("black_pawn",PieceType.Pawn,PlayerType.Black, 4, 6,33),
+            Create("black_pawn",PieceType.Pawn,PlayerType.Black, 6, 5,31),
+            Create("black_pawn",PieceType.Pawn,PlayerType.Black, 6, 4,35) 
+        };
+            //Create("black_pawn",PieceType.Pawn,PlayerType.Black, 5, 6,28), Create("black_pawn",PieceType.Pawn,PlayerType.Black, 4, 6,25), Create("black_pawn",PieceType.Pawn,PlayerType.Black, 3, 6,32),
+            //Create("black_pawn",PieceType.Pawn,PlayerType.Black, 6, 6,27), Create("black_pawn",PieceType.Pawn,PlayerType.Black, 7, 6,26)};
+        //}
+
+        yield return new WaitForSeconds(0.2f);
+
+        //if(PhotonNetwork.LocalPlayer.IsMasterClient){
+        Debug.Log("Spawning White Pieces");
+        playerWhite = new Chessman[] {
+            Create("white_rook",PieceType.Rook,PlayerType.White, 0, 1,3),
+            //Create("white_rook",PieceType.Rook,PlayerType.White, 7, 0,6),
+
+            Create("white_knight",PieceType.Knight,PlayerType.White, 2, 0,4),
+            //Create("white_knight",PieceType.Knight,PlayerType.White, 6, 0,7),
+
+            Create("white_king",PieceType.King,PlayerType.White, 0, 0,1),          
+            Create("white_queen",PieceType.Queen,PlayerType.White, 1,0,2),
+            
+           
+            Create("white_bishop",PieceType.Bishop,PlayerType.White, 0,2,8),
+            //Create("white_bishop",PieceType.Bishop,PlayerType.White, 2, 0,5), 
+            
+            Create("white_pawn",PieceType.Pawn,PlayerType.White, 1, 1,11), 
+            Create("white_pawn",PieceType.Pawn,PlayerType.White, 2, 1,10), 
+            Create("white_pawn",PieceType.Pawn,PlayerType.White, 3, 1,9),
+            Create("white_pawn",PieceType.Pawn,PlayerType.White, 1, 2,36),
+            Create("white_pawn",PieceType.Pawn,PlayerType.White, 1, 3,37)
+        };
+            //Create("white_pawn",PieceType.Pawn,PlayerType.White, 5, 1,12), Create("white_pawn",PieceType.Pawn,PlayerType.White, 4, 1,13), Create("white_pawn",PieceType.Pawn,PlayerType.White, 3, 1,14),
+            //Create("white_pawn",PieceType.Pawn,PlayerType.White, 6, 1,16), Create("white_pawn",PieceType.Pawn,PlayerType.White, 7, 1,15)};
+        //}
+        yield return new WaitForSeconds(0.2f);
+        
+        photonView.RPC("SetPosRPC",RpcTarget.All);
+    }
+
+    [PunRPC]
+    void SetPosRPC(){
+        playerBlack = Chessman.GetPiecesOfPlayer(PlayerType.Black).ToArray();
+        playerWhite = Chessman.GetPiecesOfPlayer(PlayerType.White).ToArray();
+        Debug.Log("+++++++++++++++++++++++++++++++++++++++++");
+        Debug.Log(playerBlack.Length +" - "+playerWhite.Length);
+        Debug.Log("+++++++++++++++++++++++++++++++++++++++++");
+
+        if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+            foreach (var item in playerBlack)
+            {
+                //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
+                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
+                item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
+            }
+            foreach (var item in playerWhite)
+            {
+                //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
+                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
+                //item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
+            }
+
+        }
+
+        for(int i=0;i < playerBlack.Length; i++)
+        {
+            SetPosition(playerBlack[i]);
+            SetPosition(playerWhite[i]);
+
+            //Debug.Log(playerWhite[i].GetXboard());
+        }
+    }
+
+    string getCharId(PieceType type){
+        switch(type){
+            case PieceType.King:
+                return "Fire";
+            case PieceType.Queen:
+                return "Water";
+            case PieceType.Rook:
+            case PieceType.Bishop:
+                return "Earth";
+            case PieceType.Knight:
+                return "Wind";
+            case PieceType.Pawn:
+                string[] elems = new string[]{"Fire","Water","Earth","Wind"};
+                return elems[Random.Range(0,elems.Length)];
+            default:
+                return "Human";
+        }
+    }
+
+    public Chessman Create(string name,PieceType type, PlayerType ptype, int x, int y,int id, string cid= null)
+    {
+        cid = getCharId(type);
+        object[] cinit = new object[]{name,type,ptype,x,y,id,cid};
+        //photonView.RPC("CreateObj",RpcTarget.All,cinit);
+        GameObject obj = PhotonNetwork.Instantiate("chesspiece", new Vector3(0, 0, -1), Quaternion.identity,0,cinit) as GameObject;
+        // obj.transform.SetParent(Board.transform);
+        // Chessman cm = obj.GetComponent<Chessman>();
+        // cm.name = name;
+        // cm.type = type;
+        // cm.playerType = ptype;
+        // cm.SetXBoard(x);
+        // cm.SetYBoard(y);
+        // cm.Activate();
+        return null;
+    }
+
+    [PunRPC]
+    public void CreateObj(object[] cinit){
+        GameObject ob = Instantiate(chesspiece,new Vector3(0f,0f,-1f),Quaternion.identity);
+        ob.GetComponent<Chessman>().OnInstantiate(cinit);
+    }
+
+    public void SetPosition(Chessman obj)
+    {
+        positions[obj.GetXboard(), obj.GetYboard()] = obj.gameObject;
+        plates[obj.GetXboard(), obj.GetYboard()].GetComponent<SpriteRenderer>().color = obj.character.tileColor;
+    }
+
+    public void SetPositionsEmpty(int x, int y)
+    {
+        positions[x, y] = null;
+        plates[x,y].GetComponent<SpriteRenderer>().color = (x + y) % 2 == 0 ? BoardBlack:BoardWhite;
+    }
+
+    public GameObject GetPosition(int x, int y)
+    {
+        return positions[x, y];
+    }
+
+    public bool PositionOnBoard(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
+        return true;
+    }
+
+    public string GetCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
+    public bool IsGameOver()
+    {
+        return gameOver;
+    }
+
+    public void NextTurn()
+    {
+        if(currentPlayer == "white")
+        {
+            currentPlayer = "black";
+        }
+        else
+        {
+            currentPlayer = "white";
+        }
+
+        photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);        
+    }
+    //Allow Moveplate display only for local player
+    public void Update()
+    {
+        if(gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked){
+            RestartClicked();
+        }
+        if (PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
+        {
+            if (GameObject.FindObjectsOfType<MovePlate>() != null)
+            {
+
+                MovePlate[] movePlates = GameObject.FindObjectsOfType<MovePlate>();
+                foreach (var item in movePlates)
+                {
+                    item.GetComponent<SpriteRenderer>().enabled = false;
+                }
+
+            }
+        }
+       
+    }
+
+    public void RestartClicked(){
+        RestartButtonClicked = true;
+        photonView.RPC("ShowRematch",RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
+    }
+
+    public void RematchChoice(int i){
+        if(i == 0){
+            photonView.RPC("RematchRejected",RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer);
+        }else{
+            photonView.RPC("RestartRPC",RpcTarget.AllBuffered);
+        }
+    }
+
+    [PunRPC]
+    void RematchRejected(Player HeWhoGoes){
+        if(PhotonNetwork.LocalPlayer == HeWhoGoes){
+            PhotonNetwork.LeaveRoom();
+		    SceneManager.LoadScene("MainMenu");
+        }else{
+            RematchTxt.text = "Rematch request rejected.";
+            StartCoroutine("LeaveRoom");
+        }
+    }
+
+    IEnumerator LeaveRoom(){
+        yield return new WaitForSeconds(2f);
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    [PunRPC]
+    public void ShowRematch(string name){
+        if(PhotonNetwork.LocalPlayer.NickName == name){
+            RematchTxt.text = "Waiting for other player.";
+            RematchPopUp.SetActive(true);
+            RematchYesNo.SetActive(false);
+        }else{
+            RematchTxt.text = name + " Want's a Rematch do you want to play again?";
+            RematchPopUp.SetActive(true);
+            RematchYesNo.SetActive(true);
+        }
+        RestartButtonClicked = true;
+    }
+
+
+    [PunRPC]
+    void RestartRPC(){
+        // foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
+        // {
+            
+        // }
+
+        // foreach (var item in plates)
+        // {
+        //    Destroy(item);
+        // }
+
+        if(gameOver == true)
+        {
+            gameOver = false;
+            setUpCalled= false;
+            PhotonNetwork.CleanRpcBufferIfMine(photonView);
+            PhotonNetwork.OpRemoveCompleteCache();
+            SceneManager.LoadScene("Game");
+        }
+    }
+
+    public void Winner(string playerWinner)
+    {
+        gameOver = true;
+
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
+        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = playerWinner + " is the winner";
+
+        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+    }
+    
+    public void SetPVPMode(bool b){
+        photonView.RPC("SetPVPModeRPC",RpcTarget.All,b);
+    }
+
+    public void HandleWin(bool attackerWon,bool isAttackerMaster, Vector2 p1Pos, Vector2 p2Pos){
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            photonView.RPC("HandleWinRPC",RpcTarget.All,attackerWon,isAttackerMaster,p1Pos,p2Pos);
+    }
+
+
+
+    public void CloseClick(){
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    
+    #region RPC Calls
+
+    [PunRPC]
+    public void HandleWinRPC(bool attackerWon,bool isAttackerMaster, Vector2 p1Pos, Vector2 p2Pos ){
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            photonView.RPC("SetPVPModeRPC",RpcTarget.All,false);
+        Chessman reference = GetPosition((int)p1Pos.x,(int)p1Pos.y).GetComponent<Chessman>();
+        Chessman ob = GetPosition((int)p2Pos.x,(int)p2Pos.y).GetComponent<Chessman>();
+        Debug.Log("attacker Won : "+attackerWon+", attackerMaster :"+isAttackerMaster+", p1pos : "+p1Pos+", p2pos : "+p2Pos);
+        if(attackerWon){
+            if(isAttackerMaster){
+                Game.Get().SetPositionsEmpty(reference.GetXboard(),
+                reference.GetYboard());
+                reference.SetXBoard((int)p2Pos.x);
+                reference.SetYBoard((int)p2Pos.y);
+                reference.SetCoords();
+                SetPosition(reference);
+                //Destroy(ob.gameObject);
+                if(ob.GetComponent<PhotonView>().IsMine)  
+                    DestroyPieceObject(ob);//PhotonNetwork.Destroy(ob.gameObject);
+            }else{
+                Game.Get().SetPositionsEmpty(ob.GetXboard(),
+                ob.GetYboard());
+                ob.SetXBoard((int)p1Pos.x);
+                ob.SetYBoard((int)p1Pos.y);
+                ob.SetCoords();
+                SetPosition(ob);
+                //Destroy(reference.gameObject);
+                //PhotonNetwork.Destroy(reference.gameObject);
+                DestroyPieceObject(reference);
+            }
+            
+
+        }else{
+            if(isAttackerMaster){
+                Game.Get().SetPositionsEmpty(reference.GetXboard(),
+                reference.GetYboard());
+                if(reference.GetComponent<PhotonView>().IsMine)
+                    DestroyPieceObject(reference);//PhotonNetwork.Destroy(reference.gameObject);
+                //Destroy(reference.gameObject);
+            }else{
+                Game.Get().SetPositionsEmpty(ob.GetXboard(),
+                ob.GetYboard());
+                DestroyPieceObject(ob);
+                //PhotonNetwork.Destroy(ob.gameObject);
+                //Destroy(ob.gameObject);
+            }
+            
+        }
+
+       Debug.Log(Chessman.GetPiecesOfPlayer(PlayerType.White).Count+" - "+Chessman.GetPiecesOfPlayer(PlayerType.Black).Count);
+        StartCoroutine("CheckChessWin");
+        NextTurn();
+
+    }
+
+
+    public void DestroyPieceObject(Chessman man){
+        man.transform.position = new Vector3(1000f,1000f,1000f);
+        if(man.playerType == MyType)
+            DestroyedObjects.Add(man);
+    }
+
+    Chessman pawntobeRenewed;
+    public Transform revivePr;
+    public GameObject reviveLisItem;
+    public GameObject PieceSelectionPanel;
+
+    public void ShowReviveOption(Chessman pawn){
+        pawntobeRenewed = pawn;
+        foreach (Transform item in revivePr)
+        {
+            Destroy(item.gameObject);
+        }
+        int i = 0;
+        foreach (var item in DestroyedObjects)
+        {
+            GameObject o = Instantiate(reviveLisItem,revivePr);
+            o.GetComponentInChildren<Image>().sprite = item.GetSprite();
+            o.GetComponent<RevivePieceItem>().id = i;
+            i ++;
+        }
+        PieceSelectionPanel.SetActive(true);
+
+    }
+
+    public void ChangePawnToNewPiece(int i){
+        Chessman pawn = pawntobeRenewed;
+        PieceSelectionPanel.SetActive(false);
+        if(DestroyedObjects != null){
+            Chessman c = DestroyedObjects[i];
+            Create("New_"+c.gameObject.name,c.type,c.playerType,pawn.GetXboard(),pawn.GetYboard(),30+DestroyedObjects.Count);
+            Chessman.pieces.Remove(pawn);
+            DestroyedObjects.Remove(c);
+            photonView.RPC("DestroyPiece",RpcTarget.All,c.PieceIndex);
+            photonView.RPC("DestroyPiece",RpcTarget.All,pawn.PieceIndex);
+            photonView.RPC("SetPosRPC",RpcTarget.All);
+            Game.Get().NextTurn();
+        }
+        
+    }
+
+    [PunRPC]
+    public void DestroyPiece(int PieceIndex){
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            PhotonNetwork.Destroy(Chessman.GetPiece(PieceIndex).GetComponent<PhotonView>());
+    }
+
+    public void CheckWinner() 
+    {
+        StartCoroutine(CheckChessWin());
+    }
+
+    IEnumerator CheckChessWin(){
+        yield return new WaitForSeconds(2f);
+        if(Chessman.GetPiecesOfPlayer(PlayerType.White).Count == 0 ||Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x=>x.type== PieceType.King).Count==0 ){
+            Winner(PhotonNetwork.PlayerList[1].NickName);
+        }else if(Chessman.GetPiecesOfPlayer(PlayerType.Black).Count == 0 || Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count == 0)
+        {
+            Winner(PhotonNetwork.PlayerList[0].NickName);
+        }
+    }
+
+
+    [PunRPC]
+    public void SetPVPModeRPC(bool b){
+        if(b){
+            ChessCanvas.SetActive(false);
+            Game.Get().Board.SetActive(false);
+            PVPCanvas.SetActive(true);
+        }else{
+            PVPCanvas.SetActive(false);
+            ChessCanvas.SetActive(true);
+           // GameManager.instace.isFristMovePawn = true;
+            Game.Get().Board.SetActive(true);
+        }
+    }
+    public void SwitchPlayerTurn_RPCCall()
+    {
+    }
+    [PunRPC]
+    public void SwitchCurrentPlayer(string player){
+        currentPlayer = player;
+        isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
+       
+        if (currentPlayer == "white")
+        { 
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName, PhotonNetwork.PlayerList[0]));
+        }
+        if(currentPlayer != "white") 
+        {
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
+        }
+    }
+
+    private IEnumerator COR_playerTurnNameShow(string namePlayer,Player _player)
+    {
+        PieceSelectionPanel.SetActive(false);
+        PlayerTurnScreen.SetActive(true);
+        PlayerTurnScreenText.text = namePlayer +"turn";
+        yield return new WaitForSecondsRealtime(1f);
+        PlayerTurnScreen.SetActive(false);
+        PlayerTurnScreenText.text = "";
+        Debug.Log("------------------ Game Turn Change ----------------------");
+        _currnetTurnPlayer = _player;
+       
+        //Info: Indicate player's turn;
+            PVPManager.Get().p1Outline.gameObject.SetActive ( _currnetTurnPlayer.IsLocal? true:false);
+            PVPManager.Get().p2Outline.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? false:true);
+        PVPManager.Get().chessTurnIndicator.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? true : false);
+
+        if(ChessCanvas.activeSelf)  
+        {
+            if(_currnetTurnPlayer.IsLocal)
+            { PVPManager.manager.StartChessTimer(); }
+            else {
+                if(PVPManager.manager.moveChoiceConfirmation.activeSelf) 
+                {
+                    PVPManager.manager.moveChoiceConfirmation.SetActive(false);
+                }
+                PVPManager.manager.TimerObject.SetActive(false); 
+            }
+        }
+
+    }
+
+    [PunRPC]
+    public void InitiateMovePlatesRPC(){
+       
+    }
+    public void UpdateLastAction(PlayerAction action)
+    {
+        photonView.RPC("UpdateLastAction_RPC",RpcTarget.All,(byte)action);
+    }
+    [PunRPC]
+    public void UpdateLastAction_RPC(byte action)
+    {
+        lastAction = (PlayerAction)action;
+    }
+    #endregion
+
+
+}
