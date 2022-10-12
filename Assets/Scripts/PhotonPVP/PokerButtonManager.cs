@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 
 /*Bet = Attack
 Reraise = Counter Attack
@@ -89,6 +90,7 @@ public class PokerButtonManager : MonoBehaviour
                     PVPManager.manager.isAllIn = true;
                     PVPManager.manager.isFromInbetween = true;
                 }
+                PVPManager.manager.DeductStamina(MathF.Round(PVPManager.manager.P2LastAttackValue / 10f,1));
                 PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
                 //PVPManager.manager.UpdateBatText(0);
               //   PVPManager.manager.UpdateBatText(PVPManager.manager.P2LastAttackValue);  2-6 to avoid doubel value addition in Bet
@@ -116,7 +118,10 @@ public class PokerButtonManager : MonoBehaviour
         DemoManager.instance._pokerButtons.SetActive(false);
         
             PVPManager.Get().AttackChoices.SetActive(true);
-        PVPManager.Get().speedAttackChoices.SetActive(false);
+            // if(PVPManager.Get().p1Speed > 0)
+            //     PVPManager.Get().ShowSpeedAttackSlider();
+            // else
+            //     PVPManager.Get().speedAttackChoices.SetActive(false);
         //}
         //else
         //{

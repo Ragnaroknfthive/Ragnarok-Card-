@@ -18,6 +18,8 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     public SpellCardPosition cardPosition;
     public PhotonView photonView;
 
+    public GameObject DmgPref;
+
     public int id;
 
 
@@ -130,9 +132,23 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     
 
     public void DealDamage(int c){
+
         Hp -= c;
+        ShowDamage(c);
         if(Hp <= 0)
             Kill();
+    }
+
+    public void ShowDamage(int c){
+        GameObject o = Instantiate(DmgPref,transform);
+        o.GetComponent<DamageIndicator>().DmgText.text = "-"+c;
+        Vector3 startPos = Vector3.zero;
+        Vector3 midPos1 = new Vector3(0.5f, 30f/4f,0f);
+        Vector3 midPos2 = new Vector3(0.5f, (30f/4f) * 3f,0f);
+        Vector3 endPos = new Vector3(0f,30f,0f);
+        o.LeanMoveLocal(new LTBezierPath(new Vector3[]{startPos,midPos1,midPos2,endPos}),0.5f).setOnComplete(()=>{
+            Destroy(o);
+        });
     }
     
     void OnDestroy()
@@ -144,7 +160,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     
 
     public void Kill(){
-        Destroy(gameObject);
+        Destroy(gameObject,0.7f);
     }
 
     public void ChangeCardPostionToCenter()

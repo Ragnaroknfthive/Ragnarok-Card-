@@ -291,13 +291,13 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
                     {
                         Debug.LogError("*****Black Two by Two X :" + xBoard + " Y :" + yBoard);
                         Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
-                        if(sc.GetPosition(xBoard,yBoard-2) == null && sc.GetPosition(xBoard,yBoard-1) == null)
+                        if((sc.GetPosition(xBoard,yBoard-2) == null || sc.GetPosition(xBoard,yBoard-2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard,yBoard-1) == null)
                             PawnMovePlateBlack(xBoard,yBoard - 2,piecePosition);
-                        if(sc.GetPosition(xBoard,yBoard-1) == null)
+                        if(sc.GetPosition(xBoard,yBoard-1) == null || sc.GetPosition(xBoard,yBoard-1).GetComponent<Chessman>().player != player)
                             PawnMovePlateBlack(xBoard,yBoard - 1,piecePosition);
-                        if(sc.GetPosition(xBoard-2,yBoard) == null && sc.GetPosition(xBoard-1,yBoard) == null)
+                        if((sc.GetPosition(xBoard-2,yBoard) == null || sc.GetPosition(xBoard-2,yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard-1,yBoard) == null)
                             PawnMovePlateBlack(xBoard - 2,yBoard,piecePosition);
-                        if(sc.GetPosition(xBoard-1,yBoard) == null)
+                        if(sc.GetPosition(xBoard-1,yBoard) == null || sc.GetPosition(xBoard-1,yBoard).GetComponent<Chessman>().player != player)
                             PawnMovePlateBlack(xBoard - 1,yBoard,piecePosition);
                     }
                     else
@@ -305,9 +305,9 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
                         Debug.LogError("*****Black One by One X :" + xBoard + " Y :" + yBoard);
                         Debug.LogError("*****Black One to One");
-                        if(sc.GetPosition(xBoard,yBoard-1) == null)
+                        if(sc.GetPosition(xBoard,yBoard-1) == null || sc.GetPosition(xBoard,yBoard-1).GetComponent<Chessman>().player != player)
                             PawnMovePlateBlack(xBoard,yBoard - 1,piecePosition,true);
-                        if(sc.GetPosition(xBoard-1,yBoard) == null)
+                        if(sc.GetPosition(xBoard-1,yBoard) == null || sc.GetPosition(xBoard-1,yBoard).GetComponent<Chessman>().player != player)
                             PawnMovePlateBlack(xBoard - 1,yBoard,piecePosition);
                     }
 
@@ -321,13 +321,13 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
                         Debug.LogError("*****White Two by Two X :" + xBoard + " Y :" + yBoard);
                         Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
-                        if(sc.GetPosition(xBoard,yBoard+2) == null && sc.GetPosition(xBoard,yBoard+1) == null)
+                        if((sc.GetPosition(xBoard,yBoard+2) == null || sc.GetPosition(xBoard,yBoard+2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard,yBoard+1) == null)
                             PawnMovePlate(xBoard,yBoard + 2,piecePosition);
-                        if(sc.GetPosition(xBoard,yBoard+1) == null)
+                        if(sc.GetPosition(xBoard,yBoard+1) == null || sc.GetPosition(xBoard,yBoard+1).GetComponent<Chessman>().player != player)
                             PawnMovePlate(xBoard,yBoard + 1,piecePosition);
-                        if(sc.GetPosition(xBoard+2,yBoard) == null && sc.GetPosition(xBoard+1,yBoard) == null)
+                        if((sc.GetPosition(xBoard+2,yBoard) == null || sc.GetPosition(xBoard+2,yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard+1,yBoard) == null)
                             PawnMovePlate(xBoard + 2,yBoard,piecePosition);
-                        if(sc.GetPosition(xBoard+1,yBoard) == null)
+                        if(sc.GetPosition(xBoard+1,yBoard) == null || sc.GetPosition(xBoard+1,yBoard).GetComponent<Chessman>().player != player)
                             PawnMovePlate(xBoard + 1,yBoard,piecePosition);
                     }
                     else
@@ -335,9 +335,9 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
                         Debug.LogError("*****White One by One X :" + xBoard + " Y :" + yBoard);
                         Debug.LogError("*****White One to One");
-                        if(sc.GetPosition(xBoard,yBoard+1) == null)
+                        if(sc.GetPosition(xBoard,yBoard+1) == null || sc.GetPosition(xBoard,yBoard+1).GetComponent<Chessman>().player != player)
                             PawnMovePlate(xBoard,yBoard + 1,piecePosition,true);
-                        if(sc.GetPosition(xBoard+1,yBoard) == null)
+                        if(sc.GetPosition(xBoard+1,yBoard) == null || sc.GetPosition(xBoard+1,yBoard).GetComponent<Chessman>().player != player)
                             PawnMovePlate(xBoard + 1,yBoard,piecePosition);
                     }
                 }

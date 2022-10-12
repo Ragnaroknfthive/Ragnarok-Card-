@@ -11,6 +11,7 @@ public class DeckDisplay : MonoBehaviour
     public TextMeshProUGUI cdMana;
     public TextMeshProUGUI cdSpeed;
     public SpellCard data;
+    public GameObject rootOb;
 
 
     // Start is called before the first frame update
@@ -35,7 +36,10 @@ public class DeckDisplay : MonoBehaviour
     }
 
     public void RemoveCard(){
-        DeckManager.instance.RemoveCard(data);
+        rootOb.LeanScale(Vector3.zero,0.3f).setOnComplete(()=>{
+            DeckManager.instance.RemoveCard(data);
+        });
+
     }
 
 }

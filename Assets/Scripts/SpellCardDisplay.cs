@@ -22,6 +22,9 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     
     public int startSortOrder;
     public bool IsPreview = false;
+    public GameObject cbg;
+
+    public GameObject RootObj;
 
     
     // Start is called before the first frame update
@@ -30,6 +33,17 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         UpdateCardData();
         photonView = GetComponent<PhotonView>();
         startSortOrder = canvas.sortingOrder;
+    }
+
+    public void set(bool isShow){
+        manaTxt.transform.parent.gameObject.SetActive(isShow);
+        attackTxt.transform.parent.gameObject.SetActive(isShow);
+        healthTxt.transform.parent.gameObject.SetActive(isShow);
+        DescriptionTxt.gameObject.SetActive(isShow);
+        cardNameTxt.gameObject.SetActive(isShow);
+        cardImage.gameObject.SetActive(isShow);
+        cbg.gameObject.SetActive(isShow);
+        
     }
     
     public void UpdateCardData()
@@ -105,8 +119,12 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     public void  AddCardToDeck(){
         if(DeckManager.instance.playerDeck.Count == 33)
             return;
-        DeckManager.instance.AddCard(card);
-        Destroy(gameObject);
+
+        RootObj.LeanScale(Vector3.zero,0.3f).setOnComplete(()=>{
+            DeckManager.instance.AddCard(card);
+            Destroy(gameObject);
+        });
+        
     }
 
     void CastSpell(){

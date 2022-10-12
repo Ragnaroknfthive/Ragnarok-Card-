@@ -200,7 +200,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     
 
-    public int offset_card = 0;//50
+    public int offset_card = 50;//50
     public GameObject InstantiateSpellCard(SpellCard sO,Vector3 pos,Transform parent)
     {
         tempSpellCardObj = Instantiate(spellCardPrefab,pos,Quaternion.identity,parent);
@@ -208,6 +208,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         
         return tempSpellCardObj;
     }
+
     public GameObject InstantiateSpellBattleCard(SpellCard sO,Vector3 pos,Transform parent,int num_card)
     {
         tempSpellCardObj = Instantiate(spellBettleCardPrefeb,pos,Quaternion.identity,parent);
@@ -250,7 +251,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
 
     public void DrawCard(){
-        if(MyMainDeck.transform.childCount == 9)
+        Debug.LogError("cards holding now : "+spellCardsPlayer.transform.childCount);
+        if(spellCardsPlayer.childCount == 9)
             return;
         int i = Random.Range(0,spellCardsDeck.Count);
         while(spawned_ids.Contains(i)){
@@ -265,9 +267,10 @@ public class SpellManager : MonoBehaviourPunCallbacks
     {
         
         GameObject obj = InstantiateSpellCard(spellCardsDeck[i],Vector3.one,MyMainDeck.transform);
-        obj.transform.localPosition = Vector3.zero;
+        //obj.transform.localPosition = Vector3.zero;
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;
         obj.GetComponent<SpellCardDisplay>().index = i;
+        obj.GetComponent<SpellCardDisplay>().set(true);
         obj.transform.localScale = Vector3.one * 0.7f;
         obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
         //obj.transform.Rotate(Vector3.forward * 270);
@@ -336,6 +339,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         obj.transform.localPosition = Vector3.zero;
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomeOppoent;
         obj.GetComponent<SpellCardDisplay>().index = i;
+        obj.GetComponent<SpellCardDisplay>().set(false);
         spawned_ids.Add(i);
         obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
         //obj.transform.Rotate(Vector3.forward * 90);

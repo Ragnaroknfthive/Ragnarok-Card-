@@ -62,6 +62,9 @@ public class PVPManager : MonoBehaviour
 
     public Slider P1HealthBar, P2HealthBar;
     public Slider P1StaBar, P2StaBar;
+
+    public float P1StaVal, P2StaVal;
+
     public Slider P1RageBar, P2RageBar;
     public Text P1SpeedTxt, P2SpeedTxt;
 
@@ -76,7 +79,8 @@ public class PVPManager : MonoBehaviour
    
     public Vector2 p1Pos, p2Pos;
     public Chessman p1Obj,p2Obj;
-    private float lowestSpeedNeeded = 1.5f;
+    private float lowestSpeedNeeded = 1.5f; 
+    
     
     
     bool isattackerMaster;
@@ -154,6 +158,8 @@ public class PVPManager : MonoBehaviour
     public int MaxManaBarVal;
     public int MyManabarVal;
     public int OppoManabarVal;
+    public GameObject DmgPref;
+    public int startNumCards = 3;
 
     
     // Start is called before the first frame update
@@ -213,8 +219,8 @@ public class PVPManager : MonoBehaviour
     }
     public void ShowSpeedAttackSlider() 
     {
-        AttackChoices.SetActive(false);
-        speedAttackChoices.SetActive(true);
+        //AttackChoices.SetActive(false);
+        //speedAttackChoices.SetActive(true);
     }
     public void SetOpponentAttackPieceInfo(PieceType type)
     {
@@ -491,10 +497,14 @@ public class PVPManager : MonoBehaviour
        
         P1HealthTxt.text =  P1HealthBar.value+" / "+P1HealthBar.maxValue;
         P2HealthTxt.text = P2HealthBar.value+" / "+P2HealthBar.maxValue;
-        P1StaTxt.text = MathF.Round(P1StaBar.value,2).ToString()+" / "+P1StaBar.maxValue;
-        P2StaTxt.text = MathF.Round(P2StaBar.value,2).ToString()+" / "+P2StaBar.maxValue;
-        P1RageTxt.text = MathF.Round(P1RageBar.value,2).ToString();//+//" / "+P1RageBar.maxValue;
-        P2RageTxt.text = MathF.Round(P2RageBar.value,2).ToString();//+" / "+P2RageBar.maxValue;
+        P1StaTxt.text = "Stamina "+MathF.Round(P1StaVal,2)+" / "+P1StaBar.maxValue;
+        P2StaTxt.text = "Stamina "+MathF.Round(P2StaVal,2)+" / "+P2StaBar.maxValue;
+        P1RageTxt.text = "Rage "+MathF.Round(P1RageBar.value,2).ToString();//+//" / "+P1RageBar.maxValue;
+        P2RageTxt.text = "Rage "+MathF.Round(P2RageBar.value,2).ToString();//+" / "+P2RageBar.maxValue;
+        P1SpeedTxt.text  = p1Speed.ToString();
+        P2SpeedTxt.text  = p2Speed.ToString();
+        P1StaBar.value = P1StaVal;
+        P2StaBar.value = P2StaVal;
         //Debug.LogError("P1 STAMIN " + P1StaBar.value + " Time "+ DateTime.Now);
         //Debug.LogError("P2 STAMIN " + P2StaBar.value);
     }
@@ -586,14 +596,17 @@ public class PVPManager : MonoBehaviour
         Game.Get().loadingScreen.SetActive(true);
         SpellManager.instance.RemoveOldSpellData();
         SpellManager.instance.spawned_ids = new List<int>();
-        for (int i = 0; i < 3; i++)
-        {
-            SpellManager.instance.DrawCard();
-        }
+        
         //
         if(PhotonNetwork.LocalPlayer.IsMasterClient)
             photonView.RPC("SetDataRPC",RpcTarget.AllBuffered,posP1,posP2,isReverse);
-
+        
+        for (int i = 0; i < startNumCards; i++)
+        {
+            SpellManager.instance.DrawCard();
+            
+        }
+        
         
         //Debug.Log("<color=yellow> ==== === = set data end = === ==== </color>");
 
@@ -631,7 +644,7 @@ public class PVPManager : MonoBehaviour
         p1AttackFor.gameObject.transform.parent.localScale = Vector3.zero;
         p2AttackFor.gameObject.transform.parent.localScale = Vector3.zero;
     }
-    public void sliderAttackbuttonClick(float sliderAttack)
+    public void sliderAttackbuttonClick(float sliderAttack, float StaminaConsumed)
     {
         LocationChoiceHeading.SetActive(false);
         if (AttackSlider.instance._sliderAttack == SliderAttack.HeavyAttack)
@@ -707,6 +720,35 @@ public class PVPManager : MonoBehaviour
                 p2SliderAttack = sliderAttack;
             }
         }
+
+        
+        DeductStamina(StaminaConsumed);
+        
+       
+    }
+
+    public void DeductStamina(float i){
+        P1StaVal -= i;
+        UpdateHMTxt();
+        photonView.RPC("DeductStaminaRPC",RpcTarget.Others,i);
+    }
+
+    [PunRPC]
+    public void DeductStaminaRPC(float i){
+        P2StaVal -= i;
+        UpdateHMTxt();
+    }
+
+    public void DeductSpeed(float i){
+        p1Speed -= i;
+        UpdateHMTxt();
+        photonView.RPC("DeductSpeedRPC",RpcTarget.Others,i);
+    }
+
+    [PunRPC]
+    public void DeductSpeedRPC(float i){
+        p2Speed -= i;
+        UpdateHMTxt();
     }    
 
     [PunRPC]
@@ -1030,7 +1072,8 @@ public class PVPManager : MonoBehaviour
             }
 
             AddMana();
-            SpellManager.instance.DrawCard();
+            AddStamina();
+            //SpellManager.instance.DrawCard();
             
         }
         if(Game.Get().turn == 4)
@@ -1047,7 +1090,8 @@ public class PVPManager : MonoBehaviour
 
             //}
             AddMana();
-            SpellManager.instance.DrawCard();
+            AddStamina();
+            //SpellManager.instance.DrawCard();
             
         }
         if(Game.Get().turn == 6)
@@ -1058,7 +1102,8 @@ public class PVPManager : MonoBehaviour
                 DemoManager.instance.Generate3CardsStack();
             }
             AddMana();
-            SpellManager.instance.DrawCard();
+            AddStamina();
+            //SpellManager.instance.DrawCard();
             //for(int i = 0 ; i < DemoManager.instance.board_cards.Count ; i++)
             //{
             //    DemoManager.instance.board_cards[i].gameObject.SetActive(true);
@@ -1069,7 +1114,7 @@ public class PVPManager : MonoBehaviour
         if(Game.Get().turn == 8)
         {
           AddMana();
-          SpellManager.instance.DrawCard();
+          AddStamina();
 
             for(int i = 0 ; i < DemoManager.instance.player_cards.Length ; i++)
             {
@@ -1106,12 +1151,23 @@ public class PVPManager : MonoBehaviour
 
     public void AddMana(){
         MaxManaBarVal += 1;
+        MaxManaBarVal = Mathf.Clamp(MaxManaBarVal,0,9);
         MyManaBar.maxValue = MaxManaBarVal;
         OppoManaBar.maxValue = MaxManaBarVal;
         MyManabarVal = MaxManaBarVal;
         OppoManabarVal = MaxManaBarVal;
         UpdateManaTxt();
     }
+
+    public void AddStamina(){
+        P1StaVal += 1;
+        P2StaVal += 1;
+        P1StaVal = Mathf.Clamp(P1StaVal,0,P1StaBar.maxValue);
+        P2StaVal = Mathf.Clamp(P2StaVal,0,P2StaBar.maxValue);
+        UpdateHMTxt();
+    }
+
+    
 
     public void DeductMana(int i){
         MyManabarVal -= i;
@@ -1737,6 +1793,7 @@ public class PVPManager : MonoBehaviour
         {
             DemoManager.instance.SecondTimeShuffleCall();
         }
+        SpellManager.instance.DrawCard();
 
     }
     public void GenerateCardFromMaster(bool isGameOver) 
@@ -2089,7 +2146,7 @@ public class PVPManager : MonoBehaviour
                         photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
                         UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
                         photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
-                        UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+                        //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
                         PhotonNetwork.SendAllOutgoingCommands();
                     }
                     //EndTurn(c);
@@ -2147,7 +2204,7 @@ public class PVPManager : MonoBehaviour
         {
             photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
             photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
-            UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+            //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
             UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
             PhotonNetwork.SendAllOutgoingCommands();
         }
@@ -2190,12 +2247,14 @@ public class PVPManager : MonoBehaviour
         P1HealthBar.value = P1RemainingHandHealth;
         Debug.Log("P1 HEALTH BAR " + P1HealthBar.value  + " C "+ c);
         photonView.RPC("SetOpponentRemainingHandHealth_RPC",RpcTarget.Others,c);
+        
     }
     [PunRPC]
     public void SetOpponentRemainingHandHealth_RPC(int h)
     {
         P2RemainingHandHealth -= h;
         P2HealthBar.value = P2RemainingHandHealth;
+        
     }
     public void UpdateRemainingHandHealthPlus(int c)
     {
@@ -2410,6 +2469,7 @@ public class PVPManager : MonoBehaviour
     {
         endTurn = true;
         StopCoroutine(UpdateEndTurnTimer());
+        LocationChoices.SetActive(false);
         if(Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
         {
             
@@ -2710,7 +2770,7 @@ public class PVPManager : MonoBehaviour
                     AttackChoices.SetActive(true);
                     PVPManager.Get().speedAttackChoices.SetActive(false);
                     Debug.Log("AttackChoices true");
-                    LocationChoices.SetActive(false);
+                    //LocationChoices.SetActive(false);
                     ModeTxT.text = "Choose Extra Attack Type";
                     foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
@@ -2732,7 +2792,7 @@ public class PVPManager : MonoBehaviour
                     state = PVPStates.DefendLoc;
                     skipTurn.gameObject.SetActive(false);
                     AttackChoices.SetActive(false);
-                    LocationChoices.SetActive(true);
+                    //LocationChoices.SetActive(true);
                     ModeTxT.text = "Choose Defend Location";
                     foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
@@ -2753,7 +2813,7 @@ public class PVPManager : MonoBehaviour
                     AttackChoices.SetActive(true);
                     PVPManager.Get().speedAttackChoices.SetActive(false);
                     Debug.Log("AttackChoices true");
-                    LocationChoices.SetActive(false);
+                    //LocationChoices.SetActive(false);
                     ModeTxT.text = "Choose Extra Attack Type";
                     foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
@@ -2773,7 +2833,7 @@ public class PVPManager : MonoBehaviour
                     state = PVPStates.DefendLoc;
                     skipTurn.gameObject.SetActive(false);
                     AttackChoices.SetActive(false);
-                    LocationChoices.SetActive(true);
+                    //LocationChoices.SetActive(true);
                     ModeTxT.text = "Choose Defend Location";
                     foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
@@ -2794,7 +2854,7 @@ public class PVPManager : MonoBehaviour
            // ModePanel.SetActive(false);
             waitPanel.SetActive(true);
             AttackChoices.SetActive(false);
-            LocationChoices.SetActive(true);
+            //LocationChoices.SetActive(true);
             int[] extraChoices = new int[playerChoice.ExtraAttack != null ? playerChoice.ExtraAttack.Count : 0];
             for(int i = 0 ; i < extraChoices.Length ; i++)
             {
@@ -2934,12 +2994,12 @@ public class PVPManager : MonoBehaviour
                 skipTurn.gameObject.SetActive(false);
                 waitPanel.SetActive(false);
                 state = PVPStates.AttackLoc;
-                LocationChoices.SetActive(true);
+                //LocationChoices.SetActive(true);
                 ModeTxT.text = "Choose Attack Location";
                 break;
             case "Attack":
                 state = PVPStates.Attack;
-                LocationChoices.SetActive(false);
+                //LocationChoices.SetActive(false);
                 AttackChoices.SetActive(true);
 
                 PVPManager.Get().speedAttackChoices.SetActive(false);
@@ -2958,7 +3018,7 @@ public class PVPManager : MonoBehaviour
                 AttackChoices.SetActive(true);
                 PVPManager.Get().speedAttackChoices.SetActive(false);
                 Debug.Log("AttackChoices true");
-                LocationChoices.SetActive(false);
+                //LocationChoices.SetActive(false);
                 ModeTxT.text = "Choose Extra Attack Type";
                 foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                 {
@@ -2973,7 +3033,7 @@ public class PVPManager : MonoBehaviour
                 state = PVPStates.DefendLoc;
                 skipTurn.gameObject.SetActive(false);
                 AttackChoices.SetActive(false);
-                LocationChoices.SetActive(true);
+                ///LocationChoices.SetActive(true);
                 ModeTxT.text = "Choose Defend Location";
                 foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                 {
@@ -3733,10 +3793,10 @@ public class PVPManager : MonoBehaviour
         if(PVPOver){
             yield return new WaitForSeconds(2f);
             if(PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(isLocalPVPFirstTurn)
-                    Game.Get().HandleWin(player1Win,isattackerMaster,p1Pos,p2Pos);
-                else
-                    Game.Get().HandleWin(!player1Win,isattackerMaster,p1Pos,p2Pos);
+                // if(isLocalPVPFirstTurn)
+                //     Game.Get().HandleWin(player1Win,isattackerMaster,p1Pos,p2Pos);
+                // else
+                //     Game.Get().HandleWin(!player1Win,isattackerMaster,p1Pos,p2Pos);
             }
                 
         }
@@ -4058,11 +4118,12 @@ public class PVPManager : MonoBehaviour
         }
 
         //Debug.LogError("Set hp : 1 - " + P1HealthBar.value + " , 2 - " + P2HealthBar.value);
+        P1StaVal = P2StaVal = 10;
 
-        P1StaBar.maxValue = p1Char.stamina;
-        P2StaBar.maxValue = p2Char.stamina;
-        P1StaBar.value = p1Obj.pData.stamina;
-        P2StaBar.value = p2Obj.pData.stamina;
+        P1StaBar.maxValue = 10;
+        P2StaBar.maxValue = 10;
+        P1StaBar.value = P1StaVal;
+        P2StaBar.value = P2StaVal;
         
         MaxManaBarVal = 1;
         MyManabarVal = MaxManaBarVal;
@@ -4144,6 +4205,9 @@ public class PVPManager : MonoBehaviour
         UpdateHMTxt();
 
         ShowWeaknessFactor();
+        
+        AddMana();
+        
 
         //Debug.Log($"<color=yellow> {name} health {p1Char.health} </color>  high {p1Obj.high}" +
         //$"low {p1Obj.low} left {p1Obj.left} right {p1Obj.right} medle {p1Obj.medle}");
@@ -4203,6 +4267,7 @@ public class PVPManager : MonoBehaviour
         PhotonNetwork.SendAllOutgoingCommands();
         P2RemainingHandHealth -= c;
         P2StartHealth -= c;
+        ShowDealtDamage(c);
         if(P2RemainingHandHealth > P1StartHealth) P2RemainingHandHealth = P2StartHealth;
         if(P2RemainingHandHealth < 0) P2RemainingHandHealth = 0;
         P2HealthBar.value = P2RemainingHandHealth;
@@ -4214,10 +4279,23 @@ public class PVPManager : MonoBehaviour
         StartCoroutine(CheckWinNewWithoutReset());
     }
 
+    public void ShowDealtDamage(int c, bool isLocal = true){
+        GameObject o = Instantiate(DmgPref,isLocal ? p2Image.transform : p1Image.transform);
+        o.GetComponent<DamageIndicator>().DmgText.text = "-"+c;
+        Vector3 startPos = Vector3.zero;
+        Vector3 midPos1 = new Vector3(0.5f, 30f/4f,0f);
+        Vector3 midPos2 = new Vector3(0.5f, (30f/4f) * 3f,0f);
+        Vector3 endPos = new Vector3(0f,30f,0f);
+        o.LeanMoveLocal(new LTBezierPath(new Vector3[]{startPos,midPos1,midPos2,endPos}),0.5f).setOnComplete(()=>{
+            Destroy(o);
+        });
+    }
+
     [PunRPC]
     public void DealDamage(int c){
         P1RemainingHandHealth -= c;
         P1StartHealth -= c;
+        ShowDealtDamage(c,false);
         if(P1RemainingHandHealth > P1StartHealth) P1RemainingHandHealth = P1StartHealth;
         if(P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
         P1HealthBar.value = P1RemainingHandHealth;
@@ -4255,6 +4333,8 @@ public class PVPManager : MonoBehaviour
         {
             DemoManager.instance.SecondTimeShuffleCall();
         }
+
+        SpellManager.instance.DrawCard();
 
         Invoke("SetModePanel",3f);
     }

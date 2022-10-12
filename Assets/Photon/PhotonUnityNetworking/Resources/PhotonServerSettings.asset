@@ -130,6 +130,10 @@ MonoBehaviour:
   - AttackRPC
   - ExecuteAttackRPC
   - OnDestroyRPC
+  - PlayerWon
+  - DeductStamina
+  - DeductStaminaRPC
+  - DeductSpeedRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

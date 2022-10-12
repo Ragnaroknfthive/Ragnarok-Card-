@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Linq;
 public enum PlayerAction {idle, attack,counterAttack,defend,engage,brace}
 public enum SpellCardPosition {None, petHomePlayer,petHomeOppoent,petBattlePlayer,perBattleOpponent}
 public class Game : MonoBehaviour
@@ -72,6 +73,12 @@ public class Game : MonoBehaviour
     public List<Chessman> DestroyedObjects = new List<Chessman>();
 
     public PlayerType MyType;
+
+    public Text WinnerTxT;
+    public Text RestartTxT;
+
+    
+
     public static Game Get(){
         return game;
     }
@@ -137,6 +144,7 @@ public class Game : MonoBehaviour
         DestroyedObjects = new List<Chessman>();
 
         StartCoroutine(SetLoadingScreenOnOff(false,1f));
+        gameOver = false;
         // foreach (var item in positions)
         // {
         //     Debug.Log(item);
@@ -257,6 +265,7 @@ public class Game : MonoBehaviour
             }
             foreach (var item in playerWhite)
             {
+                Debug.LogError("name : "+item.name);
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
                 //item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
@@ -350,6 +359,12 @@ public class Game : MonoBehaviour
 
     public void NextTurn()
     {
+        if(IsGameOver()){
+            PVPManager.manager.TimerObject.SetActive(false); 
+            return;
+        }
+            
+
         if(currentPlayer == "white")
         {
             currentPlayer = "black";
@@ -454,10 +469,14 @@ public class Game : MonoBehaviour
     {
         gameOver = true;
 
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().enabled = true;
-        GameObject.FindGameObjectWithTag("WinnerText").GetComponent<Text>().text = playerWinner + " is the winner";
+        WinnerTxT.enabled = true;
+        WinnerTxT.text = playerWinner + " is the winner";
 
-        GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+        RestartTxT.enabled = true;
+        
+        PVPManager.manager.TimerObject.SetActive(false); 
+        
+
     }
     
     public void SetPVPMode(bool b){
@@ -495,7 +514,7 @@ public class Game : MonoBehaviour
                 reference.SetCoords();
                 SetPosition(reference);
                 //Destroy(ob.gameObject);
-                if(ob.GetComponent<PhotonView>().IsMine)  
+                //if(ob.GetComponent<PhotonView>().IsMine)  
                     DestroyPieceObject(ob);//PhotonNetwork.Destroy(ob.gameObject);
             }else{
                 Game.Get().SetPositionsEmpty(ob.GetXboard(),
@@ -514,7 +533,7 @@ public class Game : MonoBehaviour
             if(isAttackerMaster){
                 Game.Get().SetPositionsEmpty(reference.GetXboard(),
                 reference.GetYboard());
-                if(reference.GetComponent<PhotonView>().IsMine)
+                //if(reference.GetComponent<PhotonView>().IsMine)
                     DestroyPieceObject(reference);//PhotonNetwork.Destroy(reference.gameObject);
                 //Destroy(reference.gameObject);
             }else{
@@ -527,18 +546,45 @@ public class Game : MonoBehaviour
             
         }
 
-       Debug.Log(Chessman.GetPiecesOfPlayer(PlayerType.White).Count+" - "+Chessman.GetPiecesOfPlayer(PlayerType.Black).Count);
-        StartCoroutine("CheckChessWin");
-        NextTurn();
+       //Debug.Log(Chessman.GetPiecesOfPlayer(PlayerType.White).Count+" - "+Chessman.GetPiecesOfPlayer(PlayerType.Black).Count);
+    //    if(!IsGameComplete)
+    //         NextTurn();
 
     }
 
 
     public void DestroyPieceObject(Chessman man){
+        Debug.LogError("Adding : "+man.type+" to "+MyType);
+        Debug.LogError("Adding : "+man.playerType+" to "+MyType);
         man.transform.position = new Vector3(1000f,1000f,1000f);
-        if(man.playerType == MyType)
+
+        if(man.playerType == MyType){
             DestroyedObjects.Add(man);
+        
+            bool won = false;
+            foreach (var item in DestroyedObjects)
+            {
+                Debug.LogError(item.playerType);
+                if(item.type == PieceType.King){
+                    won = true;
+                    if(item.playerType == PlayerType.White){
+                        //Winner(PhotonNetwork.PlayerList[1].NickName);
+                        photonView.RPC("PlayerWon",RpcTarget.All,1);
+                    }else{
+                        //Winner(PhotonNetwork.PlayerList[0].NickName);
+                        photonView.RPC("PlayerWon",RpcTarget.All,0);
+
+                    }
+                    break;
+                }
+            }
+
+            IsGameComplete = won;
+        }
+
     }
+
+    public bool IsGameComplete = false;
 
     Chessman pawntobeRenewed;
     public Transform revivePr;
@@ -568,36 +614,81 @@ public class Game : MonoBehaviour
         PieceSelectionPanel.SetActive(false);
         if(DestroyedObjects != null){
             Chessman c = DestroyedObjects[i];
+            
             Create("New_"+c.gameObject.name,c.type,c.playerType,pawn.GetXboard(),pawn.GetYboard(),30+DestroyedObjects.Count);
-            Chessman.pieces.Remove(pawn);
+            //Chessman.pieces.Remove(pawn);
             DestroyedObjects.Remove(c);
             photonView.RPC("DestroyPiece",RpcTarget.All,c.PieceIndex);
             photonView.RPC("DestroyPiece",RpcTarget.All,pawn.PieceIndex);
             photonView.RPC("SetPosRPC",RpcTarget.All);
             Game.Get().NextTurn();
         }
-        
     }
 
     [PunRPC]
     public void DestroyPiece(int PieceIndex){
+        Chessman piece = Chessman.GetPiece(PieceIndex);
+        List<Chessman> blacks = playerBlack.ToList();
+        if(blacks.Contains(piece))
+            blacks.Remove(piece);
+        playerBlack = blacks.ToArray();
+
+        List<Chessman> whites = playerWhite.ToList();
+        if(whites.Contains(piece))
+            whites.Remove(piece);
+        playerWhite = whites.ToArray();
+
         if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            PhotonNetwork.Destroy(Chessman.GetPiece(PieceIndex).GetComponent<PhotonView>());
+            PhotonNetwork.Destroy(piece.GetComponent<PhotonView>());
+        
     }
 
     public void CheckWinner() 
     {
-        StartCoroutine(CheckChessWin());
+        //StartCoroutine(CheckChessWin());
     }
 
-    IEnumerator CheckChessWin(){
-        yield return new WaitForSeconds(2f);
-        if(Chessman.GetPiecesOfPlayer(PlayerType.White).Count == 0 ||Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x=>x.type== PieceType.King).Count==0 ){
-            Winner(PhotonNetwork.PlayerList[1].NickName);
-        }else if(Chessman.GetPiecesOfPlayer(PlayerType.Black).Count == 0 || Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count == 0)
+    void CheckChessWin(){
+        //yield return new WaitForSeconds(0.2f);
+        
+        Debug.LogError(playerWhite.ToList().FindAll(x=>x.type== PieceType.King).Count + " _ " + playerBlack.ToList().FindAll(x => x.type == PieceType.King).Count);
+        Debug.LogError(DestroyedObjects.Count);
+        bool won = false;
+        foreach (var item in DestroyedObjects)
         {
-            Winner(PhotonNetwork.PlayerList[0].NickName);
+            Debug.LogError(item.type);
+            if(item.type == PieceType.King){
+                won = true;
+                if(item.playerType == PlayerType.White){
+                    Winner(PhotonNetwork.PlayerList[1].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                }else{
+                    Winner(PhotonNetwork.PlayerList[0].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                }
+                break;
+            }
         }
+        // if(playerWhite.ToList().FindAll(x=>x.type== PieceType.King).Count==0 ){
+            
+        // }else if(playerBlack.ToList().FindAll(x => x.type == PieceType.King).Count == 0)
+        // {
+            
+        // }else{
+        //     NextTurn();
+        // }
+        if(!won){
+            photonView.RPC("PlayerWon",RpcTarget.Others,-1);
+        }
+    }
+
+    [PunRPC]
+    public void PlayerWon(int i)
+    {
+        if(i != -1)
+            Winner(PhotonNetwork.PlayerList[i].NickName);
+        else
+            NextTurn();
     }
 
 
@@ -619,6 +710,7 @@ public class Game : MonoBehaviour
     }
     [PunRPC]
     public void SwitchCurrentPlayer(string player){
+        
         currentPlayer = player;
         isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
        

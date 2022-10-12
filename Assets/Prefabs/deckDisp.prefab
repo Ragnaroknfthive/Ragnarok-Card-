@@ -472,6 +472,7 @@ MonoBehaviour:
   cdMana: {fileID: 2962298822250397699}
   cdSpeed: {fileID: 5579190110218247877}
   data: {fileID: 0}
+  rootOb: {fileID: 1165035081349292765}
 --- !u!114 &8326583926440643478
 MonoBehaviour:
   m_ObjectHideFlags: 0

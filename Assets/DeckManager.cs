@@ -52,6 +52,7 @@ public class DeckManager : MonoBehaviour
         UpdateDeckPreview();
     }
     public void RemoveCard(SpellCard card){
+
         playerDeck.Remove(card);
         UpdateDeckPreview();
     }
@@ -87,7 +88,7 @@ public class DeckManager : MonoBehaviour
             obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;
             obj.GetComponent<SpellCardDisplay>().index = i;
             obj.transform.localScale = Vector3.one * 0.7f;
-            obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = 5;
+            obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = 7;
             obj.GetComponent<SpellCardDisplay>().IsPreview = true;
             i++;
         }

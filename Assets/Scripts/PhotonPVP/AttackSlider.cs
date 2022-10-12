@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using TMPro;
 
 [System.Serializable]
 public enum SliderAttack
@@ -20,7 +22,17 @@ public class AttackSlider : MonoBehaviour
     [SerializeField] private Text _attackValueText;
 
     public SliderAttack _sliderAttack;
+    public GameObject UseSpeedObj;
+    public RectTransform SpeedFill;
+    public RectTransform AttackFill;
+    float ExtraSpeedAmt;
+    public TextMeshProUGUI speedTx;
+    public TextMeshProUGUI UsedSpeedTx;
+    public GameObject UsedSpeedButton;
+
     float difference = 0;
+
+    bool SpeedCanceled, SpeedFixed;
     private void Awake()
     {
         if (instance==null)
@@ -35,7 +47,7 @@ public class AttackSlider : MonoBehaviour
 
         // _slider.maxValue = Mathf.Min(PVPManager.manager.P1HealthBar.value,PVPManager.manager.P2HealthBar.value);
         Debug.Log("P2 LATEST REMAINING HEALTH " + PVPManager.manager.P2RemainingHandHealth);
-        _slider.maxValue = Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth);
+        _slider.maxValue = Mathf.Min(PVPManager.manager.P1StaVal * 10f,Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth));
         if(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8)
         {
             _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount;
@@ -49,6 +61,16 @@ public class AttackSlider : MonoBehaviour
         _slider.minValue = 1;
         _slider.value = _slider.minValue;
         _attackValueText.text = _slider.minValue.ToString();
+        SpeedCanceled = false;
+        SpeedFixed = false;
+        SpeedFill.anchorMax = Vector2.zero;
+        UsedSpeedButton.SetActive(false);
+        _slider.onValueChanged.AddListener(delegate {UpdateAttackValueText(); });
+    }
+    
+    void OnDisable()
+    {
+        _slider.onValueChanged.RemoveListener(delegate {UpdateAttackValueText(); });
     }
     private void Start()
     {
@@ -109,6 +131,9 @@ public class AttackSlider : MonoBehaviour
             _fillImage.color = Color.red;
             _sliderAttack = SliderAttack.HeavyAttack;
         }
+
+        
+        
         //else
         //{
         //    _attackText.text = "nun";
@@ -117,15 +142,72 @@ public class AttackSlider : MonoBehaviour
         //}
     }
 
+    public void UpdateUI(int value){
+        
+    }
+
+    public void SpeedDecision(string ans){
+        ExtraSpeedAmt = ans == "Use" ? MathF.Min(PVPManager.Get().p1Speed * 10f, (int)_slider.value) : 0; 
+        if(ExtraSpeedAmt <= 0){
+            SpeedFill.anchorMax = Vector2.zero;
+            _slider.fillRect = AttackFill;
+            SpeedCanceled = true;
+            UsedSpeedButton.SetActive(false);
+        }else{
+            UsedSpeedButton.SetActive(true);
+            UsedSpeedTx.text = ExtraSpeedAmt+" Speed \nUsed";
+            SpeedFill.anchorMax = new Vector2(ExtraSpeedAmt / _slider.maxValue,1f);
+            SpeedFixed = true;
+        }
+        
+        UseSpeedObj.SetActive(false);
+    }
+
+    
+
     public void btn_SliderComplete()
     {
-        PVPManager.Get().sliderAttackbuttonClick(_slider.value);
-        
+        PVPManager.Get().sliderAttackbuttonClick(_slider.value, MathF.Round(((int)_slider.value - ExtraSpeedAmt) / 10f,1));
+        PVPManager.Get().UpdateRemainingHandHealth((int)(_slider.value - ExtraSpeedAmt));
+        PVPManager.Get().DeductSpeed(ExtraSpeedAmt / 10f);
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
     }
     public void UpdateAttackValueText()
     {
+        
+        float speedVal = PVPManager.Get().p1Speed * 10f;
+        if(PVPManager.Get().p1Speed > 0 && !SpeedCanceled && !SpeedFixed){
+            
+            if(_slider.value <= speedVal){
+                _slider.value = Mathf.RoundToInt(_slider.value);
+                _slider.fillRect = SpeedFill;
+                AttackFill.anchorMax = Vector2.zero;
+                ExtraSpeedAmt = (int)_slider.value;
+                speedTx.text = "Use "+ExtraSpeedAmt+"\nFree Speed?";
+                UseSpeedObj.SetActive(true);
+            }else{
+                _slider.fillRect = AttackFill;
+            }
+        }else{
+            if(SpeedFixed){
+                _slider.value = Mathf.Clamp((int)_slider.value,ExtraSpeedAmt, _slider.maxValue);
+                UsedSpeedButton.SetActive(true);
+                UsedSpeedTx.text = ExtraSpeedAmt+" Speed \nUsed";
+            }else{
+                SpeedFill.anchorMax = Vector2.zero;
+            }
+            _slider.fillRect = AttackFill;
+            UseSpeedObj.SetActive(false);
+        }
+
+        if(_slider.value > speedVal && speedVal > 0 && !SpeedCanceled && !SpeedFixed){
+            ExtraSpeedAmt = speedVal;
+            speedTx.text = "Use "+ExtraSpeedAmt+"\nFree Speed?";
+            UseSpeedObj.SetActive(true);
+            SpeedFill.anchorMax = new Vector2(speedVal / _slider.maxValue,1f);
+        }
+
         _attackValueText.text = ((int)_slider.value).ToString();
 
         if(_slider.value == _slider.maxValue)

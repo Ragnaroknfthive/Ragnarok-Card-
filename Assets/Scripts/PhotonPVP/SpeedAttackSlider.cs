@@ -107,7 +107,7 @@ public class SpeedAttackSlider : MonoBehaviour
     public void btn_SliderComplete()
     {
         PVPManager.manager.isAttackViaSpeedPoints = true;
-        PVPManager.Get().sliderAttackbuttonClick(_slider.value);
+        //PVPManager.Get().sliderAttackbuttonClick(_slider.value);
 
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
