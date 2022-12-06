@@ -134,6 +134,10 @@ MonoBehaviour:
   - DeductStamina
   - DeductStaminaRPC
   - DeductSpeedRPC
+  - CastSpellWithCard
+  - DeductRageRPC
+  - AddStaminaRPC
+  - SyncAllInRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

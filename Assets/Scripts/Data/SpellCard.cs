@@ -18,7 +18,8 @@ public class SpellCard :ScriptableObject
     public int speed;
     public int Manacost = 3;
 
-    public Sprite cardSprite;
+    public Sprite MycardSprite;
+    public Sprite OppocardSprite;
     public GameObject SpellProjectilePref;
 
 }

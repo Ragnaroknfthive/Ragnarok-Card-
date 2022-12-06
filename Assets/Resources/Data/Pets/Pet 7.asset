@@ -21,6 +21,7 @@ MonoBehaviour:
   stamina: 5
   speed: 7
   Manacost: 2
-  cardSprite: {fileID: 21300000, guid: 56ddf53ea56c8ea46bd6bdad5f71b447, type: 3}
+  MycardSprite: {fileID: 21300000, guid: 20ebebd26af55c9409bcd2b721623162, type: 3}
+  OppocardSprite: {fileID: 21300000, guid: 05d63863915fb8b4faf4d95961dfa5b3, type: 3}
   SpellProjectilePref: {fileID: 5719966673499620764, guid: 1000ee952b4f2764b8c0016391513c14,
     type: 3}

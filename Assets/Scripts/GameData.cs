@@ -11,16 +11,26 @@ public class GameData : MonoBehaviour
     public List<CharacterData> characters;
     public List<AttackData> attacks;
 
-    public List<SpellCard> spells;
+    public List<SpellCard> Pets;
+    public List<SpellCard> Spells;
+    
+    
 
     private void Awake()
     {
-        data = this;
+        if(data == null){
+            data = this;
+            DontDestroyOnLoad(data.gameObject);
+        }else{
+            Destroy(data.gameObject);
+        }
+        
     }
     // Start is called before the first frame update
     void Start()
     {
         characters = Resources.LoadAll<CharacterData>("Data/Character").ToList();
+        //Debug.LogError(characters.Count);
         attacks = Resources.LoadAll<AttackData>("Data/Attacks").ToList();
 
     }
@@ -40,8 +50,17 @@ public class GameData : MonoBehaviour
         return null;
     }
 
+    public SpellCard GetPet(int id){
+        foreach (var item in Pets)
+        {
+            if(item.cardId == id)
+                return item;
+        }
+        return null;
+    }
+
     public SpellCard GetSpell(int id){
-        foreach (var item in spells)
+        foreach (var item in Spells)
         {
             if(item.cardId == id)
                 return item;

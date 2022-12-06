@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using TMPro;
+using System.Linq;
 
 public class DeckManager : MonoBehaviour
 {
 
     public List<SpellCard> playerDeck;
-    public List<SpellCard> Inventory;
+    public List<SpellCard> PetInventory;
     public static DeckManager instance;
 
     public Transform deck_parent;
@@ -17,7 +18,14 @@ public class DeckManager : MonoBehaviour
     public Transform inventory_parent;
     public GameObject inventoryDispPref;
     public TextMeshProUGUI count;
-    public UI_panel panel;
+    public UI_panel PetPanel;
+    
+    public string currentScreen;
+    public bool isPetOpen{
+        get{
+            return currentScreen == "Pet";
+        }
+    }
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -35,7 +43,8 @@ public class DeckManager : MonoBehaviour
         if(deck_str != ""){
             foreach (var item in deck_str.Split('_'))
             {
-                playerDeck.Add(GetCard(System.Convert.ToInt32(item)));
+                if(!playerDeck.Contains(GetCard(System.Convert.ToInt32(item))))
+                    playerDeck.Add(GetCard(System.Convert.ToInt32(item)));
             }
         }
 
@@ -49,15 +58,15 @@ public class DeckManager : MonoBehaviour
 
     public void AddCard(SpellCard card){
         playerDeck.Add(card);
-        UpdateDeckPreview();
+        UpdateDeckPreview(currentScreen);
     }
     public void RemoveCard(SpellCard card){
 
         playerDeck.Remove(card);
-        UpdateDeckPreview();
+        UpdateDeckPreview(currentScreen);
     }
 
-    public void UpdateDeckPreview(){
+    public void UpdateDeckPreview(string s){
         foreach (Transform item in inventory_parent)
         {
             Destroy(item.gameObject);
@@ -70,16 +79,18 @@ public class DeckManager : MonoBehaviour
         
 
         int i = 0;
-        foreach (var item in playerDeck)
+        foreach (var item in playerDeck.Where(i=>i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell)))
         {
             GameObject obj = Instantiate(deckDispPref,deck_parent);
             obj.GetComponent<DeckDisplay>().Set(item);
             i++;
         }
 
-        i = 5;
-        foreach (var item in Inventory)
+        i = 0;
+        foreach (var item in PetInventory)
         {
+            if(item.cardType == (isPetOpen ? CardType.Spell : CardType.Pet))
+                continue;
             if(playerDeck.Contains(item))
                 continue;
             GameObject obj = Instantiate(inventoryDispPref,inventory_parent);
@@ -91,13 +102,13 @@ public class DeckManager : MonoBehaviour
             obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = 7;
             obj.GetComponent<SpellCardDisplay>().IsPreview = true;
             i++;
-        }
+        } 
 
-        count.text = playerDeck.Count+" / 33";
+        count.text = isPetOpen ? playerDeck.Where(i=>i.cardType == (CardType.Pet)).Count()+" / 33" : playerDeck.Where(i=>i.cardType == (CardType.Spell)).Count()+"";
     }
 
     public SpellCard GetCard(int id){
-        foreach (var item in Inventory)
+        foreach (var item in PetInventory)
         {
             if(item.cardId == id)
                 return item;
@@ -106,25 +117,53 @@ public class DeckManager : MonoBehaviour
     }
 
     public void confirm(){
-        if(playerDeck.Count == 33){
+        if(isPetOpen){
+            if(playerDeck.Where(item=>item.cardType == CardType.Pet).Count() == 33){
+                SetDeck();
+                PetPanel.Close();
+            }
+        }else{
             SetDeck();
-            panel.Close();
+            PetPanel.Close();
         }
-        
-
     }
+
 
     public void ClearAll(){
-        playerDeck.Clear();
-        UpdateDeckPreview();
+        // for (int i = 0; i < playerDeck.Count; i++)
+        // {
+        //     if(isPetOpen){
+        //         if(playerDeck[i].cardType == CardType.Pet)
+        //             playerDeck.Remove(playerDeck[i]);
+        //     }else{
+        //         if(playerDeck[i].cardType == CardType.Spell)
+        //             playerDeck.Remove(playerDeck[i]);
+        //     }
+        // }
+        playerDeck.RemoveAll((i)=>i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell));
+        UpdateDeckPreview(currentScreen);
     }
     public void AddAll(){
-        playerDeck.Clear();
-        for (int i = 0; i < 33; i++)
-        {
-            playerDeck.Add(Inventory[i]);
+        //playerDeck.Clear();
+        if(isPetOpen){
+            //int i = 0;
+            playerDeck.AddRange(PetInventory.Where((i)=>i.cardType == CardType.Pet && !playerDeck.Contains(i)));
+            // while(playerDeck.Where(item=>item.cardType == CardType.Pet).Count() < 33)
+            // {
+            //     if(PetInventory[i].cardType == CardType.Pet){
+            //         playerDeck.Add(PetInventory[i]);
+            //     }
+            //     i++;
+            // }
+        }else{
+            for (int i = 0; i < PetInventory.Count; i++)
+            {
+                if(PetInventory[i].cardType == CardType.Spell)
+                    playerDeck.Add(PetInventory[i]);
+            }
         }
-        UpdateDeckPreview();
+        
+        UpdateDeckPreview(currentScreen);
     }
 
     public void SetDeck(){
@@ -147,9 +186,10 @@ public class DeckManager : MonoBehaviour
         //Invoke("StarGame",0.3f);
     }
 
-    public void Open(){
-        panel.Open();
-        UpdateDeckPreview();
+    public void Open(string s){
+        currentScreen = s;
+        PetPanel.Open();
+        UpdateDeckPreview(s);
     }
 
     void StarGame()
@@ -157,4 +197,5 @@ public class DeckManager : MonoBehaviour
         PhotonNetwork.LoadLevel("Game");
     }
 }
+
 

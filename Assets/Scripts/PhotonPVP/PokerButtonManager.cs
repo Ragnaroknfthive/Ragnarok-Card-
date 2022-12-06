@@ -42,8 +42,8 @@ public class PokerButtonManager : MonoBehaviour
         // Game.Get().NextTurn();
         PVPManager.manager.UpdateBatTextFold(-1);        
        
-        PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
-        PVPManager.manager.StartTimer();
+        //// PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
+        //// PVPManager.manager.StartTimer();
 
         PVPManager.manager.isfold = true;
         Game.Get().UpdateLastAction(PlayerAction.brace);
@@ -56,8 +56,9 @@ public class PokerButtonManager : MonoBehaviour
         if(PVPManager.manager.isResultScreenOn) return;
         Debug.Log("bet is attack open attack slider screen");
         DemoManager.instance._pokerButtons.SetActive(false);
-        if(Game.Get().turn < 1)
+        if(Game.Get().turn < 1) //Game.Get().turn < 1
         {
+            Debug.LogError("Es ist not okay........................");
             PVPManager.Get().AttackChoices.SetActive(true);
             PVPManager.Get().speedAttackChoices.SetActive(false);
             Game.Get().UpdateLastAction(PlayerAction.attack);
@@ -88,15 +89,26 @@ public class PokerButtonManager : MonoBehaviour
                 if(PVPManager.manager.P1HealthBar.value == PVPManager.manager.P2LastAttackValue || PVPManager.manager.P2RemainingHandHealth<=0)
                 {
                     PVPManager.manager.isAllIn = true;
+                    PVPManager.manager.IsAnyAllIn = true;
+                    PVPManager.manager.SyncAllIn(true);
                     PVPManager.manager.isFromInbetween = true;
                 }
+                
                 PVPManager.manager.DeductStamina(MathF.Round(PVPManager.manager.P2LastAttackValue / 10f,1));
                 PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
                 //PVPManager.manager.UpdateBatText(0);
-              //   PVPManager.manager.UpdateBatText(PVPManager.manager.P2LastAttackValue);  2-6 to avoid doubel value addition in Bet
+                //   PVPManager.manager.UpdateBatText(PVPManager.manager.P2LastAttackValue);  2-6 to avoid doubel value addition in Bet
                 PVPManager.manager.UpdateBatText(0);
-                PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
-                PVPManager.manager.StartTimer();
+                // if(!PVPManager.Get().isLocalPVPFirstTurn && !PVPManager.Get().isDefenceLocationSelected){
+                //     //PVPManager.Get().LocationChoices.SetActive(true);
+                //     //PVPManager.Get().LocationChoiceHeading.SetActive(true);
+                // }else{
+                    
+                // }
+                // PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
+                // PVPManager.manager.StartTimer();
+                PVPManager.manager.UpdateLocationChoices();
+                
                 PVPManager.manager.isNormalBat = true;
                 Game.Get().UpdateLastAction(PlayerAction.engage);
             }
@@ -109,15 +121,20 @@ public class PokerButtonManager : MonoBehaviour
        
         // PVPManager.Get().AttackChoices.SetActive(true);
     }
+
+
     public void Attack()
     { //Do not allow click if result is declared
         if(PVPManager.manager.isResultScreenOn) return;
         Debug.Log("bet is attack open attack slider screen");
 
+        
+
         Game.Get().UpdateLastAction(PlayerAction.attack);
         DemoManager.instance._pokerButtons.SetActive(false);
         
-            PVPManager.Get().AttackChoices.SetActive(true);
+        PVPManager.Get().AttackChoices.SetActive(true);
+        
             // if(PVPManager.Get().p1Speed > 0)
             //     PVPManager.Get().ShowSpeedAttackSlider();
             // else
@@ -153,15 +170,19 @@ public class PokerButtonManager : MonoBehaviour
         }
         else
         {
-            if(PVPManager.manager.isDefenceLocationSelected)
-            {
-                PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
-                PVPManager.manager.StartTimer();
-            }
-            else
-            {
-                PVPManager.Get().LocationChoices.SetActive(true);
-            }
+            // if(!PVPManager.manager.isDefenceLocationSelected)
+            // {
+            //     PVPManager.Get().LocationChoices.SetActive(true);
+                
+            // }
+            // else
+            // {
+            //     PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
+            //     PVPManager.manager.StartTimer();
+            // }
+
+            PVPManager.manager.UpdateLocationChoices();
+
         }
         Game.Get().UpdateLastAction(PlayerAction.defend);
         PVPManager.manager.isCheck = true;
@@ -171,6 +192,7 @@ public class PokerButtonManager : MonoBehaviour
     {
         //Do not allow click if result is declared
         if(PVPManager.manager.isResultScreenOn) return;
+        Game.Get().lastAction = PlayerAction.counterAttack;
         Game.Get().UpdateLastAction(PlayerAction.counterAttack);
         Debug.Log("Reraise is attack open attack slider screen");
         DemoManager.instance._pokerButtons.SetActive(false);
@@ -318,12 +340,14 @@ public class PokerButtonManager : MonoBehaviour
        
             
                     PVPManager.manager.isAllIn = true;
+                    PVPManager.manager.IsAnyAllIn = true;
+                    PVPManager.manager.SyncAllIn(true);
         // PVPManager.manager.UpdateBatText((int)PVPManager.manager.P1HealthBar.value); //2-6 to avoid double value
         PVPManager.manager.UpdateBatText(0);
         PVPManager.manager.UpdateRemainingHandHealth((int)PVPManager.manager.P1HealthBar.value);
                 //  PVPManager.manager.UpdateBatText(Game.Get().BetAmount);
-                PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
-        PVPManager.manager.StartTimer();
+        ////         PVPManager.manager.EndTurnBtn.gameObject.SetActive(true);
+        //// PVPManager.manager.StartTimer();
         PVPManager.manager.isNormalBat = true;
         Game.Get().UpdateLastAction(PlayerAction.engage);
            

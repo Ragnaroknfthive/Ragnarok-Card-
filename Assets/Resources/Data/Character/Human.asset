@@ -20,8 +20,11 @@ MonoBehaviour:
   agility: 100
   dexterity: 100
   defence: 100
-  ChracterSp: {fileID: 21300000, guid: a0158f430466f8743bf868b785c4b829, type: 3}
+  ChracterSp: {fileID: 21300000, guid: 4669275d468416f439d0e6902d10d1aa, type: 3}
+  ChracterOppSp: {fileID: 21300000, guid: 3dd83a76cd4f7cb48bb15a85194a2e8c, type: 3}
   type: 1
   status: 0
   weakAgainst: 3
   tileColor: {r: 1, g: 0.6588099, b: 0, a: 1}
+  SpecialAttack: {fileID: 11400000, guid: 588e4f317f5b8ee4da89970369ee3883, type: 2}
+  SpecialAttackCost: 50

@@ -9,7 +9,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
 {
     public Transform spellCardsPlayer, spellCardsOpponent,spellCardBattleObj,opponentSpellBattleObject;
     public GameObject spellCardPrefab,spellBettleCardPrefeb;
-    private GameObject tempSpellCardObj;
+    private GameObject 
+    tempSpellCardObj;
     public List<SpellCard> spellCardsDeck;
     public List<SpellCardDisplay> opponentCards=new List<SpellCardDisplay>();
     public List<SpellCardDisplay> playerCards = new List<SpellCardDisplay>();
@@ -46,8 +47,9 @@ public class SpellManager : MonoBehaviourPunCallbacks
         string[] deckStr = PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"].ToString().Split('_');
         foreach (var item in deckStr)
         {
-            spellCardsDeck.Add(GameData.Get().GetSpell(System.Convert.ToInt32(item)));
+            spellCardsDeck.Add(GameData.Get().GetPet(System.Convert.ToInt32(item)));
         }
+        Debug.LogError(spellCardsDeck.Count+ " cards added");
     }
 
     // Update is called once per frame
@@ -159,7 +161,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
 
     public void PetAttack(){
-        if(PVPManager.Get().isLocalPVPTurn && !PetAlreadyAttacked){
+        if(PVPManager.Get().IsPetTurn && !PetAlreadyAttacked){
             StartCoroutine(StartPetAttack());
             PetAlreadyAttacked = true;
         }
@@ -222,25 +224,29 @@ public class SpellManager : MonoBehaviourPunCallbacks
         
         for(int i = 0 ; i < playerBattleCards.Count ; i++)
         {
+            if(playerBattleCards[i])
             Destroy(playerBattleCards[i].gameObject);
             // playerBattleCards.RemoveAt(i);
            
         }
         for(int i = 0 ; i < playerCards.Count ; i++)
         {
-            Destroy(playerCards[i].gameObject);
+            if(playerCards[i])
+                Destroy(playerCards[i].gameObject);
             // playerCards.RemoveAt(i);
            
         }
         for(int i = 0 ; i < opponentCards.Count ; i++)
         {
-            Destroy(opponentCards[i].gameObject);
+            if(opponentCards[i])
+                Destroy(opponentCards[i].gameObject);
           //  opponentCards.RemoveAt(i);
             
         }
         for(int i = 0 ; i < opponentBattleCards.Count ; i++)
         {
-            Destroy(opponentBattleCards[i].gameObject);
+            if(opponentBattleCards[i])
+                Destroy(opponentBattleCards[i].gameObject);
            // opponentBattleCards.RemoveAt(i);
             
         }
@@ -299,6 +305,30 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.DealDamage = true;
         proj.lifetime = 2f;
         photonView.RPC("CastSpellRPC",RpcTarget.Others,i);
+    }
+
+    public void CastSpell(SpellCard card){
+        
+        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p1Image.gameObject.transform.position,Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p2Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = true;
+        proj.lifetime = 2f;
+        photonView.RPC("CastSpellWithCard",RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void CastSpellWithCard(){
+        SpellCard card = PVPManager.manager.p2Char.SpecialAttack;
+        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p2Image.gameObject.transform.position,Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p1Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = false;
+        proj.lifetime = 2f;
     }
 
     [PunRPC]

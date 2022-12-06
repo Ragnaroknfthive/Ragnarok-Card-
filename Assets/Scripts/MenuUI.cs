@@ -16,6 +16,8 @@ public class MenuUI : MonoBehaviour
     public Text MsgTxt;
     public Button PlayBtn;
 
+    public GameObject Logo, Splash;
+
     private void Awake()
     {
         mui = this;
@@ -28,8 +30,11 @@ public class MenuUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LeanTween.alphaCanvas(Logo.GetComponent<CanvasGroup>(),1f, 0.7f).setDelay(0.3f).setOnComplete(()=>{
+            LeanTween.alphaCanvas(Logo.GetComponent<CanvasGroup>(),0f,0.3f).setDelay(0.7f);
+            LeanTween.alphaCanvas(Splash.GetComponent<CanvasGroup>(),0f,0.3f).setDelay(0.7f);
+        });
         
-       
     }
 
     // Update is called once per frame

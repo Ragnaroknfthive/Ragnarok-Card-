@@ -14,7 +14,6 @@ public class AttackSelection : MonoBehaviour
     public Text ComboTxt;
 
     public static List<AttackSelection> attackSelections = new List<AttackSelection>();
-
     private void Awake()
     {
         if(!attackSelections.Contains(this))

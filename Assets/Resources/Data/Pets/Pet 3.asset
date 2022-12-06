@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d15a51f9cabe8042b4e564449f5a566, type: 3}
+  m_Name: Pet 3
+  m_EditorClassIdentifier: 
+  cardId: 3
+  cardName: PET 3
+  cardType: 1
+  discription: This is a Demo Pet Card with Mana Cost 3
+  Attack: 2
+  Health: 5
+  stamina: 3
+  speed: 3
+  Manacost: 9
+  MycardSprite: {fileID: 21300000, guid: 20ebebd26af55c9409bcd2b721623162, type: 3}
+  OppocardSprite: {fileID: 21300000, guid: 05d63863915fb8b4faf4d95961dfa5b3, type: 3}
+  SpellProjectilePref: {fileID: 5719966673499620764, guid: 147892a4ac114f144b9bc2f7b8b083a8,
+    type: 3}

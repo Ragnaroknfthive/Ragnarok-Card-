@@ -287,15 +287,16 @@ public class Game : MonoBehaviour
             case PieceType.King:
                 return "Fire";
             case PieceType.Queen:
-                return "Water";
+                return "Ether";
             case PieceType.Rook:
-            case PieceType.Bishop:
                 return "Earth";
+            case PieceType.Bishop:
+                return "Water";
             case PieceType.Knight:
                 return "Wind";
             case PieceType.Pawn:
-                string[] elems = new string[]{"Fire","Water","Earth","Wind"};
-                return elems[Random.Range(0,elems.Length)];
+                //string[] elems = new string[]{"Fire","Water","Earth","Wind"};
+                return "Human";
             default:
                 return "Human";
         }
@@ -546,6 +547,12 @@ public class Game : MonoBehaviour
             
         }
 
+        if(!IsGameComplete)
+            photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);        
+        else{
+            StopCoroutine(PVPManager.Get().UpdateChessTurnTimer());
+            PVPManager.Get().ChessTurnTimerText.gameObject.SetActive(false);
+        }
        //Debug.Log(Chessman.GetPiecesOfPlayer(PlayerType.White).Count+" - "+Chessman.GetPiecesOfPlayer(PlayerType.Black).Count);
     //    if(!IsGameComplete)
     //         NextTurn();
@@ -761,6 +768,7 @@ public class Game : MonoBehaviour
     }
     public void UpdateLastAction(PlayerAction action)
     {
+        PVPManager.Get().LastActionUpdated = true;
         photonView.RPC("UpdateLastAction_RPC",RpcTarget.All,(byte)action);
     }
     [PunRPC]

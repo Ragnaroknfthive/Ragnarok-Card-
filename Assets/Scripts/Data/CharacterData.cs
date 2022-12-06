@@ -6,7 +6,8 @@ public enum CharacterType{
     Fire,
     Water,
     Wind,
-    Earth
+    Earth,
+    Ether
 }
 
 public enum CharacterStatus{
@@ -27,9 +28,13 @@ public class CharacterData : ScriptableObject
     public int dexterity;
     public int defence;
     public Sprite ChracterSp;
+    public Sprite ChracterOppSp;
     public CharacterType type;
     public CharacterStatus status;
 
     public CharacterType weakAgainst;
     public Color tileColor;    
+
+    public SpellCard SpecialAttack;
+    public int SpecialAttackCost;
 }

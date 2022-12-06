@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c8e70b350e638944a83f6c1c6d6e123, type: 3}
+  m_Name: EtherGod
+  m_EditorClassIdentifier: 
+  id: Ether
+  level: 1
+  health: 100
+  strength: 100
+  stamina: 10
+  agility: 100
+  dexterity: 100
+  defence: 100
+  ChracterSp: {fileID: 21300000, guid: d82e847b1f7dc50469ed6f37378d5889, type: 3}
+  ChracterOppSp: {fileID: 21300000, guid: a35216998bccef143b252a55927b3108, type: 3}
+  type: 4
+  status: 1
+  weakAgainst: 2
+  tileColor: {r: 1, g: 0, b: 0.91280556, a: 1}
+  SpecialAttack: {fileID: 11400000, guid: 588e4f317f5b8ee4da89970369ee3883, type: 2}
+  SpecialAttackCost: 50

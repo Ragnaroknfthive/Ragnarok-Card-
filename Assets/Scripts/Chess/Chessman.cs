@@ -56,6 +56,8 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         health;
         public int stamina;
         public float speed;
+
+        
     }
     public CharacterRuntimeData pData;
 
@@ -112,7 +114,6 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
     public void OnPhotonInstantiate(PhotonMessageInfo info){
 
         Debug.Log("OnPhotonInstantiate");
-
         object[] data = info.photonView.InstantiationData;
         transform.SetParent(Game.Get().Board.transform);
         name = data[0].ToString();

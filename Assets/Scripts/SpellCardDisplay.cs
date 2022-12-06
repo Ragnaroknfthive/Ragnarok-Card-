@@ -53,7 +53,10 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         UpdateText(attackTxt,card.Attack.ToString());
         UpdateText(healthTxt,card.Health.ToString());
         UpdateText(DescriptionTxt,card.discription.ToString());
-        UpdateImage(cardImage,card.cardSprite);
+        if(cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)
+            UpdateImage(cardImage,card.MycardSprite);
+        else if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)
+            UpdateImage(cardImage,card.OppocardSprite);
     }
     void UpdateText(TMPro.TextMeshProUGUI txt,string val) 
     {
@@ -69,7 +72,8 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
             return;
         if(!PVPManager.Get().isLocalPVPTurn)
             return;
-        if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition== SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)){
+        
+        if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)){
             MainBGOutline.enabled=false;
             LeanTween.scale(this.gameObject,Vector3.one * 0.7f,0.25f);//.setOnComplete(ChangeParentHome);
             SpellManager.instance.MouseOverOpponentCard(card.cardId,false);
@@ -117,21 +121,25 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         
     }
     public void  AddCardToDeck(){
-        if(DeckManager.instance.playerDeck.Count == 33)
-            return;
+        if(DeckManager.instance.isPetOpen){
+            if(DeckManager.instance.playerDeck.Count == 33)
+                return;
+        }
 
         RootObj.LeanScale(Vector3.zero,0.3f).setOnComplete(()=>{
             DeckManager.instance.AddCard(card);
             Destroy(gameObject);
         });
-        
     }
 
     void CastSpell(){
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        //if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
         if(!PVPManager.Get().isLocalPVPTurn) return;
 
         if(card.Manacost > PVPManager.Get().MyManabarVal)
+            return;
+        
+        if(PVPManager.manager.P2RemainingHandHealth <= 0)
             return;
         
         PVPManager.Get().DeductMana(card.Manacost);
@@ -175,6 +183,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(SpellManager.instance.spellCardsDeck.Find(x => x.cardId == card.cardId),Bg.transform.position,this.gameObject.transform,0);
         tempObj.GetComponent<BattleCardDisplay>().cardPosition = SpellCardPosition.perBattleOpponent;
         tempObj.GetComponent<BattleCardDisplay>().id = battleId;
+        
         if(PhotonNetwork.IsMasterClient==false)
         LeanTween.rotate(tempObj,new Vector3(0,0,-180),0);
         SpellManager.instance.opponentBattleCards.Add(tempObj.GetComponent<BattleCardDisplay>());

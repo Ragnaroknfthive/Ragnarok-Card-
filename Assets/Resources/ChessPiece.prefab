@@ -109,18 +109,18 @@ MonoBehaviour:
   playerType: 0
   xBoard: -1
   yBoard: -1
-  black_queen: {fileID: 21300000, guid: 61f6971803f702d48824a06c36587f8d, type: 3}
-  black_knight: {fileID: 21300000, guid: a3325417b697fd143b2507db8d439cb8, type: 3}
-  black_bishop: {fileID: 21300000, guid: a5e8487b7716d9c4686d0133c9b24175, type: 3}
-  black_king: {fileID: 21300000, guid: f88c00d283a419a4f8b20bb248934160, type: 3}
-  black_rook: {fileID: 21300000, guid: dc2a4b194181dba448186cf875241afa, type: 3}
-  black_pawn: {fileID: 21300000, guid: 794b799cc990ba241908a78bf007b5e7, type: 3}
-  white_queen: {fileID: 21300000, guid: 1e50bbf04a51d8f4bba56cd46a327564, type: 3}
-  white_knight: {fileID: 21300000, guid: e2e692556dbe8e3488bae565e16dc651, type: 3}
-  white_bishop: {fileID: 21300000, guid: 7548617a6fbab3a4983a41fd38920edb, type: 3}
-  white_king: {fileID: 21300000, guid: 2942654ab1050e943a4a57b892236139, type: 3}
-  white_rook: {fileID: 21300000, guid: 3a9518f0d03ddd8408eb8141fd067c34, type: 3}
-  white_pawn: {fileID: 21300000, guid: d604cd4a8f102c743bafd7dfc13e0e0e, type: 3}
+  black_queen: {fileID: 21300000, guid: 5d47bfeb856694f4e984132dc3c467e8, type: 3}
+  black_knight: {fileID: 21300000, guid: ecd8a21905eda9347a2a6c4389aebfcc, type: 3}
+  black_bishop: {fileID: 21300000, guid: b6fbbc599728bcf439700107a8754d79, type: 3}
+  black_king: {fileID: 21300000, guid: 95a0d2630a405f9489f1acb4eb848c93, type: 3}
+  black_rook: {fileID: 21300000, guid: 22d0acd693ddbee4ca8563e92f57bbe6, type: 3}
+  black_pawn: {fileID: 21300000, guid: d91b00750509b72459dc48f50a5fd54e, type: 3}
+  white_queen: {fileID: 21300000, guid: 46e564eaf719da945b290ce6868a139e, type: 3}
+  white_knight: {fileID: 21300000, guid: afaa04c74a5605d4183e15d5e89bd57b, type: 3}
+  white_bishop: {fileID: 21300000, guid: b357c7a83f1e47d4c947c892875d6da1, type: 3}
+  white_king: {fileID: 21300000, guid: 2327e3d09273cad4782a642727bbbf95, type: 3}
+  white_rook: {fileID: 21300000, guid: 7ef2631412488fa47b4fc8a5fcc57372, type: 3}
+  white_pawn: {fileID: 21300000, guid: ba8118ce5bf0221429f39d2cf7602cbb, type: 3}
   character: {fileID: 0}
   high: 0
   low: 0

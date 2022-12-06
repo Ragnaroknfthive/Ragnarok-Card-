@@ -48,21 +48,25 @@ public class AttackSlider : MonoBehaviour
         // _slider.maxValue = Mathf.Min(PVPManager.manager.P1HealthBar.value,PVPManager.manager.P2HealthBar.value);
         Debug.Log("P2 LATEST REMAINING HEALTH " + PVPManager.manager.P2RemainingHandHealth);
         _slider.maxValue = Mathf.Min(PVPManager.manager.P1StaVal * 10f,Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth));
-        if(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8)
-        {
-            _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount;
-        }
-        else
-        {
-            _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount; //change 20-4
-        }
+        // if(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8)
+        // {
+        //     _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount;
+        // }
+        // else
+        // {
+        //     _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount; //change 20-4
+        // }
+        Debug.LogError("Bet amt = "+ PVPManager.manager.AttackFor +" - "+ (Game.Get().lastAction == PlayerAction.counterAttack));
+        //_slider.minValue = (Game.Get().lastAction == PlayerAction.counterAttack) ? PVPManager.manager.AttackFor : 1;
         //_slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack? Game.Get().BetAmount * 2:Game.Get().BetAmount;
         difference = _slider.maxValue - _slider.minValue;
-        _slider.minValue = 1;
+        //_slider.minValue = 1;
         _slider.value = _slider.minValue;
         _attackValueText.text = _slider.minValue.ToString();
         SpeedCanceled = false;
         SpeedFixed = false;
+        ExtraSpeedAmt = 0;
+
         SpeedFill.anchorMax = Vector2.zero;
         UsedSpeedButton.SetActive(false);
         _slider.onValueChanged.AddListener(delegate {UpdateAttackValueText(); });
@@ -169,7 +173,7 @@ public class AttackSlider : MonoBehaviour
     {
         PVPManager.Get().sliderAttackbuttonClick(_slider.value, MathF.Round(((int)_slider.value - ExtraSpeedAmt) / 10f,1));
         PVPManager.Get().UpdateRemainingHandHealth((int)(_slider.value - ExtraSpeedAmt));
-        PVPManager.Get().DeductSpeed(ExtraSpeedAmt / 10f);
+        PVPManager.Get().DeductSpeed(MathF.Round(ExtraSpeedAmt / 10f,1));
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
     }
