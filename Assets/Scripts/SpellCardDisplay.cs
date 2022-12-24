@@ -39,10 +39,10 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         manaTxt.transform.parent.gameObject.SetActive(isShow);
         attackTxt.transform.parent.gameObject.SetActive(isShow);
         healthTxt.transform.parent.gameObject.SetActive(isShow);
-        DescriptionTxt.gameObject.SetActive(isShow);
+        //DescriptionTxt.gameObject.SetActive(isShow);
         cardNameTxt.gameObject.SetActive(isShow);
         cardImage.gameObject.SetActive(isShow);
-        cbg.gameObject.SetActive(isShow);
+        //cbg.gameObject.SetActive(isShow);
         
     }
     
@@ -53,10 +53,10 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
         UpdateText(attackTxt,card.Attack.ToString());
         UpdateText(healthTxt,card.Health.ToString());
         UpdateText(DescriptionTxt,card.discription.ToString());
-        if(cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)
-            UpdateImage(cardImage,card.MycardSprite);
-        else if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)
+        if(PVPManager.manager.myObj.playerType == PlayerType.Black)
             UpdateImage(cardImage,card.OppocardSprite);
+        else// if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)
+            UpdateImage(cardImage,card.MycardSprite);
     }
     void UpdateText(TMPro.TextMeshProUGUI txt,string val) 
     {

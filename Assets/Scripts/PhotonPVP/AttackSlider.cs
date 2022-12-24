@@ -29,6 +29,7 @@ public class AttackSlider : MonoBehaviour
     public TextMeshProUGUI speedTx;
     public TextMeshProUGUI UsedSpeedTx;
     public GameObject UsedSpeedButton;
+    public PlayerAction action;
 
     float difference = 0;
 
@@ -39,6 +40,7 @@ public class AttackSlider : MonoBehaviour
         {
             instance = this;
         }
+        instance.gameObject.transform.parent.gameObject.SetActive(false);
     }
      void OnEnable()
     {
@@ -171,6 +173,8 @@ public class AttackSlider : MonoBehaviour
 
     public void btn_SliderComplete()
     {
+        Game.Get().lastAction = action;
+        Game.Get().UpdateLastAction(action);
         PVPManager.Get().sliderAttackbuttonClick(_slider.value, MathF.Round(((int)_slider.value - ExtraSpeedAmt) / 10f,1));
         PVPManager.Get().UpdateRemainingHandHealth((int)(_slider.value - ExtraSpeedAmt));
         PVPManager.Get().DeductSpeed(MathF.Round(ExtraSpeedAmt / 10f,1));

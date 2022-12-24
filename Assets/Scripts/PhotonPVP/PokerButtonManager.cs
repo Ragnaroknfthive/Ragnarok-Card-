@@ -61,6 +61,13 @@ public class PokerButtonManager : MonoBehaviour
             Debug.LogError("Es ist not okay........................");
             PVPManager.Get().AttackChoices.SetActive(true);
             PVPManager.Get().speedAttackChoices.SetActive(false);
+            
+            
+            // PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
+            // PVPManager.manager.UpdateBatText(0);
+            // PVPManager.manager.UpdateLocationChoices();
+            // PVPManager.manager.isNormalBat = true;
+
             Game.Get().UpdateLastAction(PlayerAction.attack);
         }
         else
@@ -94,7 +101,7 @@ public class PokerButtonManager : MonoBehaviour
                     PVPManager.manager.isFromInbetween = true;
                 }
                 
-                PVPManager.manager.DeductStamina(MathF.Round(PVPManager.manager.P2LastAttackValue / 10f,1));
+                //PVPManager.manager.DeductStamina(MathF.Round(PVPManager.manager.P2LastAttackValue / 10f,1));
                 PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
                 //PVPManager.manager.UpdateBatText(0);
                 //   PVPManager.manager.UpdateBatText(PVPManager.manager.P2LastAttackValue);  2-6 to avoid doubel value addition in Bet
@@ -128,9 +135,9 @@ public class PokerButtonManager : MonoBehaviour
         if(PVPManager.manager.isResultScreenOn) return;
         Debug.Log("bet is attack open attack slider screen");
 
-        
+        AttackSlider.instance.action = PlayerAction.attack;
 
-        Game.Get().UpdateLastAction(PlayerAction.attack);
+        
         DemoManager.instance._pokerButtons.SetActive(false);
         
         PVPManager.Get().AttackChoices.SetActive(true);
@@ -192,8 +199,7 @@ public class PokerButtonManager : MonoBehaviour
     {
         //Do not allow click if result is declared
         if(PVPManager.manager.isResultScreenOn) return;
-        Game.Get().lastAction = PlayerAction.counterAttack;
-        Game.Get().UpdateLastAction(PlayerAction.counterAttack);
+        AttackSlider.instance.action = PlayerAction.counterAttack;
         Debug.Log("Reraise is attack open attack slider screen");
         DemoManager.instance._pokerButtons.SetActive(false);
         if(Game.Get().turn <= 1)
@@ -220,6 +226,7 @@ public class PokerButtonManager : MonoBehaviour
         bool isOver = false;
         
         PVPManager.manager.BetTextObj.text = "Brace Call";
+        PVPManager.manager.StopTimer();
         if(PhotonNetwork.LocalPlayer.NickName==_player.NickName)
         {
             PVPManager.manager.P2HealthBar.value = PVPManager.manager.P2StartHealth;// PVPManager.manager.P2LastAttackValue;
@@ -330,6 +337,7 @@ public class PokerButtonManager : MonoBehaviour
     }
     public void FoldAction()
     {
+
         _pv.RPC("RPC_foldbuttonEffect",RpcTarget.All,PhotonNetwork.LocalPlayer,Game.Get().localBetAmount);
     }
     public void AllIn()

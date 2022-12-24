@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
@@ -204,6 +204,93 @@ public class PVPManager : MonoBehaviour
         }
     }
 
+     public void StartChessTimer() 
+    {
+        endChessTurn = false;
+        ChessTurnTimer = OriginalChessTimerValue;
+        ChessTimer = OriginalChessTimerValue;
+
+        //Debug.LogError("Chess Timer STARTED FROM HERE");
+        // if(!startChesstimer)
+        // {
+            TimerObject.SetActive(true);
+            //StartCoroutine(UpdateChessTurnTimer());
+            startChesstimer = true;
+        ///}
+    }
+    bool timerStarted = false;
+    public IEnumerator UpdateChessTurnTimer()
+    {
+        timerStarted = true;
+        //Debug.LogError("TICK");
+        ChessTurnTimerText.text = 
+            
+        ChessTurnTimer.ToString();
+
+        //while(EndTurnTimer > 0) 
+        //{
+       
+        
+
+        while(ChessTurnTimer > 0){
+            yield return new WaitForSeconds(1);
+            ChessTurnTimer -= 1;
+            if(ChessTurnTimer < 0)
+            {
+                ChessTurnTimer = 0;
+            }
+            ChessTurnTimerText.text = ChessTurnTimer.ToString();
+            //}
+            if(ChessTurnTimer <= 0)
+            {
+                if(!endChessTurn)
+                {
+                    if(Game.Get().ChessCanvas.activeSelf) 
+                    {
+                        Game.Get().NextTurn();
+                    }
+                    //StopCoroutine(UpdateChessTurnTimer());
+                    ChessTurnTimer = 30;
+                    timerStarted = false;
+                    yield break;
+                }
+            }
+        }
+        // if(ChessTurnTimer < 0)
+        // {
+        //     ChessTurnTimer = 0;
+        // }
+        // ChessTurnTimerText.text = ChessTurnTimer.ToString();
+        // //}
+        // if(ChessTurnTimer <= 0)
+        // {
+        //     if(!endChessTurn)
+        //     {
+        //         if(Game.Get().ChessCanvas.activeSelf) 
+        //         {
+        //             Game.Get().NextTurn();
+        //         }
+        //         StopCoroutine(UpdateChessTurnTimer());
+        //         ChessTurnTimer = 30;
+        //         timerStarted = false;
+        //     }
+        // }
+        // else
+        // {
+        //     if(!endChessTurn)
+        //     {
+        //         StartCoroutine(UpdateChessTurnTimer());
+        //     }
+        // }
+
+
+    }
+
+    public float timer;
+    bool starttimer;
+
+    public float ChessTimer;
+    bool startChesstimer;
 
     private void Update()
     {
@@ -220,7 +307,134 @@ public class PVPManager : MonoBehaviour
            // speedAttackChoices.SetActive(false);
             //speedAttackButton.SetActive(false);
         }
+
+        if(starttimer){
+            timer -= Time.unscaledDeltaTime;
+            if(timer < 0)
+            {
+                timer = 0;
+            }
+            EndTurnTimerText.text = Mathf.RoundToInt(timer).ToString();
+            if(timer <= 0f){
+                if(!endTurn)
+                {
+                    OnClickEndTurn();
+                    
+                    EndTurnTimer = 30;
+                    timer = 30f;
+                    starttimer = false;
+                    endTurnTimeStarted = false;
+                    
+                }
+            }
+        }
+
+        if(startChesstimer){
+            timerStarted = true;
+            ChessTimer -= Time.unscaledDeltaTime;
+            if(ChessTimer < 0){
+                ChessTimer = 0;
+            }
+            ChessTurnTimerText.text = Mathf.RoundToInt(ChessTimer).ToString();
+            
+            if(ChessTimer <= 0){
+                if(!endChessTurn)
+                {
+                    if(Game.Get().ChessCanvas.activeSelf) 
+                    {
+                        Game.Get().NextTurn();
+                    }
+                    //StopCoroutine(UpdateChessTurnTimer());
+                    ChessTurnTimer = 30;
+                    ChessTimer = 30;
+                    endChessTurn = true;
+                    startChesstimer = false;
+                    timerStarted = false;
+                }
+            }
+
+        }
     }
+     public IEnumerator UpdateEndTurnTimer() 
+    {
+        
+        //Debug.LogError("TICK");
+        // EndTurnTimerText.text = EndTurnTimer.ToString();
+
+        // //while(EndTurnTimer > 0) 
+        // //{
+        //     yield return new WaitForSeconds(1);
+        //     EndTurnTimer -= 1;
+        //     if(EndTurnTimer < 0)
+        //     {
+        //         EndTurnTimer = 0;
+        //     }
+        // EndTurnTimerText.text = EndTurnTimer.ToString();
+        // //}
+        // if(EndTurnTimer <= 0)
+        // {
+        //     if(!endTurn)
+        //     {
+        //         OnClickEndTurn();
+        //         StopCoroutine(UpdateEndTurnTimer());
+        //         EndTurnTimer = 30;
+        //     }
+        // }
+        // else 
+        // {
+        //     if(!endTurn)
+        //     { StartCoroutine(UpdateEndTurnTimer()); }
+        // }
+
+        endTurnTimeStarted = true;
+        EndTurnTimer = 30;
+        EndTurnTimerText.text = EndTurnTimer.ToString();
+
+        while(EndTurnTimer > 0){
+            yield return new WaitForSecondsRealtime(1f);
+            EndTurnTimer -= 1;
+
+
+            
+            EndTurnTimerText.text = EndTurnTimer.ToString();
+            //}
+            if(EndTurnTimer <= 0)
+            {
+                if(!endTurn)
+                {
+                    OnClickEndTurn();
+                    // if(Game.Get().ChessCanvas.activeSelf) 
+                    // {
+                    //     Game.Get().NextTurn();
+                    // }
+                    //StopCoroutine(UpdateChessTurnTimer());
+                    
+                    EndTurnTimer = 30;
+                    endTurnTimeStarted = false;
+                    yield break;
+                }
+            }
+        }
+
+        
+        
+    }
+
+    public void StartTimer() 
+    {
+        if(endTurnTimeStarted)
+            return;
+        endTurn = false;
+        EndTurnTimer = OriginalTimerVal;
+        endTurnTimeStarted = true;
+        timer = 30f;
+        starttimer = true;
+        // StopCoroutine(UpdateEndTurnTimer());
+        // //Debug.LogError("Timer STARTED FROM HERE");
+        // StartCoroutine(UpdateEndTurnTimer());
+
+    }
+
     public void ChessMoveConfirmed() 
     {
         if(selectedMove != null) 
@@ -443,117 +657,10 @@ public class PVPManager : MonoBehaviour
          selectedMove = null;
         moveChoiceConfirmation.gameObject.SetActive(false);
     }
-    public IEnumerator UpdateEndTurnTimer() 
-    {
-        
-        //Debug.LogError("TICK");
-        EndTurnTimerText.text = EndTurnTimer.ToString();
 
-        //while(EndTurnTimer > 0) 
-        //{
-            yield return new WaitForSeconds(1);
-            EndTurnTimer -= 1;
-            if(EndTurnTimer < 0)
-            {
-                EndTurnTimer = 0;
-            }
-        EndTurnTimerText.text = EndTurnTimer.ToString();
-        //}
-        if(EndTurnTimer <= 0)
-        {
-            if(!endTurn)
-            {
-                OnClickEndTurn();
-                StopCoroutine(UpdateEndTurnTimer());
-                EndTurnTimer = 30;
-            }
-        }
-        else 
-        {
-            if(!endTurn)
-            { StartCoroutine(UpdateEndTurnTimer()); }
-        }
-        
-        
-    }
-    public void StartChessTimer() 
-    {
-        endChessTurn = false;
-        ChessTurnTimer = OriginalChessTimerValue;
-        //Debug.LogError("Chess Timer STARTED FROM HERE");
-        if(!timerStarted)
-        {
-            TimerObject.SetActive(true);
-            StartCoroutine(UpdateChessTurnTimer());
-        }
-    }
-    bool timerStarted = false;
-    public IEnumerator UpdateChessTurnTimer()
-    {
-        timerStarted = true;
-        //Debug.LogError("TICK");
-        ChessTurnTimerText.text = 
-            
-        ChessTurnTimer.ToString();
-
-        //while(EndTurnTimer > 0) 
-        //{
-       
-        
-
-        while(ChessTurnTimer > 0){
-            yield return new WaitForSeconds(1);
-            ChessTurnTimer -= 1;
-            if(ChessTurnTimer < 0)
-            {
-                ChessTurnTimer = 0;
-            }
-            ChessTurnTimerText.text = ChessTurnTimer.ToString();
-            //}
-            if(ChessTurnTimer <= 0)
-            {
-                if(!endChessTurn)
-                {
-                    if(Game.Get().ChessCanvas.activeSelf) 
-                    {
-                        Game.Get().NextTurn();
-                    }
-                    //StopCoroutine(UpdateChessTurnTimer());
-                    ChessTurnTimer = 30;
-                    timerStarted = false;
-                    yield break;
-                }
-            }
-        }
-        // if(ChessTurnTimer < 0)
-        // {
-        //     ChessTurnTimer = 0;
-        // }
-        // ChessTurnTimerText.text = ChessTurnTimer.ToString();
-        // //}
-        // if(ChessTurnTimer <= 0)
-        // {
-        //     if(!endChessTurn)
-        //     {
-        //         if(Game.Get().ChessCanvas.activeSelf) 
-        //         {
-        //             Game.Get().NextTurn();
-        //         }
-        //         StopCoroutine(UpdateChessTurnTimer());
-        //         ChessTurnTimer = 30;
-        //         timerStarted = false;
-        //     }
-        // }
-        // else
-        // {
-        //     if(!endChessTurn)
-        //     {
-        //         StartCoroutine(UpdateChessTurnTimer());
-        //     }
-        // }
-
-
-    }
+    bool endTurnTimeStarted = false;
+   
+   
     public void UpdateHMTxt()
     {
        
@@ -713,6 +820,7 @@ public class PVPManager : MonoBehaviour
     }
     public void sliderAttackbuttonClick(float sliderAttack, float StaminaConsumed)
     {
+        Game.Get().UpdateLastAction(PlayerAction.attack);
         //LocationChoiceHeading.SetActive(false);
         if (AttackSlider.instance._sliderAttack == SliderAttack.HeavyAttack)
         {
@@ -877,6 +985,8 @@ public class PVPManager : MonoBehaviour
         //Debug.LogError("***LAST ACTION" + Game.Get().lastAction);
         LocationChoiceHeading.SetActive(false);
         LocationChoices.SetActive(false);
+        AttackChoices.SetActive(false);
+        choiceConfPopup.SetActive(false);
         if(PhotonNetwork.LocalPlayer.NickName==_player.NickName)//(Game.Get().IsDefender==false)// != Game.Get().GetCurrentPlayer())
         {
             if(isCheck)
@@ -1259,6 +1369,14 @@ public class PVPManager : MonoBehaviour
                   //  Debug.LogError("MY HIGH CARD VAL " + Game.Get().MyHighCardValue);
                     photonView.RPC("RPC_SetOthersPlayerStrength",RpcTarget.Others,myHand.strength,myHand.printResult(),Game.Get().MyHighCardValue,Game.Get().MySecondHighCardValue,Game.Get().MyHighCardList.ToArray());
                     PhotonNetwork.SendAllOutgoingCommands();
+                    if(!isAttackLocationSelected && IsAttacker){
+                        tempChoiceNo = 0;
+                        ConfirmChoice();
+                    }
+                    if(!isDefenceLocationSelected && !IsAttacker){
+                        tempChoiceNo = 1;
+                        ConfirmChoice();
+                    }
                     Invoke("DisplayResult",1f);
                 }
             }
@@ -2005,6 +2123,8 @@ public class PVPManager : MonoBehaviour
         PokerButtonManager.instance.bet_attack.interactable = true;
         PokerButtonManager.instance.Reraise_CouterAttack.interactable = true;
         PokerButtonManager.instance.bet_attack.interactable = true;
+        IsPetTurn = false;
+        SpellManager.PetAlreadyAttacked = false;
         //
         RemoveOpponentCards();
         RemovePlayerCards();
@@ -2017,7 +2137,7 @@ public class PVPManager : MonoBehaviour
         manager.resultText.text = "";
         Game.Get().localBetAmount = 0;
         isLocationChoose = false;
-        AttackChoices.GetComponentInChildren<AttackSlider>()._slider.value = 0;
+        //AttackChoices.GetComponentInChildren<AttackSlider>()._slider.value = 0;
         attackSlider._slider.value = 0;
         P2LastAttackValue = 0;
         //Removed Old Board Cards
@@ -2207,10 +2327,10 @@ public class PVPManager : MonoBehaviour
     }
     public void ConfirmChoice() 
     {
-        if (tempChoiceNo != -1)
-        {
+        
             int c = -1;
-            c = tempChoiceNo;
+            if(tempChoiceNo != -1)
+                c = tempChoiceNo;
             
             if ((!isAttackLocationSelected || !isDefenceLocationSelected)  && Game.Get().turn > 0)
             {
@@ -2326,7 +2446,7 @@ public class PVPManager : MonoBehaviour
                 }
             }
             choiceConfPopup.SetActive(false);
-        }
+        
 
         AttackChoices.SetActive(false);
         //// StartTimer();
@@ -2608,13 +2728,16 @@ public class PVPManager : MonoBehaviour
     public bool isCheck = false;
     public bool isReraiseAfterOnce = false;
     public bool isLocationChoose = false;
-    public void StartTimer() 
-    {
-        endTurn = false;
-        EndTurnTimer = OriginalTimerVal;
-        //Debug.LogError("Timer STARTED FROM HERE");
-        StartCoroutine(UpdateEndTurnTimer());
-    }
+    // public void StartTimer() 
+    // {
+    //     if(endTurnTimeStarted)
+    //         return;
+    //     endTurn = false;
+    //     EndTurnTimer = OriginalTimerVal;
+    //     StopCoroutine(UpdateEndTurnTimer());
+    //     //Debug.LogError("Timer STARTED FROM HERE");
+    //     StartCoroutine(UpdateEndTurnTimer());
+    // }
     bool endTurn = false;
     public bool endChessTurn=false;
 
@@ -2622,15 +2745,25 @@ public class PVPManager : MonoBehaviour
     public void OnClickEndTurn()
     {
         if(!LastActionUpdated){
-            if(Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1)){
+            if(Game.Get().turn < 1){
+                PokerButtonManager.instance.Fold();
+                isfold = true;
+            }
+            else if(Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1)){
                 Debug.LogError("Es ist okay....");
                 PokerButtonManager.instance.Bet();
             }else{
                 PokerButtonManager.instance.Check();
             }
+            // AttackChoices.SetActive(false);
+            // LocationChoices.SetActive(false);
+            // attackSlider.gameObject.SetActive(false);
+            // choiceConfPopup.SetActive(false);
         }
 
         endTurn = true;
+        endTurnTimeStarted = false;
+        EndTurnTimer = 30;
         StopCoroutine(UpdateEndTurnTimer());
         LocationChoices.SetActive(false);
         if(Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
@@ -2688,6 +2821,7 @@ public class PVPManager : MonoBehaviour
             {
                 //Debug.LogError("FOLD ");
                 isfold = false;
+                
                 PokerButtonManager.instance.FoldAction();
             }
             else if(isNormalBat)
@@ -2733,6 +2867,28 @@ public class PVPManager : MonoBehaviour
             
             isAttackViaSpeedPoints = false; 
         }
+
+        if(Game.Get().turn <= 1){
+            if(isAttackViaSpeedPoints) 
+            {
+
+                photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)SpeedAttackSlider.instance._slider.value);
+                UpdateBatAmountLocal((int)SpeedAttackSlider.instance._slider.value);
+                photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)SpeedAttackSlider.instance._slider.value);
+                //  UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+                PhotonNetwork.SendAllOutgoingCommands();
+            }
+            else
+            {
+
+                photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
+                UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
+                photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
+                //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+                PhotonNetwork.SendAllOutgoingCommands();
+            }
+        }
+        
         //speedAttackButton.SetActive(false);
         SpecialAttackButton.SetActive(false);
         if(Game.Get().lastAction != PlayerAction.brace)
@@ -2740,7 +2896,10 @@ public class PVPManager : MonoBehaviour
         //p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
 
         LastActionUpdated = false;
+        SpellManager.PetAlreadyAttacked = false;
     }
+
+
     [PunRPC]
     public void UpdateSpeedPoints(float points) 
     {
@@ -3036,6 +3195,11 @@ public class PVPManager : MonoBehaviour
             //photonView.RPC("SyncPlayerChoice",RpcTarget.All,(int)playerChoice.attackLoc,(int)playerChoice.attack,(int)playerChoice.defendLoc,extraChoices,data,counterAttackRandomForBothPlayers,criticalhits);
         }
         #endregion
+    }
+
+    public void StopTimer(){
+        StopCoroutine("UpdateEndTurnTimer");
+        EndTurnBtn.gameObject.SetActive(false);
     }
 
     public void SyncAllIn(bool b){
@@ -3384,7 +3548,7 @@ public class PVPManager : MonoBehaviour
         if (PhotonNetwork.LocalPlayer!= Game.Get()._currnetTurnPlayer)
         {
           
-
+            waitPanel.SetActive(true);
             Debug.Log("=========================================== set mode panel ===========================================");
 
             DemoManager.instance._pokerButtons.SetActive(false);
@@ -3398,7 +3562,8 @@ public class PVPManager : MonoBehaviour
         {
 
             Debug.Log("=========================================== set mode panel ===========================================");
-
+            StartTimer();
+            EndTurnBtn.gameObject.SetActive(true);
             DemoManager.instance._pokerButtons.SetActive(true);
             if(P1RageBar.value > 50)
                     SpecialAttackButton.SetActive(true);
@@ -4197,7 +4362,8 @@ public class PVPManager : MonoBehaviour
     }
 
 
-    Chessman myObj = null, opponentObj = null;
+    public Chessman myObj = null, opponentObj = null;
+    CharacterData myChar = null, opponentChar = null;
 
 
     public static PVPManager Get(){
@@ -4355,17 +4521,18 @@ public class PVPManager : MonoBehaviour
 
        // UpdateSpeed();
 
-        if(!PhotonNetwork.LocalPlayer.IsMasterClient == false)
-        {
-            p2Image.sprite = p1Char.ChracterOppSp;
-            p1Image.sprite = p2Char.ChracterSp;
+       myChar = myObj.character;
+       opponentChar = opponentObj.character;
 
+        if(myObj.playerType == PlayerType.Black)
+        {
+            p1Image.sprite = myChar.ChracterOppSp;
+            p2Image.sprite = opponentChar.ChracterSp;
         }
         else
         {
-
-            p1Image.sprite = p1Char.ChracterSp;
-            p2Image.sprite = p2Char.ChracterOppSp;
+            p1Image.sprite = myChar.ChracterSp;
+            p2Image.sprite = opponentChar.ChracterOppSp;
         }
 
         if(isLocalPVPTurn){
@@ -4390,8 +4557,8 @@ public class PVPManager : MonoBehaviour
         
         AddMana();
         
-        StartTimer();
-        EndTurnBtn.gameObject.SetActive(true);
+        // StartTimer();
+        // EndTurnBtn.gameObject.SetActive(true);
 
         //Debug.Log($"<color=yellow> {name} health {p1Char.health} </color>  high {p1Obj.high}" +
         //$"low {p1Obj.low} left {p1Obj.left} right {p1Obj.right} medle {p1Obj.medle}");

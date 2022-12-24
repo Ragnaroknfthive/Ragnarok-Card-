@@ -60,8 +60,9 @@ public class PhotonCallback : MonoBehaviourPunCallbacks
     public void QuickMatch()
     {
         if(DeckManager.instance.playerDeck.Count < 33){
-            MenuUI.Get().ShowMsg("Please complete your deck...",true,true);
-            return;
+            DeckManager.instance.AddAll();
+            // MenuUI.Get().ShowMsg("Please complete your deck...",true,true);
+            // return;
         }
         if(PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady){
             PhotonNetwork.JoinRandomRoom();

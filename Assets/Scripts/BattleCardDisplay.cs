@@ -57,10 +57,19 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         UpdateText(healthTxt,card.Health.ToString());
         UpdateText(DescriptionTxt,card.discription.ToString());
 
-        if(cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)
-            UpdateImage(cardImage,card.MycardSprite);
-        else if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)
-            UpdateImage(cardImage,card.OppocardSprite);
+        if(cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer){
+            if(PVPManager.manager.myObj.playerType == PlayerType.Black)
+                UpdateImage(cardImage,card.OppocardSprite);
+            else
+                UpdateImage(cardImage,card.MycardSprite);
+        }
+        else if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent){
+            if(PVPManager.manager.opponentObj.playerType == PlayerType.Black)
+                UpdateImage(cardImage,card.OppocardSprite);
+            else
+                UpdateImage(cardImage,card.MycardSprite);
+        }
+            
     }
     void UpdateText(TMPro.TextMeshProUGUI txt,string val)
     {

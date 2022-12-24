@@ -109,18 +109,18 @@ MonoBehaviour:
   playerType: 0
   xBoard: -1
   yBoard: -1
-  black_queen: {fileID: 21300000, guid: 5d47bfeb856694f4e984132dc3c467e8, type: 3}
-  black_knight: {fileID: 21300000, guid: ecd8a21905eda9347a2a6c4389aebfcc, type: 3}
-  black_bishop: {fileID: 21300000, guid: b6fbbc599728bcf439700107a8754d79, type: 3}
-  black_king: {fileID: 21300000, guid: 95a0d2630a405f9489f1acb4eb848c93, type: 3}
-  black_rook: {fileID: 21300000, guid: 22d0acd693ddbee4ca8563e92f57bbe6, type: 3}
-  black_pawn: {fileID: 21300000, guid: d91b00750509b72459dc48f50a5fd54e, type: 3}
-  white_queen: {fileID: 21300000, guid: 46e564eaf719da945b290ce6868a139e, type: 3}
-  white_knight: {fileID: 21300000, guid: afaa04c74a5605d4183e15d5e89bd57b, type: 3}
-  white_bishop: {fileID: 21300000, guid: b357c7a83f1e47d4c947c892875d6da1, type: 3}
-  white_king: {fileID: 21300000, guid: 2327e3d09273cad4782a642727bbbf95, type: 3}
-  white_rook: {fileID: 21300000, guid: 7ef2631412488fa47b4fc8a5fcc57372, type: 3}
-  white_pawn: {fileID: 21300000, guid: ba8118ce5bf0221429f39d2cf7602cbb, type: 3}
+  black_queen: {fileID: 21300000, guid: ee7384137e324fa459a73a71472f4ddf, type: 3}
+  black_knight: {fileID: 21300000, guid: d238f44a7c097814fa5dc6004a451c79, type: 3}
+  black_bishop: {fileID: 21300000, guid: 7d46d4f095f7bac44acf92b6ffa2bf9c, type: 3}
+  black_king: {fileID: 21300000, guid: e53eee37ef1b7a045a78f93b3386336e, type: 3}
+  black_rook: {fileID: 21300000, guid: 17a745f1855cb6344ae6cf7072d01a87, type: 3}
+  black_pawn: {fileID: 21300000, guid: 98b0b625b1561714588f75d6aee43cb2, type: 3}
+  white_queen: {fileID: 21300000, guid: 766511cd03c0f3446a6ca7a7a5ff1622, type: 3}
+  white_knight: {fileID: 21300000, guid: 1dcd0263d23d58043b6c9111b873a44e, type: 3}
+  white_bishop: {fileID: 21300000, guid: 841c9bde994e5f34f905ae62061a9f21, type: 3}
+  white_king: {fileID: 21300000, guid: 01a1aa394f1012e4e8bb32de1368ac1a, type: 3}
+  white_rook: {fileID: 21300000, guid: 1b17f7ed5dd01ec409e809f4cafefdc3, type: 3}
+  white_pawn: {fileID: 21300000, guid: 3f255698932dc3d45b63de6c2408eeb5, type: 3}
   character: {fileID: 0}
   high: 0
   low: 0
