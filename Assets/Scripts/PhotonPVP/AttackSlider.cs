@@ -173,11 +173,16 @@ public class AttackSlider : MonoBehaviour
 
     public void btn_SliderComplete()
     {
-        Game.Get().lastAction = action;
-        Game.Get().UpdateLastAction(action);
-        PVPManager.Get().sliderAttackbuttonClick(_slider.value, MathF.Round(((int)_slider.value - ExtraSpeedAmt) / 10f,1));
-        PVPManager.Get().UpdateRemainingHandHealth((int)(_slider.value - ExtraSpeedAmt));
-        PVPManager.Get().DeductSpeed(MathF.Round(ExtraSpeedAmt / 10f,1));
+        if(_slider.value > 0){
+            Game.Get().lastAction = action;
+            Game.Get().UpdateLastAction(action);
+            PVPManager.Get().sliderAttackbuttonClick(_slider.value, MathF.Round(((int)_slider.value - ExtraSpeedAmt) / 10f,1));
+            PVPManager.Get().UpdateRemainingHandHealth((int)(_slider.value - ExtraSpeedAmt));
+            PVPManager.Get().DeductSpeed(MathF.Round(ExtraSpeedAmt / 10f,1));
+        }else{
+            PokerButtonManager.instance.Check();
+        }
+        
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
     }

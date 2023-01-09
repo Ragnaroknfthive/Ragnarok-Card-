@@ -43,13 +43,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     {
         photonView = GetComponent<PhotonView>();
 
-        spellCardsDeck = new List<SpellCard>();
-        string[] deckStr = PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"].ToString().Split('_');
-        foreach (var item in deckStr)
-        {
-            spellCardsDeck.Add(GameData.Get().GetPet(System.Convert.ToInt32(item)));
-        }
-        Debug.LogError(spellCardsDeck.Count+ " cards added");
+        
     }
 
     // Update is called once per frame
@@ -69,79 +63,104 @@ public class SpellManager : MonoBehaviourPunCallbacks
             int max_len = Mathf.Max(playerBattleCards.Count, opponentBattleCards.Count);
             //Debug.LogError(max_len);
 
-            for (int i = max_len - 1; i >= 0 ; i--)
-            {   
-                BattleCardDisplay item = null;
+            foreach (var item in playerBattleCards)
+            {
                 BattleCardDisplay oppo = null;
-                if(i < playerBattleCards.Count)
-                    item = playerBattleCards[i];
-                if(i < opponentBattleCards.Count)
-                    oppo = opponentBattleCards[i];
-
-                Debug.LogError(i.ToString()+" - "+(oppo != null).ToString() + " - "+ (item != null).ToString());
-                if(item != null){
+                while(id < opponentBattleCards.Count){
+                    oppo = opponentBattleCards[id];
                     if(oppo != null){
-                        item.Attack(oppo.id);
-                        yield return new WaitWhile(()=>IsPetAttacking);
-                        yield return new WaitForSeconds(0.5f);
-                        // if(item.card.speed > oppo.card.speed){
-                        //     item.Attack(oppo.gameObject);
-                        //     yield return new WaitWhile(()=>IsPetAttacking);
-                        //     yield return new WaitForSeconds(0.5f);
-                        // }
-                        // else{
-                        //     oppo.Attack(item.gameObject);
-                        //     yield return new WaitWhile(()=>IsPetAttacking);
-                        //     yield return new WaitForSeconds(0.5f);
-                        // }
+                        break;
                     }else{
-                        item.Attack(-1,true);
-                        yield return new WaitWhile(()=>IsPetAttacking);
-                        yield return new WaitForSeconds(0.5f);
+                        id++;
                     }
-                    // }else{
-                    //     if(i != 0){
-                    //         if(opponentBattleCards[i-1] != null){
-                    //             item.Attack(opponentBattleCards[i-1].gameObject);
-                    //             yield return new WaitWhile(()=>IsPetAttacking);
-                    //             yield return new WaitForSeconds(0.5f);
-                    //         }else{
-                    //             item.Attack(PVPManager.Get().gameObject);
-                    //             yield return new WaitWhile(()=>IsPetAttacking);
-                    //             yield return new WaitForSeconds(0.5f);
-                    //         }
-                    //     }
-                    // }
                 }
-
-                // if(oppo != null){
-                //     if(item != null){
-                //         if(oppo.card.speed > item.card.speed){
-                //             oppo.Attack(item.gameObject);
-                //             yield return new WaitWhile(()=>IsPetAttacking);
-                //             yield return new WaitForSeconds(0.5f);
-                //         }else{
-                //             item.Attack(oppo.gameObject);
-                //             yield return new WaitWhile(()=>IsPetAttacking);
-                //             yield return new WaitForSeconds(0.5f);
-                //         }
-                //     }else{
-                //         if(i!=0){
-                //             if(playerBattleCards[i-1] != null){
-                //                 oppo.Attack(playerBattleCards[i-1].gameObject);
-                //                 yield return new WaitWhile(()=>IsPetAttacking);
-                //                 yield return new WaitForSeconds(0.5f);
-                //             }else{
-                //                 oppo.Attack(PVPManager.Get().gameObject);
-                //                 yield return new WaitWhile(()=>IsPetAttacking);
-                //                 yield return new WaitForSeconds(0.5f);
-                //             }
-                //         }
-                        
-                //     }
-                // }
-
+                    
+                if(oppo != null){
+                    item.Attack(oppo.id);
+                    yield return new WaitWhile(()=>IsPetAttacking);
+                    yield return new WaitForSeconds(0.5f);
+                }else{
+                    item.Attack(-1,true);
+                    yield return new WaitWhile(()=>IsPetAttacking);
+                    yield return new WaitForSeconds(0.5f);
+                }
+                yield return new WaitWhile(()=>IsPetAttacking);
+                yield return new WaitForSeconds(0.5f);
             }
+
+            // for (int i = max_len - 1; i >= 0 ; i--)
+            // {   
+            //     BattleCardDisplay item = null;
+            //     BattleCardDisplay oppo = null;
+            //     if(i < playerBattleCards.Count)
+            //         item = playerBattleCards[i];
+            //     if(i < opponentBattleCards.Count)
+            //         oppo = opponentBattleCards[i];
+
+            //     Debug.LogError(i.ToString()+" - "+(oppo != null).ToString() + " - "+ (item != null).ToString());
+            //     if(item != null){
+            //         if(oppo != null){
+            //             item.Attack(oppo.id);
+            //             yield return new WaitWhile(()=>IsPetAttacking);
+            //             yield return new WaitForSeconds(0.5f);
+            //             // if(item.card.speed > oppo.card.speed){
+            //             //     item.Attack(oppo.gameObject);
+            //             //     yield return new WaitWhile(()=>IsPetAttacking);
+            //             //     yield return new WaitForSeconds(0.5f);
+            //             // }
+            //             // else{
+            //             //     oppo.Attack(item.gameObject);
+            //             //     yield return new WaitWhile(()=>IsPetAttacking);
+            //             //     yield return new WaitForSeconds(0.5f);
+            //             // }
+            //         }else{
+            //             item.Attack(-1,true);
+            //             yield return new WaitWhile(()=>IsPetAttacking);
+            //             yield return new WaitForSeconds(0.5f);
+            //         }
+            //         // }else{
+            //         //     if(i != 0){
+            //         //         if(opponentBattleCards[i-1] != null){
+            //         //             item.Attack(opponentBattleCards[i-1].gameObject);
+            //         //             yield return new WaitWhile(()=>IsPetAttacking);
+            //         //             yield return new WaitForSeconds(0.5f);
+            //         //         }else{
+            //         //             item.Attack(PVPManager.Get().gameObject);
+            //         //             yield return new WaitWhile(()=>IsPetAttacking);
+            //         //             yield return new WaitForSeconds(0.5f);
+            //         //         }
+            //         //     }
+            //         // }
+            //     }
+
+            //     // if(oppo != null){
+            //     //     if(item != null){
+            //     //         if(oppo.card.speed > item.card.speed){
+            //     //             oppo.Attack(item.gameObject);
+            //     //             yield return new WaitWhile(()=>IsPetAttacking);
+            //     //             yield return new WaitForSeconds(0.5f);
+            //     //         }else{
+            //     //             item.Attack(oppo.gameObject);
+            //     //             yield return new WaitWhile(()=>IsPetAttacking);
+            //     //             yield return new WaitForSeconds(0.5f);
+            //     //         }
+            //     //     }else{
+            //     //         if(i!=0){
+            //     //             if(playerBattleCards[i-1] != null){
+            //     //                 oppo.Attack(playerBattleCards[i-1].gameObject);
+            //     //                 yield return new WaitWhile(()=>IsPetAttacking);
+            //     //                 yield return new WaitForSeconds(0.5f);
+            //     //             }else{
+            //     //                 oppo.Attack(PVPManager.Get().gameObject);
+            //     //                 yield return new WaitWhile(()=>IsPetAttacking);
+            //     //                 yield return new WaitForSeconds(0.5f);
+            //     //             }
+            //     //         }
+                        
+            //     //     }
+            //     // }
+
+            // }
         }else if(playerBattleCards.Count > 0){
             for (int i = playerBattleCards.Count - 1; i >= 0 ; i--)
             {   

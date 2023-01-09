@@ -719,8 +719,8 @@ public class Game : MonoBehaviour
     public void SwitchCurrentPlayer(string player){
         
         currentPlayer = player;
-        isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
-       
+        //isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
+        isLocalPlayerTurn = PhotonNetwork.PlayerList[currentPlayer == "white" ? 0 : 1].IsLocal; 
         if (currentPlayer == "white")
         { 
             StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName, PhotonNetwork.PlayerList[0]));
@@ -729,6 +729,10 @@ public class Game : MonoBehaviour
         {
             StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
+    }
+
+    public bool isMyTurn(string player){
+        return Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn;
     }
 
     private IEnumerator COR_playerTurnNameShow(string namePlayer,Player _player)
@@ -741,10 +745,10 @@ public class Game : MonoBehaviour
         PlayerTurnScreenText.text = "";
         Debug.Log("------------------ Game Turn Change ----------------------");
         _currnetTurnPlayer = _player;
-       
+        isLocalPlayerTurn = _currnetTurnPlayer.IsLocal;
         //Info: Indicate player's turn;
-            PVPManager.Get().p1Outline.gameObject.SetActive ( _currnetTurnPlayer.IsLocal? true:false);
-            PVPManager.Get().p2Outline.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? false:true);
+        PVPManager.Get().p1Outline.gameObject.SetActive ( _currnetTurnPlayer.IsLocal? true:false);
+        PVPManager.Get().p2Outline.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? false:true);
         PVPManager.Get().chessTurnIndicator.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? true : false);
 
         if(ChessCanvas.activeSelf)  

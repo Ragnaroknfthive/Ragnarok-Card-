@@ -321,7 +321,7 @@ public class PVPManager : MonoBehaviour
                     OnClickEndTurn();
                     
                     EndTurnTimer = 30;
-                    timer = 30f;
+                    timer = 30;
                     starttimer = false;
                     endTurnTimeStarted = false;
                     
@@ -700,7 +700,7 @@ public class PVPManager : MonoBehaviour
         
        
         isLocalPVPTurn = localplayerTurn;
-        IsAttacker = isLocalPVPTurn;
+        
         player1Choice.attack = AttackType.None;
         player1Choice.attackLoc = AttackLocation.None;
         player1Choice.defendLoc = AttackLocation.None;
@@ -760,7 +760,7 @@ public class PVPManager : MonoBehaviour
             // waitPanel.SetActive(true);
         }
 
-        IsPetTurn = isLocalPVPFirstTurn;
+        //IsPetTurn = isLocalPVPFirstTurn;
 
         isattackerMaster = isLocalPVPFirstTurn && PhotonNetwork.LocalPlayer.IsMasterClient;
         if(!PhotonNetwork.LocalPlayer.IsMasterClient)
@@ -774,12 +774,11 @@ public class PVPManager : MonoBehaviour
         //
         if(PhotonNetwork.LocalPlayer.IsMasterClient)
             photonView.RPC("SetDataRPC",RpcTarget.AllBuffered,posP1,posP2,isReverse);
+
         
-        for (int i = 0; i < startNumCards; i++)
-        {
-            SpellManager.instance.DrawCard();
-            
-        }
+        
+        
+        
         
         
         //Debug.Log("<color=yellow> ==== === = set data end = === ==== </color>");
@@ -1194,6 +1193,7 @@ public class PVPManager : MonoBehaviour
             //}
             UpdateHMTxt();
            IsPetTurn = true;
+           SpellManager.PetAlreadyAttacked = false;
 
         }
         //
@@ -2032,7 +2032,7 @@ public class PVPManager : MonoBehaviour
 
     public void ResumeChessGame() 
     {
-        //StartCoroutine(CheckWinNew(true,3f));
+        StartCoroutine(CheckWinNew(1f));
     }
     public bool isResultScreenOn = false;
     public bool isReset = false;
@@ -2107,7 +2107,7 @@ public class PVPManager : MonoBehaviour
         temp.Clear();
         isDefenceLocationSelected = false;
         isAttackLocationSelected = false;
-        IsAttacker = isLocalPVPTurn;
+        IsAttacker = !isLocalPVPFirstTurn;
         playerAttackLocation = AttackLocation.None;
         playerDefenceLocation = AttackLocation.None;
         opponentDefendLocation = AttackLocation.None;
@@ -2119,11 +2119,13 @@ public class PVPManager : MonoBehaviour
         opponetHandCardColors.Clear();
         P1RemainingHandHealth = (int)P1HealthBar.value;
         P2RemainingHandHealth = (int)P2HealthBar.value;
+        P1StartHealth = P1RemainingHandHealth;
+        P2StartHealth = P2RemainingHandHealth;
         //Debug.LogError("*** COUNT "+DemoManager.instance.deck.Count);
         PokerButtonManager.instance.bet_attack.interactable = true;
         PokerButtonManager.instance.Reraise_CouterAttack.interactable = true;
         PokerButtonManager.instance.bet_attack.interactable = true;
-        IsPetTurn = false;
+        //IsPetTurn = false;
         SpellManager.PetAlreadyAttacked = false;
         //
         RemoveOpponentCards();
@@ -2891,8 +2893,8 @@ public class PVPManager : MonoBehaviour
         
         //speedAttackButton.SetActive(false);
         SpecialAttackButton.SetActive(false);
-        if(Game.Get().lastAction != PlayerAction.brace)
-            photonView.RPC("SwitchPVPTurn",RpcTarget.All);
+        //if(Game.Get().lastAction != PlayerAction.brace)
+        photonView.RPC("SwitchPVPTurn",RpcTarget.All);
         //p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
 
         LastActionUpdated = false;
@@ -3544,8 +3546,9 @@ public class PVPManager : MonoBehaviour
         ModeTxT.text = "Choose Attack Location";
 
         Debug.Log("=========================================== set mode panel "+Game.Get()._currnetTurnPlayer);
+        SpellManager.PetAlreadyAttacked = false;
 
-        if (PhotonNetwork.LocalPlayer!= Game.Get()._currnetTurnPlayer)
+        if (isLocalPVPTurn)
         {
           
             waitPanel.SetActive(true);
@@ -3557,6 +3560,7 @@ public class PVPManager : MonoBehaviour
             PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(true);
             PokerButtonManager.instance.call_Engauge.gameObject.SetActive(true);
             PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(true);
+            IsPetTurn = false;
         }
         else
         {
@@ -3573,7 +3577,9 @@ public class PVPManager : MonoBehaviour
             PokerButtonManager.instance.allIn_btn.gameObject.SetActive(false);
             PokerButtonManager.instance.call_Engauge.gameObject.SetActive(false);
             PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(false);
-          
+            IsPetTurn = true;
+            
+
         }
 
         //TODO solve here enable the defend button 
@@ -4039,13 +4045,13 @@ public class PVPManager : MonoBehaviour
             player1Win = false;
             //if(isattackerMaster)
                 //p2Obj.pData.health = (int)P2HealthBar.value;
-                p2Obj.pData.stamina = (int)P2StaBar.value;
+                p2Obj.pData.stamina = P2StaBar.value;
             // else
             //     Game.Get().GetPosition((int)p1Pos.x, (int)p1Pos.y).GetComponent<Chessman>().characterHealth = (int)P2HealthBar.value;
 
             //TODO health bar display code here
             Debug.Log($"<color=yellow>   Health Update Here  player1 {p1Obj.pData.health}  player2 {p2Obj.pData.health}  healthbar2 {P2HealthBar.value} </color>");
-            
+            p2Obj.UpdateHealth(p2Obj.pData.health);
             if (p2Obj.GetComponent<IHealthBar>() != null)
             {
                 Debug.Log("is not null");
@@ -4086,14 +4092,14 @@ public class PVPManager : MonoBehaviour
             player1Win = true;
             //if(isattackerMaster)
                 //p1Obj.pData.health = (int)P1HealthBar.value;
-                p1Obj.pData.stamina = (int)P1StaBar.value;
+                p1Obj.pData.stamina = P1StaBar.value;
             // else
             //     Game.Get().GetPosition((int)p2Pos.x, (int)p2Pos.y).GetComponent<Chessman>().characterHealth = (int)P1HealthBar.value;
 
 
             //TODO health bar display code here
             Debug.Log($"<color=yellow>   Health Update Here  player1 {p1Obj.pData.health}  player2 {p2Obj.pData.health}  healthbar2 {P2HealthBar.value} </color>");
-
+            p1Obj.UpdateHealth(p1Obj.pData.health);
             if (p1Obj.GetComponent<IHealthBar>() != null)
             {
                 Debug.Log("is not null");
@@ -4177,6 +4183,8 @@ public class PVPManager : MonoBehaviour
                 //Debug.LogError("Saving HP : 1 - "+P1HealthBar.value+" 2 - "+P2HealthBar.value);
                 myObj.pData.health = (int)P1HealthBar.value;
                 opponentObj.pData.health = (int)P2HealthBar.value;
+                myObj.pData.stamina = P1StaVal;
+                opponentObj.pData.stamina = P2StaVal;
                 photonView.RPC("Rset_BOOL_RPC", RpcTarget.All, true);
                 PhotonNetwork.SendAllOutgoingCommands();
                 // Invoke("ResetData",2f);
@@ -4217,6 +4225,8 @@ public class PVPManager : MonoBehaviour
                 //Debug.LogError("Saving HP : 1 - "+P1HealthBar.value+" 2 - "+P2HealthBar.value);
                 myObj.pData.health = (int)P1HealthBar.value;
                 opponentObj.pData.health = (int)P2HealthBar.value;
+                myObj.pData.stamina = P1StaVal;
+                opponentObj.pData.stamina = P2StaVal;
                 photonView.RPC("Rset_BOOL_RPC", RpcTarget.All, true);
                 PhotonNetwork.SendAllOutgoingCommands();
                 // Invoke("ResetData",2f);
@@ -4249,19 +4259,21 @@ public class PVPManager : MonoBehaviour
             //    Game.Get().NextTurn();
             //}
             yield return new WaitForSeconds(1f);
-            if (Game.Get()._currnetTurnPlayer == PhotonNetwork.LocalPlayer)//&& isPlayer1Winner)
-            {
-                //Debug.LogError("**Set Mode Panel from here 1");
-                SetModePanel();
-                EndTurnBtn.gameObject.SetActive(true);
-                StartTimer();
-            }
-            else //if(Game.Get()._currnetTurnPlayer == PhotonNetwork.LocalPlayer && !isPlayer1Winner)
-            {
-                // ModePanel.SetActive(false);
-                //Debug.LogError("**Set Wait Panel from here 2");
-                waitPanel.SetActive(true);
-            }
+            // if (Game.Get()._currnetTurnPlayer == PhotonNetwork.LocalPlayer)//&& isPlayer1Winner)
+            // {
+            //     //Debug.LogError("**Set Mode Panel from here 1");
+            //     SetModePanel();
+            //     EndTurnBtn.gameObject.SetActive(true);
+            //     StartTimer();
+            // }
+            // else //if(Game.Get()._currnetTurnPlayer == PhotonNetwork.LocalPlayer && !isPlayer1Winner)
+            // {
+            //     // ModePanel.SetActive(false);
+            //     //Debug.LogError("**Set Wait Panel from here 2");
+            //     waitPanel.SetActive(true);
+            // }
+
+            SetModePanel();
             //Debug.LogError("Else part");
 
         }
@@ -4372,6 +4384,7 @@ public class PVPManager : MonoBehaviour
 
     [PunRPC]
     public void SetDataRPC(Vector2 posP1, Vector2 posP2,bool isReverse){
+        
         playerChoice.ExtraAttack = new List<AttackType>();
         winTxt.gameObject.SetActive(false);
         player1.SetActive(true);
@@ -4431,24 +4444,30 @@ public class PVPManager : MonoBehaviour
             myObj = p1Obj;
             opponentObj = p2Obj;
         }
+        IsPetTurn = Game.Get().isMyTurn(myObj.player);
+        isLocalPVPFirstTurn = Game.Get().isMyTurn(myObj.player);
+        isLocalPVPTurn = !Game.Get().isMyTurn(myObj.player);
+        IsAttacker = isLocalPVPFirstTurn;
         SetChessSpriteForPVP();
 
         p1Char = p1Obj.character;
         p2Char = p2Obj.character;
 
-        P1HealthBar.maxValue = p1Char.health;
-        P2HealthBar.maxValue = p2Char.health;
+        
         if (!myObj.AlreadyPlayedPvP)
         {
             P1RemainingHandHealth = p1Char.health;
             P1HealthBar.value = p1Char.health;
             P1StartHealth = p1Char.health;
             myObj.AlreadyPlayedPvP = true;
+            
+            P1StaVal = 10;
         }
         else {
             P1RemainingHandHealth = myObj.pData.health;
             P1HealthBar.value = myObj.pData.health;
             P1StartHealth = myObj.pData.health;
+            P1StaVal = myObj.pData.stamina;
         }
 
         if (!opponentObj.AlreadyPlayedPvP)
@@ -4457,17 +4476,22 @@ public class PVPManager : MonoBehaviour
             P2HealthBar.value = p2Char.health;
             P2StartHealth = p2Char.health;
             opponentObj.AlreadyPlayedPvP = true;
+            P2StaVal = 10;
         }
         else
         {
             P2RemainingHandHealth = opponentObj.pData.health;
             P2HealthBar.value = opponentObj.pData.health;
             P2StartHealth = opponentObj.pData.health;
+            P2StaVal = opponentObj.pData.stamina;
             
         }
 
+        P1HealthBar.maxValue = p1Char.health;
+        P2HealthBar.maxValue = p2Char.health;
+
         //Debug.LogError("Set hp : 1 - " + P1HealthBar.value + " , 2 - " + P2HealthBar.value);
-        P1StaVal = P2StaVal = 10;
+        
 
         P1StaBar.maxValue = 10;
         P2StaBar.maxValue = 10;
@@ -4488,8 +4512,8 @@ public class PVPManager : MonoBehaviour
         P2RageBar.value = 0;
 
         //Debug.LogError("Got Speed : " + p1Speed + " - " + p2Speed);
-        p1Speed = myObj.pData.speed;
-        p2Speed = opponentObj.pData.speed;
+        p1Speed = 0; // myObj.pData.speed
+        p2Speed = 0; //opponentObj.pData.speed
 
 
         P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
@@ -4497,27 +4521,27 @@ public class PVPManager : MonoBehaviour
 
 
         //Debug.LogError("Loading data myObj : " + myObj.left);
-        isAttackedHigh = (int)myObj.high;
-        isAttackedLow = (int)myObj.low;
-        isAttackedOnRightSide = (int)myObj.right;
-        isAttackedOnLeftSide = (int)myObj.left;
-        isAttackedInMiddle = (int)myObj.medle;
+        isAttackedHigh = 0;
+        isAttackedLow = 0;
+        isAttackedOnRightSide =0;
+        isAttackedOnLeftSide = 0;
+        isAttackedInMiddle = 0;
 
-        isAttackedHighOpponent = (int)opponentObj.high;
-        isAttackedLowOpponent = (int)opponentObj.low;
-        isAttackedOnRightSideOpponent = (int)opponentObj.right;
-        isAttackedOnLeftSideOpponent = (int)opponentObj.left;
-        isAttackedInMiddle = (int)opponentObj.medle;
+        isAttackedHighOpponent = 0;
+        isAttackedLowOpponent = 0;
+        isAttackedOnRightSideOpponent = 0;
+        isAttackedOnLeftSideOpponent = 0;
+        isAttackedInMiddle = 0;
 
-        myExtraDamagePercentage = isAttackedHighOpponent * 0.05f;
-        my_opponentAttackMadeWeakerPerntage = Mathf.Max(isAttackedOnLeftSideOpponent, isAttackedOnRightSideOpponent) * 0.05f;
-        my_OpponetSpeedMakeSlowerPercentage = isAttackedLowOpponent * 0.05f;
-        my_opponentStaminaLessRecovertPerncetage = isAttackedInMiddleOpponent * 0.1f;
+        myExtraDamagePercentage = 0;//isAttackedHighOpponent * 0.05f
+        my_opponentAttackMadeWeakerPerntage = 0;//Mathf.Max(isAttackedOnLeftSideOpponent, isAttackedOnRightSideOpponent) * 0.05f
+        my_OpponetSpeedMakeSlowerPercentage = 0;//isAttackedLowOpponent * 0.05f
+        my_opponentStaminaLessRecovertPerncetage = 0;//isAttackedInMiddleOpponent * 0.1f
             
 
 
-        myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString()+" %"; my_opponentAttackMadeWeakerPerntageTxt.text = (my_OpponetSpeedMakeSlowerPercentage * 100).ToString() + " %"; my_opponentStaminaLessRecovertPerncetageTxt.text = (my_opponentStaminaLessRecovertPerncetage * 100).ToString() + " %";myOpponentAttackSpeedSlowTxt.text = (my_opponentAttackMadeWeakerPerntage * 100).ToString() + " %";
-        photonView.RPC("UpdateOpponentEffects_RPC",RpcTarget.Others,myExtraDamagePercentage,my_opponentAttackMadeWeakerPerntage,my_opponentStaminaLessRecovertPerncetage,my_OpponetSpeedMakeSlowerPercentage,my_OpponetSpeedMakeSlowerPercentage > 0);
+        myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString()+" %"; my_opponentAttackMadeWeakerPerntageTxt.text = (my_OpponetSpeedMakeSlowerPercentage * 100).ToString() + " %"; my_opponentStaminaLessRecovertPerncetageTxt.text = (my_opponentStaminaLessRecovertPerncetage * 100).ToString() + " %";myOpponentAttackSpeedSlowTxt.text = (my_opponentAttackMadeWeakerPerntage * 100).ToString() + " %";//
+        //photonView.RPC("UpdateOpponentEffects_RPC",RpcTarget.Others,myExtraDamagePercentage,my_opponentAttackMadeWeakerPerntage,my_opponentStaminaLessRecovertPerncetage,my_OpponetSpeedMakeSlowerPercentage,my_OpponetSpeedMakeSlowerPercentage > 0);
 
        // UpdateSpeed();
 
@@ -4539,7 +4563,7 @@ public class PVPManager : MonoBehaviour
             Debug.Log(" == set mode panel here == ");
             //Game.Get().loadingScreen.SetActive(true);
             StartCoroutine(Game.Get().SetLoadingScreenOnOff(false,1f));
-            SetModePanel();
+            
             //SpellManager.instance.RemoveOldSpellData();
            
         }else{
@@ -4550,12 +4574,26 @@ public class PVPManager : MonoBehaviour
               //  SpellManager.instance.GenerateCardsForPlayer();
             waitPanel.SetActive(true);
         }
+        SetModePanel();
        
         UpdateHMTxt();
 
         ShowWeaknessFactor();
         
         AddMana();
+
+        SpellManager.instance.spellCardsDeck = new List<SpellCard>();
+        
+        foreach (var item in myObj.cards)
+        {
+            SpellManager.instance.spellCardsDeck.Add(item);
+        }
+        Debug.LogError(SpellManager.instance.spellCardsDeck.Count+ " cards added");
+
+        for (int i = 0; i < startNumCards; i++)
+        {
+            SpellManager.instance.DrawCard();
+        }
         
         // StartTimer();
         // EndTurnBtn.gameObject.SetActive(true);
@@ -4576,7 +4614,6 @@ public class PVPManager : MonoBehaviour
         {
             myCharWeakAgainst = p2Char.weakAgainst;
             opponent = p1Char.type;
-
             OppCharWeakAgainst = p1Char.weakAgainst;
             Me = p2Char.type;
         }
@@ -4584,7 +4621,6 @@ public class PVPManager : MonoBehaviour
         {
             myCharWeakAgainst = p1Char.weakAgainst;
             opponent = p2Char.type;
-
             OppCharWeakAgainst = p2Char.weakAgainst;
             Me = p1Char.type;
         }
@@ -4680,7 +4716,8 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void SwitchPVPTurn(){
         isLocalPVPTurn = !isLocalPVPTurn;
-        SpellManager.PetAlreadyAttacked = false;
+        //IsPetTurn = isLocalPVPTurn;
+        //SpellManager.PetAlreadyAttacked = false;
     }
 
     [PunRPC]
@@ -4700,6 +4737,8 @@ public class PVPManager : MonoBehaviour
         }
 
         SpellManager.instance.DrawCard();
+
+        //Game.Get().NextTurn();
 
         Invoke("SetModePanel",3f);
     }

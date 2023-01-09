@@ -70,22 +70,20 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     {
         if(IsPreview)
             return;
-        if(!PVPManager.Get().isLocalPVPTurn)
+        if(!PVPManager.Get().IsPetTurn)
             return;
         
-        if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)){
-            MainBGOutline.enabled=false;
-            LeanTween.scale(this.gameObject,Vector3.one * 0.7f,0.25f);//.setOnComplete(ChangeParentHome);
-            SpellManager.instance.MouseOverOpponentCard(card.cardId,false);
-            canvas.sortingOrder = startSortOrder;
-            return;
-        } 
+        // if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)){
+            
+        //     return;
+        // } 
         
         //if(!SpellManager.instance.isShowCasing)
         //{
         //SpellManager.instance.isShowCasing = true;
         // LeanTween.move(gameObject,SpellManager.instance.showCaseRef,0);
         MainBGOutline.enabled=true;
+        cardReseted = false;
         LeanTween.scale(this.gameObject,Vector3.one * 1.5f ,0.25f);//.setOnComplete(ChangeParentShowCase);
         SpellManager.instance.MouseOverOpponentCard(card.cardId,true);
         canvas.sortingOrder = 1000;
@@ -95,9 +93,9 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     {
         if(IsPreview)
             return;
-        if(!PVPManager.Get().isLocalPVPTurn)
+        if(!PVPManager.Get().IsPetTurn)
             return;
-        if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)) return;
+        // if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)) return;
         // ChangeParentHome();
         MainBGOutline.enabled=false;
         LeanTween.scale(this.gameObject,Vector3.one * 0.7f,0.25f);//.setOnComplete(ChangeParentHome);
@@ -113,8 +111,8 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
             if(card.cardType == CardType.Spell){
                 CastSpell();
             }else if(card.cardType == CardType.Pet){
-                if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn) return;
-                    ChangeCardPostionToCenter();
+                //if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn) return;
+                ChangeCardPostionToCenter();
             }
         }
         
@@ -134,7 +132,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
 
     void CastSpell(){
         //if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
-        if(!PVPManager.Get().isLocalPVPTurn) return;
+        if(!PVPManager.Get().IsPetTurn) return;
 
         if(card.Manacost > PVPManager.Get().MyManabarVal)
             return;
@@ -153,8 +151,8 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     public void ChangeCardPostionToCenter()
     {
         
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
-        if(!PVPManager.Get().isLocalPVPTurn) return;
+        //if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        if(!PVPManager.Get().IsPetTurn) return;
 
         if(card.Manacost > PVPManager.Get().MyManabarVal)
             return;
@@ -256,5 +254,21 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks,IDragHandler,IBeginDra
     {
         MainBGOutline.enabled = false;
         LeanTween.scale(this.gameObject,Vector3.one,0.25f);
+    }
+
+    public bool cardReseted;
+    private void Update()
+    {
+        if(!PVPManager.manager.IsPetTurn){
+            ResetCard();
+        }
+    }
+
+    public void ResetCard(){
+        MainBGOutline.enabled=false;
+        LeanTween.scale(this.gameObject,Vector3.one * 0.7f,0.25f);//.setOnComplete(ChangeParentHome);
+        SpellManager.instance.MouseOverOpponentCard(card.cardId,false);
+        canvas.sortingOrder = startSortOrder;
+        cardReseted = true;
     }
 }

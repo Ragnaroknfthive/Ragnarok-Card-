@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public enum PieceType{
     Queen,
@@ -42,7 +43,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
     public int xBoard = -1;
     public int yBoard = -1;
 
-    private string player;
+    public string player;
     public static List<Chessman> pieces = new List<Chessman>();
 
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
@@ -54,7 +55,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
     public class CharacterRuntimeData{
         public int 
         health;
-        public int stamina;
+        public float stamina;
         public float speed;
 
         
@@ -72,25 +73,46 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
     public bool AlreadyPlayedPvP =false;
 
+    public List<SpellCard> cards;
+
     private void Start()
     {
+
+        
         photonView = GetComponent<PhotonView>();
         //Debug.Log($"<color=yellow> {name} health {character.health} </color>  high {high}" +
             //$"low {low} left {left} right {right} medle {medle}");
-        localScale = healthBar.transform.localScale;
+        //localScale = healthBar.transform.localScale;
+        healthBar.GetComponent<Image>().fillAmount = 1;
         AlreadyPlayedPvP = false;
+
+        cards = new List<SpellCard>();
+        string[] deckStr = PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"].ToString().Split('_');
+        foreach (var item in deckStr)
+        {
+            cards.Add(GameData.Get().GetPet(System.Convert.ToInt32(item)));
+        }
+        Debug.LogError(cards.Count+ " cards added");
+        
         //SaveHighLowLeftRightMedle(-1, -1, -1, -1, -1);
+    }
+
+    private void Update()
+    {
+        UpdateHealth(pData.health);
     }
 
  
     public void UpdateHealth(float _health)
     {
         //Debug.Log($"<color=yellow> UPDATE ->  {name} health {character.health} _health is{_health} </color>");
-        float x = _health / 100;
+        //float x = _health / 100;
         
-        localScale.x = x;
+        //localScale.x = x;
+
         //Debug.Log($" x is {x} and localscale is {localScale.x}  xcal is {_health/100} with brakets {(_health/100)}  {70/100}" );
-        healthBar.transform.localScale = localScale;
+        //healthBar.transform.localScale = localScale;
+        healthBar.GetComponent<Image>().fillAmount = _health / character.health;
     }
 
     public void SaveHighLowLeftRightMedle(float _high, float _low, float _left, float _right, float _medle)
@@ -124,7 +146,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         character = GameData.Get().GetCharacter(data[6].ToString());
         pData = new CharacterRuntimeData();
         pData.health = character.health;
-        pData.stamina = character.stamina;
+        //pData.stamina = character.stamina;
         //characterHealth = character.health;
         Activate();
         pieces.Add(this);
@@ -144,7 +166,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         character = GameData.Get().GetCharacter(data[6].ToString());
         pData = new CharacterRuntimeData();
         pData.health = character.health;
-        pData.stamina = character.stamina;
+        //pData.stamina = character.stamina;
         //characterHealth = character.health;
         Activate();
         pieces.Add(this);

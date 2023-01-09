@@ -173,8 +173,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     
 
     public void Kill(){
+        PVPManager.manager.myObj.cards.Remove(card);
         Destroy(gameObject,0.7f);
-    }
+     }
 
     public void ChangeCardPostionToCenter()
     {
