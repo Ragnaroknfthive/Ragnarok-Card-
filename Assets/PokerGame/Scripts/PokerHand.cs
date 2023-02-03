@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 [System.Serializable]
-public class PokerHand 
+public class PokerHand
 {
     public bool RYL_FLUSH;
     public bool STRAIGHT_FLUSH;
@@ -34,7 +34,7 @@ public class PokerHand
     public bool HIGH_CARD_Temp;
     //
     //Compare two pairs
-    public CardValue pairCarValue,twoPairSet1CardValue= CardValue.none,twoPairSet2CardValue= CardValue.none,twoPairHigherCardValue= CardValue.none,straightHighCardValue= CardValue.none, flushHighCardValue = CardValue.none,royalFlushHighCardValue= CardValue.none;
+    public CardValue pairCarValue, twoPairSet1CardValue = CardValue.none, twoPairSet2CardValue = CardValue.none, twoPairHigherCardValue = CardValue.none, straightHighCardValue = CardValue.none, flushHighCardValue = CardValue.none, royalFlushHighCardValue = CardValue.none;
 
     public PokerHand()
     {
@@ -53,60 +53,60 @@ public class PokerHand
     }
     public int tempstrength = 0;
     public List<CardCombination> cardCombinations;
-    public List<int> combinationStrengths=new List<int>();
-   public int currentCombinationIndex = 0, bestIndex = 0;
+    public List<int> combinationStrengths = new List<int>();
+    public int currentCombinationIndex = 0, bestIndex = 0;
     public Card match1 = null, match2 = null, match3 = null;
     public void setPokerHand(Card[] cardArray)
     {
         SaveCards(cardArray);
         cardCombinations = combinations;
-        
+
         //Choose the best hand combination from board and player cards
-        for(int i = 0 ; i < cardCombinations.Count ; i++)
+        for (int i = 0; i < cardCombinations.Count; i++)
         {
             currentCombinationIndex = i;
             List<Card> cards = new List<Card>();
-          //  Debug.LogError("======PLAYER CARDS=======");
-            for(int itm = 0 ; itm < 5 ; itm++)
+            //  Debug.LogError("======PLAYER CARDS=======");
+            for (int itm = 0; itm < 5; itm++)
             {
                 cards.Add(cardArray[combinations[i].items[itm]]);
-              //  Debug.LogError("Card Name " + cardArray[combinations[i].items[itm]].name);
+                //  Debug.LogError("Card Name " + cardArray[combinations[i].items[itm]].name);
             }
-            
+
             //foreach(Card c in cardArray)
             //{
             //    cards.Add(c);
             //    Debug.LogError("Card Name " + c.name);
             //}
 
-           // Debug.LogError("======PLAYER CARDS=======");
+            // Debug.LogError("======PLAYER CARDS=======");
 
             //SaveCards(cardArray);
 
-            if(isRoyal(cards))
+            if (isRoyal(cards))
             {
             }
-            else if(isStraightFlush(cards))
-            {  }// return;
-            else if(isFourAKind(cards))
+            else if (isStraightFlush(cards))
             { }// return;
-            else if(isFullHouse(cards)) { }//return;
-            else if(isFlush(cards)) { } //return;
-            else if(isStraight(cards)) { } //return;
-            else if(isThreeAKind(cards)) { } //return;
-            else if(isTwoPair(cards)) { }// return;
-            else if(isPair(cards)) { }// return;
+            else if (isFourAKind(cards))
+            { }// return;
+            else if (isFullHouse(cards)) { }//return;
+            else if (isFlush(cards)) { } //return;
+            else if (isStraight(cards)) { } //return;
+            else if (isThreeAKind(cards)) { } //return;
+            else if (isTwoPair(cards)) { }// return;
+            else if (isPair(cards)) { }// return;
             else isHigh(cards);
-            Debug.LogError("STRENGTH OF COMB -" + i + "  " + strength);
+            //Debug.LogError("STRENGTH OF COMB -" + i + "  " + strength);
             combinationStrengths.Add(strength);
 
         }
 
-        
-        
+
+
         strength = tempstrength;
         ResetAllTempItem();
-        switch(strength)
+        switch (strength)
         {
             case 0:
                 HIGH_CARD_Temp = true;
@@ -147,41 +147,41 @@ public class PokerHand
             default:
                 break;
         }
-        Debug.LogError("FULL HOUSE  " + FULL_HOUSE_Temp + " THREE " + THREE_A_KIND_Temp);
-        Debug.LogError("TEMP STRENGTH " + tempstrength + " STRENGTH " + strength);
-        if(TWO_PAIR_Temp) 
+        // Debug.LogError("FULL HOUSE  " + FULL_HOUSE_Temp + " THREE " + THREE_A_KIND_Temp);
+        //   Debug.LogError("TEMP STRENGTH " + tempstrength + " STRENGTH " + strength);
+        if (TWO_PAIR_Temp)
         {
-            Debug.LogError("TWO PAIR CONDITION");
-            match1 = null; match2 = null; match3=null;
-            foreach(Card item in cardArray)
+            //   Debug.LogError("TWO PAIR CONDITION");
+            match1 = null; match2 = null; match3 = null;
+            foreach (Card item in cardArray)
             {
                 int count = 0;
-                foreach(Card loppitem in cardArray)
+                foreach (Card loppitem in cardArray)
                 {
-                    if(item.cardValue == loppitem.cardValue) 
+                    if (item.cardValue == loppitem.cardValue)
                     {
                         count++;
                     }
                 }
-                if(count >= 2) 
+                if (count >= 2)
                 {
-                    if(match1 == null)
+                    if (match1 == null)
                     { match1 = item; }
-                    else if(match2 == null) 
+                    else if (match2 == null)
                     {
                         match2 = item;
                     }
-                    else if(match3== null) 
+                    else if (match3 == null)
                     {
                         match3 = item;
                     }
                 }
             }
-            
+
             List<Card> pairs = new List<Card>();
-            if(match1 != null) pairs.Add(match1);
-            if(match2 != null) pairs.Add(match2);
-            if(match3 != null) pairs.Add(match3);
+            if (match1 != null) pairs.Add(match1);
+            if (match2 != null) pairs.Add(match2);
+            if (match3 != null) pairs.Add(match3);
             pairs = pairs.OrderBy(x => x.cardValue).ToList();
             highCard.Clear();
             highCard.Add(pairs.Last());
@@ -193,26 +193,26 @@ public class PokerHand
             List<Card> ascendingOrder = cardArray.ToList().OrderBy(x => x.cardValue).ToList();
             //highCard.Clear();
             // highCard.Add(ascendingOrder.Last());
-            
+
             //
             List<int> removeList = new List<int>();
-            for(int i = 0 ; i < ascendingOrder.Count ; i++)
+            for (int i = 0; i < ascendingOrder.Count; i++)
             {
-                if(ascendingOrder[i].cardValue == match1.cardValue)
+                if (ascendingOrder[i].cardValue == match1.cardValue)
                 {
                     removeList.Add(i);
 
                 }
-                if(ascendingOrder[i].cardValue == match2.cardValue)
+                if (ascendingOrder[i].cardValue == match2.cardValue)
                 {
                     removeList.Add(i);
 
                 }
             }
-            if(removeList != null)
+            if (removeList != null)
             {
 
-                foreach(int item in removeList)
+                foreach (int item in removeList)
                 {
                     ascendingOrder[item].cardValue = CardValue.none;
                 }
@@ -222,7 +222,7 @@ public class PokerHand
             ascendingOrder.RemoveAll(x => x.cardValue == CardValue.none);
             ascendingOrder = ascendingOrder.ToList().OrderBy(x => x.cardValue).ToList();
             Game.Get().MyHighCardList.Clear();
-            for(int i = ascendingOrder.Count - 1 ; i >= 0 ; i--)
+            for (int i = ascendingOrder.Count - 1; i >= 0; i--)
             {
                 highCard.Add(ascendingOrder[i]);
                 Game.Get().MyHighCardList.Add((int)ascendingOrder[i].cardValue);
@@ -230,34 +230,34 @@ public class PokerHand
             }
             //
             //  Game.Get().MySecondHighCardValue = (allCArds[4] != null) && allCArds[4]> ? (int)allCArds[4].cardValue : -1;
-            Debug.Log("TWO PAIR HIGHER CARD VAL "+ twoPairHigherCardValue);
+            Debug.Log("TWO PAIR HIGHER CARD VAL " + twoPairHigherCardValue);
 
         }
-        else if(FULL_HOUSE_Temp)
+        else if (FULL_HOUSE_Temp)
         {
-            Debug.LogError("FULL HOUSE CONDITION");
+            //   Debug.LogError("FULL HOUSE CONDITION");
             match1 = null; match2 = null; match3 = null;
-           
-            int match1Count = 0,match2Count=0;
-          //  List<Card> descendingOrder
-             cardArray   = cardArray.ToList().OrderByDescending(x => x.cardValue).ToList().ToArray();
+
+            int match1Count = 0, match2Count = 0;
+            //  List<Card> descendingOrder
+            cardArray = cardArray.ToList().OrderByDescending(x => x.cardValue).ToList().ToArray();
             //Decide Five Cards 
 
             int matchIndex = -1;
-            for(int i = 0 ; i < 7 ; i++)
+            for (int i = 0; i < 7; i++)
             {
-               
-                for(int j = 0 ; j < 7 ; j++)
+
+                for (int j = 0; j < 7; j++)
                 {
-                    if(cardArray[i].cardValue == cardArray[j].cardValue) 
+                    if (cardArray[i].cardValue == cardArray[j].cardValue)
                     {
                         match1Count++;
-                       // match1 = cardArray[i];
+                        // match1 = cardArray[i];
                         matchIndex = i;
-                    }                              
+                    }
                 }
                 Debug.Log("M COUNTE" + match1Count);
-                if(matchIndex != -1  && (match1Count==2 || match1Count==3))
+                if (matchIndex != -1 && (match1Count == 2 || match1Count == 3))
                 {
 
                     match1 = cardArray[matchIndex];
@@ -265,40 +265,40 @@ public class PokerHand
                 }
                 match1Count = 0;
             }
-            
+
             matchIndex = -1;
 
-            for(int i = 0 ; i < 7 ; i++)
+            for (int i = 0; i < 7; i++)
             {
-               // int matchIndex = -1;
-                for(int j = 0 ; j < 7 ; j++)
+                // int matchIndex = -1;
+                for (int j = 0; j < 7; j++)
                 {
-                    if(cardArray[i].cardValue == cardArray[j].cardValue && cardArray[i].cardValue!=match1.cardValue)
+                    if (cardArray[i].cardValue == cardArray[j].cardValue && cardArray[i].cardValue != match1.cardValue)
                     {
                         match2Count++;
                         matchIndex = i;
                         // match2 = cardArray[i];
                     }
                 }
-                if(matchIndex != -1 && (match2Count == 2 || match2Count == 3) && cardArray[i].cardValue!=match1.cardValue)
+                if (matchIndex != -1 && (match2Count == 2 || match2Count == 3) && cardArray[i].cardValue != match1.cardValue)
                 {
                     match2 = cardArray[matchIndex];
 
                 }
                 match2Count = 0;
             }
-            
-           
-            Debug.LogError("MATCH 1 " + match1.cardValue + "  Match 2 " + match2.cardValue);
-            if(match2.cardValue > match1.cardValue)
+
+
+            //     Debug.LogError("MATCH 1 " + match1.cardValue + "  Match 2 " + match2.cardValue);
+            if (match2.cardValue > match1.cardValue)
             {
                 Card temp = match1;
                 match1 = match2;
                 match2 = temp;
-               
+
             }
             highCard.Clear();
-            Debug.LogError("SECONG CARD " + match2.cardValue);
+            // Debug.LogError("SECONG CARD " + match2.cardValue);
             this.highCard.Add(match1);
             this.highCard.Add(match2);
 
@@ -312,29 +312,29 @@ public class PokerHand
 
 
         }
-        else if(PAIR_Temp) 
+        else if (PAIR_Temp)
         {
-            Debug.LogError("PAIR CONDITION");
+            //  Debug.LogError("PAIR CONDITION");
             match1 = null; match2 = null; match3 = null;
-            foreach(Card item in cardArray)
+            foreach (Card item in cardArray)
             {
                 int count = 0;
-                foreach(Card loppitem in cardArray)
+                foreach (Card loppitem in cardArray)
                 {
-                    if(item.cardValue == loppitem.cardValue)
+                    if (item.cardValue == loppitem.cardValue)
                     {
                         count++;
                     }
                 }
-                if(count >= 2)
+                if (count >= 2)
                 {
-                    if(match1 == null)
+                    if (match1 == null)
                     { match1 = item; }
                 }
             }
-            
+
             List<Card> pairs = new List<Card>();
-            if(match1 != null) pairs.Add(match1);
+            if (match1 != null) pairs.Add(match1);
             pairs = pairs.OrderBy(x => x.cardValue).ToList();
             highCard.Clear();
             highCard.Add(pairs.Last());
@@ -344,9 +344,9 @@ public class PokerHand
             //highCard.Clear();
             // highCard.Add(ascendingOrder.Last());
             List<int> removeList = new List<int>();
-            for(int i = 0 ; i < ascendingOrder.Count ; i++)
+            for (int i = 0; i < ascendingOrder.Count; i++)
             {
-                if(ascendingOrder[i].cardValue == match1.cardValue)
+                if (ascendingOrder[i].cardValue == match1.cardValue)
                 {
                     removeList.Add(i);
 
@@ -354,11 +354,11 @@ public class PokerHand
             }
 
 
-            if(removeList != null)
+            if (removeList != null)
             {
-                foreach(int item in removeList)
+                foreach (int item in removeList)
                 {
-                    Debug.LogError("STOPPED " + item);
+                    //    Debug.LogError("STOPPED " + item);
                     ascendingOrder[item].cardValue = CardValue.none;
                 }
             }
@@ -367,17 +367,17 @@ public class PokerHand
             ascendingOrder.RemoveAll(x => x.cardValue == CardValue.none);
             ascendingOrder = ascendingOrder.ToList().OrderBy(x => x.cardValue).ToList();
             Game.Get().MyHighCardList.Clear();
-            for(int i = ascendingOrder.Count - 1 ; i >= 0 ; i--)
+            for (int i = ascendingOrder.Count - 1; i >= 0; i--)
             {
                 highCard.Add(ascendingOrder[i]);
                 Game.Get().MyHighCardList.Add((int)ascendingOrder[i].cardValue);
                 Debug.Log("Value ADDED ");
             }
-           // Game.Get().MyHighCardValue = (int)match1.cardValue;// (int)highCard.ElementAt(0).cardValue;
+            // Game.Get().MyHighCardValue = (int)match1.cardValue;// (int)highCard.ElementAt(0).cardValue;
             // Game.Get().MyHighCardValue =(int) highCard.ElementAt(0).cardValue;
-            Game.Get().MySecondHighCardValue =Game.Get().MyHighCardList[0];
-          //  List<Card> allCArds = new List<Card>();
-          //  allCArds = cardArray.ToList().OrderByDescending(x => x.cardValue).ToList();
+            Game.Get().MySecondHighCardValue = Game.Get().MyHighCardList[0];
+            //  List<Card> allCArds = new List<Card>();
+            //  allCArds = cardArray.ToList().OrderByDescending(x => x.cardValue).ToList();
             //for(int i = 0 ; i < allCArds.Count ; i++)
             //{
             //    if((int)allCArds[i].cardValue > Game.Get().MyHighCardValue)
@@ -388,7 +388,7 @@ public class PokerHand
             //            {
             //                Game.Get().MySecondHighCardValue = (int)allCArds[i].cardValue;
             //            }
-                        
+
             //        }
             //        else
             //        {
@@ -400,25 +400,25 @@ public class PokerHand
             Debug.Log(" PAIR HIGHER CARD VAL " + Game.Get().MySecondHighCardValue);
             Debug.Log(" PAIR HIGHER CARD FIRST VAL " + Game.Get().MyHighCardValue);
         }
-        else if(THREE_A_KIND_Temp)
+        else if (THREE_A_KIND_Temp)
         {
-            Debug.LogError("THREE  CONDITION");
+            // Debug.LogError("THREE  CONDITION");
             match1 = null; match2 = null; match3 = null;
-            foreach(Card item in cardArray)
+            foreach (Card item in cardArray)
             {
                 int count = 0;
-                foreach(Card loppitem in cardArray)
+                foreach (Card loppitem in cardArray)
                 {
-                    if(item.cardValue == loppitem.cardValue)
+                    if (item.cardValue == loppitem.cardValue)
                     {
                         count++;
                     }
                 }
-                if(count >= 3)
+                if (count >= 3)
                 {
-                    if(match1 == null)
+                    if (match1 == null)
                     { match1 = item; }
-                    else if(match2== null) 
+                    else if (match2 == null)
                     {
                         match2 = item;
                     }
@@ -426,8 +426,8 @@ public class PokerHand
             }
 
             List<Card> pairs = new List<Card>();
-            if(match1 != null) pairs.Add(match1);
-            if(match2 != null) pairs.Add(match2);
+            if (match1 != null) pairs.Add(match1);
+            if (match2 != null) pairs.Add(match2);
 
             pairs = pairs.OrderBy(x => x.cardValue).ToList();
             highCard.Clear();
@@ -438,17 +438,17 @@ public class PokerHand
             //highCard.Clear();
             // highCard.Add(ascendingOrder.Last());
             List<int> removeList = new List<int>();
-            for(int i = 0 ; i < ascendingOrder.Count ; i++)
+            for (int i = 0; i < ascendingOrder.Count; i++)
             {
-                if(ascendingOrder[i].cardValue== match1.cardValue) 
+                if (ascendingOrder[i].cardValue == match1.cardValue)
                 {
                     removeList.Add(i);
-                   
+
                 }
             }
-            if(removeList != null) 
+            if (removeList != null)
             {
-                foreach(int item in removeList)
+                foreach (int item in removeList)
                 {
                     ascendingOrder[item].cardValue = CardValue.none;
                 }
@@ -457,7 +457,7 @@ public class PokerHand
             ascendingOrder.RemoveAll(x => x.cardValue == CardValue.none);
             ascendingOrder = ascendingOrder.ToList().OrderBy(x => x.cardValue).ToList();
             Game.Get().MyHighCardList.Clear();
-            for(int i = ascendingOrder.Count - 1 ; i >=0  ; i--)
+            for (int i = ascendingOrder.Count - 1; i >= 0; i--)
             {
                 highCard.Add(ascendingOrder[i]);
                 Game.Get().MyHighCardList.Add((int)ascendingOrder[i].cardValue);
@@ -469,25 +469,25 @@ public class PokerHand
             Debug.Log(" PAIR HIGHER CARD VAL " + Game.Get().MySecondHighCardValue);
 
         }
-        else if(FOUR_A_KIND_Temp)
+        else if (FOUR_A_KIND_Temp)
         {
-            Debug.LogError("FOUR A KIND CONDITION");
+            //  Debug.LogError("FOUR A KIND CONDITION");
             match1 = null; match2 = null; match3 = null;
-            foreach(Card item in cardArray)
+            foreach (Card item in cardArray)
             {
                 int count = 0;
-                foreach(Card loppitem in cardArray)
+                foreach (Card loppitem in cardArray)
                 {
-                    if(item.cardValue == loppitem.cardValue)
+                    if (item.cardValue == loppitem.cardValue)
                     {
                         count++;
                     }
                 }
-                if(count >= 3)
+                if (count >= 3)
                 {
-                    if(match1 == null)
+                    if (match1 == null)
                     { match1 = item; }
-                    else if(match2 == null)
+                    else if (match2 == null)
                     {
                         match2 = item;
                     }
@@ -495,8 +495,8 @@ public class PokerHand
             }
 
             List<Card> pairs = new List<Card>();
-            if(match1 != null) pairs.Add(match1);
-            if(match2 != null) pairs.Add(match2);
+            if (match1 != null) pairs.Add(match1);
+            if (match2 != null) pairs.Add(match2);
 
             pairs = pairs.OrderBy(x => x.cardValue).ToList();
             highCard.Clear();
@@ -508,17 +508,17 @@ public class PokerHand
             //highCard.Clear();
             // highCard.Add(ascendingOrder.Last());
             List<int> removeList = new List<int>();
-            for(int i = 0 ; i < ascendingOrder.Count ; i++)
+            for (int i = 0; i < ascendingOrder.Count; i++)
             {
-                if(ascendingOrder[i].cardValue == match1.cardValue)
+                if (ascendingOrder[i].cardValue == match1.cardValue)
                 {
                     removeList.Add(i);
 
                 }
             }
-            if(removeList != null)
+            if (removeList != null)
             {
-                foreach(int item in removeList)
+                foreach (int item in removeList)
                 {
                     ascendingOrder[item].cardValue = CardValue.none;
                 }
@@ -527,7 +527,7 @@ public class PokerHand
             ascendingOrder.RemoveAll(x => x.cardValue == CardValue.none);
             ascendingOrder = ascendingOrder.ToList().OrderBy(x => x.cardValue).ToList();
             Game.Get().MyHighCardList.Clear();
-            for(int i = ascendingOrder.Count - 1 ; i >= 0 ; i--)
+            for (int i = ascendingOrder.Count - 1; i >= 0; i--)
             {
                 highCard.Add(ascendingOrder[i]);
                 Game.Get().MyHighCardList.Add((int)ascendingOrder[i].cardValue);
@@ -536,9 +536,9 @@ public class PokerHand
             Game.Get().MySecondHighCardValue = Game.Get().MyHighCardList[0];
 
         }
-        else if(STRAIGHT_Temp)
+        else if (STRAIGHT_Temp)
         {
-            Debug.LogError("STRAIGHT CONDITION");
+            // Debug.LogError("STRAIGHT CONDITION");
 
             // highCard.Clear();
             //highCard.Add((int)straightHighCardValue);
@@ -546,54 +546,54 @@ public class PokerHand
             Debug.Log("High Card Val" + Game.Get().MyHighCardValue);
 
         }
-        else if(FLUSH_Temp)
+        else if (FLUSH_Temp)
         {
-            Debug.LogError("FLUSH CONDITION");
+            //      Debug.LogError("FLUSH CONDITION");
             // highCard.Clear();
             //highCard.Add((int)straightHighCardValue);
             Game.Get().MyHighCardValue = (int)flushHighCardValue; //(int)highCard.ElementAt(0).cardValue;
             Debug.Log("High Card Val" + Game.Get().MyHighCardValue);
 
         }
-        else if(RYL_FLUSH_Temp)
+        else if (RYL_FLUSH_Temp)
         {
-            Debug.LogError("ROYAL FLUSH CONDITION");
+            //  Debug.LogError("ROYAL FLUSH CONDITION");
             // highCard.Clear();
             //highCard.Add((int)straightHighCardValue);
             Game.Get().MyHighCardValue = (int)CardValue.ace; //(int)highCard.ElementAt(0).cardValue;
             Debug.Log("High Card Val" + Game.Get().MyHighCardValue);
 
         }
-        else if(STRAIGHT_FLUSH_Temp)
+        else if (STRAIGHT_FLUSH_Temp)
         {
-            Debug.LogError("STRAIGHT FLUSH CONDITION");
+            //  Debug.LogError("STRAIGHT FLUSH CONDITION");
             // highCard.Clear();
             //highCard.Add((int)straightHighCardValue);
-            Game.Get().MyHighCardValue =(int) flushHighCardValue;
+            Game.Get().MyHighCardValue = (int)flushHighCardValue;
             Debug.Log("High Card Val" + Game.Get().MyHighCardValue);
 
         }
-        else if(HIGH_CARD_Temp)
+        else if (HIGH_CARD_Temp)
         {
-            Debug.LogError("HIGH CARD CONDITION");
+            //  Debug.LogError("HIGH CARD CONDITION");
             List<Card> ascendingOrder = cardArray.ToList().OrderBy(x => x.cardValue).ToList();
             highCard.Clear();
-           // highCard.Add(ascendingOrder.Last());
+            // highCard.Add(ascendingOrder.Last());
             Game.Get().MyHighCardList.Clear();
-            for(int i = ascendingOrder.Count-1 ; i > 1 ; i--)
+            for (int i = ascendingOrder.Count - 1; i > 1; i--)
             {
                 highCard.Add(ascendingOrder[i]);
                 Game.Get().MyHighCardList.Add((int)ascendingOrder[i].cardValue);
                 Debug.Log("Value ADDED ");
             }
             Game.Get().MyHighCardValue = (int)highCard.ElementAt(0).cardValue;
-            Debug.Log("High Card Val" );
-            combinations[0].items = new int[5] { -1,-1,-1,-1,-1 };
-            for(int i = 0 ; i < highCard.Count ; i++)
+            Debug.Log("High Card Val");
+            combinations[0].items = new int[5] { -1, -1, -1, -1, -1 };
+            for (int i = 0; i < highCard.Count; i++)
             {
-                for(int j = 0 ; j < cardArray.Length ; j++)
+                for (int j = 0; j < cardArray.Length; j++)
                 {
-                    if(highCard[i]== cardArray[j]) 
+                    if (highCard[i] == cardArray[j])
                     {
                         combinations[0].items[i] = j;
                         //if(combinations[0].items.ToList().FindAll(x => x == -1).Count > 0)
@@ -607,7 +607,7 @@ public class PokerHand
                         //    }
                         //}
                     }
-                   
+
                 }
             }
         }
@@ -635,7 +635,7 @@ public class PokerHand
         //isHigh(cards);
 
     }
-    
+
     public String printResult()
     {
 
@@ -682,12 +682,12 @@ public class PokerHand
         else
             return "error setting hand.";
     }
-    public bool CheckHighCardConditionForRoyalFlush(Card max) 
+    public bool CheckHighCardConditionForRoyalFlush(Card max)
     {
-        bool isAce= false;
+        bool isAce = false;
         this.highCard.Clear();
         this.highCard.Add(max);
-        if(max.cardValue== CardValue.ace) 
+        if (max.cardValue == CardValue.ace)
         {
             isAce = true;
         }
@@ -707,16 +707,16 @@ public class PokerHand
             RYL_FLUSH_Temp = true;
             this.RYL_FLUSH = true;
             this.strength = 9;
-            if(strength > tempstrength)
+            if (strength > tempstrength)
             {
                 tempstrength = strength;
                 bestIndex = currentCombinationIndex;
             }
-            
+
         }
         return this.RYL_FLUSH;
     }
-    public void ResetAllTempItem() 
+    public void ResetAllTempItem()
     {
         RYL_FLUSH_Temp = false;
         STRAIGHT_FLUSH_Temp = false;
@@ -742,7 +742,7 @@ public class PokerHand
             STRAIGHT_FLUSH_Temp = true;
             this.STRAIGHT_FLUSH = true;
             this.strength = 8;
-            if(strength > tempstrength)
+            if (strength > tempstrength)
             {
                 tempstrength = strength;
                 bestIndex = currentCombinationIndex;
@@ -775,7 +775,7 @@ public class PokerHand
                     this.FOUR_A_KIND = true;
                     this.highCard.Add(card);
                     this.strength = 7;
-                    if(strength > tempstrength)
+                    if (strength > tempstrength)
                     {
                         tempstrength = strength;
                         bestIndex = currentCombinationIndex;
@@ -833,7 +833,7 @@ public class PokerHand
                             if (match2.cardValue == c3.cardValue)
                             {
                                 count++;
-                                if (count == 2 || count ==3)
+                                if (count == 2 || count == 3)
                                 {
                                     this.highCard.Add(match1);
                                     this.highCard.Add(match2);
@@ -843,7 +843,7 @@ public class PokerHand
                                     this.strength = 6;
                                     Debug.Log("FULL HOUSE HIGH CARD ");
                                     Game.Get().MyHighCardValue = (int)highCard.ElementAt(0).cardValue;
-                                    if(strength > tempstrength)
+                                    if (strength > tempstrength)
                                     {
                                         tempstrength = strength;
                                         bestIndex = currentCombinationIndex;
@@ -875,18 +875,18 @@ public class PokerHand
                 return false;
         }
 
-        Debug.LogError("Working UPTO HERE ");
+        //  Debug.LogError("Working UPTO HERE ");
         for (int i = 4; i >= 0; i--)
         {
             this.highCard.Add(cards.ElementAt(i));
         }
-        if(flushHighCardValue== CardValue.none) 
+        if (flushHighCardValue == CardValue.none)
         {
             flushHighCardValue = cards.Last().cardValue;
         }
-        else 
+        else
         {
-            if(flushHighCardValue < cards.Last().cardValue) 
+            if (flushHighCardValue < cards.Last().cardValue)
             {
                 flushHighCardValue = cards.Last().cardValue;
             }
@@ -895,7 +895,7 @@ public class PokerHand
         FLUSH_Temp = true;
         this.FLUSH = true;
         this.strength = 5;
-        if(strength > tempstrength)
+        if (strength > tempstrength)
         {
             tempstrength = strength;
             bestIndex = currentCombinationIndex;
@@ -905,9 +905,9 @@ public class PokerHand
 
     private bool isStraight(List<Card> cards)
     {
-       // Debug.Log("LENGTH " + cards.Count);
+        // Debug.Log("LENGTH " + cards.Count);
         this.highCard = new List<Card>();
-      cards=  cards.OrderBy(x => x.cardValue).ToList() ;
+        cards = cards.OrderBy(x => x.cardValue).ToList();
         //string values="";
         //for(int i = 0 ; i < cards.Count ; i++)
         //{
@@ -924,7 +924,7 @@ public class PokerHand
         //    {
         //        values += cards[i].cardValue + ", ";
         //    }
-           
+
         //}
         //Debug.Log("VALUES " + values);
         Card card1 = cards.ElementAt(0);
@@ -932,7 +932,7 @@ public class PokerHand
         Card card3 = cards.ElementAt(2);
         Card card4 = cards.ElementAt(3);
         Card card5 = cards.ElementAt(4);
-       
+
         // make sure the cards rank is in order
         if (((int)card3.cardValue - (int)card4.cardValue == -1) && ((int)card2.cardValue - (int)card3.cardValue == -1) && ((int)card1.cardValue - (int)card2.cardValue == -1))
         {
@@ -942,40 +942,40 @@ public class PokerHand
                 STRAIGHT_Temp = true;
                 this.STRAIGHT = true;
                 this.strength = 4;
-                if(strength > tempstrength)
+                if (strength > tempstrength)
                 {
                     tempstrength = strength;
                     bestIndex = currentCombinationIndex;
-                    
+
                 }
                 for (int i = 4; i >= 0; i--)
                 {
                     this.highCard.Add(cards.ElementAt(i));
                 }
-                if(straightHighCardValue == CardValue.none) 
+                if (straightHighCardValue == CardValue.none)
                 {
                     straightHighCardValue = card5.cardValue;
                 }
-                else if(card5.cardValue>straightHighCardValue) 
+                else if (card5.cardValue > straightHighCardValue)
                 {
                     straightHighCardValue = card5.cardValue;
                 }
             }
 
-            else if((int)card1.cardValue == 0 && (int)card5.cardValue == 12 /* ACE */)
+            else if ((int)card1.cardValue == 0 && (int)card5.cardValue == 12 /* ACE */)
             {
                 ResetAllTempItem();
                 STRAIGHT_Temp = true;
                 this.STRAIGHT = true;
                 this.strength = 4;
-                if(strength > tempstrength)
+                if (strength > tempstrength)
                 {
                     tempstrength = strength;
                     bestIndex = currentCombinationIndex;
 
                 }
 
-                for(int i = 4 ; i >= 0 ; i--)
+                for (int i = 4; i >= 0; i--)
                 {
                     this.highCard.Add(cards.ElementAt(i));
                 }
@@ -1010,7 +1010,7 @@ public class PokerHand
                     THREE_A_KIND_Temp = true;
                     this.THREE_A_KIND = true;
                     this.strength = 3;
-                    if(strength > tempstrength)
+                    if (strength > tempstrength)
                     {
                         tempstrength = strength;
                         bestIndex = currentCombinationIndex;
@@ -1072,7 +1072,7 @@ public class PokerHand
                 {
                     foreach (Card card in cards)
                     {
-                        if(curentCard.cardValue == card.cardValue)
+                        if (curentCard.cardValue == card.cardValue)
                         {
                             count++;
                             twoPairSet2CardValue = card.cardValue;
@@ -1087,7 +1087,7 @@ public class PokerHand
                             TWO_PAIR_Temp = true;
                             this.TWO_PAIR = true;
                             this.strength = 2;
-                            if(strength > tempstrength)
+                            if (strength > tempstrength)
                             {
                                 tempstrength = strength;
                                 bestIndex = currentCombinationIndex;
@@ -1104,9 +1104,9 @@ public class PokerHand
                 }
             }
         }
-        if(TWO_PAIR)
+        if (TWO_PAIR)
         {
-            if(twoPairSet1CardValue > twoPairSet2CardValue)
+            if (twoPairSet1CardValue > twoPairSet2CardValue)
             {
                 twoPairHigherCardValue = twoPairSet1CardValue;
             }
@@ -1114,14 +1114,14 @@ public class PokerHand
             {
                 twoPairHigherCardValue = twoPairSet2CardValue;
             }
-            Game.Get().MyHighCardValue = (int) twoPairHigherCardValue;
-            for(int i = 1 ; i < this.highCard.Count ; i++)
+            Game.Get().MyHighCardValue = (int)twoPairHigherCardValue;
+            for (int i = 1; i < this.highCard.Count; i++)
             {
-               // Debug.LogError("*** HIGH CARD " + (int)this.highCard.ElementAt(i).cardValue);
+                // Debug.LogError("*** HIGH CARD " + (int)this.highCard.ElementAt(i).cardValue);
             }
             highCard.OrderByDescending(x => x.cardValue);
-            Debug.LogError("Hight card Count " + highCard.Count);
-            Game.Get().MyHighCardValue = highCard.Count <= 0 ? 0: (int)this.highCard.ElementAt(0).cardValue;
+            // Debug.LogError("Hight card Count " + highCard.Count);
+            Game.Get().MyHighCardValue = highCard.Count <= 0 ? 0 : (int)this.highCard.ElementAt(0).cardValue;
         }
         return this.TWO_PAIR;
     }
@@ -1133,22 +1133,22 @@ public class PokerHand
         int count;
 
         Card curentCardF = cards.ElementAt(0);
-        int maxCardVal =(int) curentCardF.cardValue;
+        int maxCardVal = (int)curentCardF.cardValue;
         int pairCard = 0;
-        for(int i = 1 ; i < 5 ; i++)
+        for (int i = 1; i < 5; i++)
         {
             Card curentCardT = cards.ElementAt(i);
-            if((int)curentCardT.cardValue >= maxCardVal)
+            if ((int)curentCardT.cardValue >= maxCardVal)
             {
-                if((int)curentCardT.cardValue==maxCardVal)
+                if ((int)curentCardT.cardValue == maxCardVal)
                 {
                     pairCard = maxCardVal;
                 }
-                maxCardVal =(int) curentCardT.cardValue;
+                maxCardVal = (int)curentCardT.cardValue;
             }
         }
 
-       
+
 
         for (int i = 0; i < 5; i++)
         {
@@ -1157,23 +1157,23 @@ public class PokerHand
             foreach (Card card in cards)
             {
                 //Debug.LogError("*** CARD " + Game.Get().MyHighCardValue);
-                if(curentCard.cardValue == card.cardValue)
+                if (curentCard.cardValue == card.cardValue)
                 {
                     pairCarValue = curentCard.cardValue;
 
                     Game.Get().MyHighCardValue = (int)pairCarValue;
-                   
+
                     count++;
                 }
 
                 if (count == 2)
                 {
                     this.PAIR = true;
-                   this.highCard.Add(card);
+                    this.highCard.Add(card);
                     ResetAllTempItem();
                     PAIR_Temp = true;
                     this.strength = 1;
-                    if(strength > tempstrength)
+                    if (strength > tempstrength)
                     {
                         tempstrength = strength;
                         bestIndex = currentCombinationIndex;
@@ -1188,10 +1188,10 @@ public class PokerHand
             }
 
         }
-       //highCard= highCard.OrderByDescending(x => x.cardValue);
-        Debug.LogError("High Card Count " + highCard.Count);
-        Game.Get().MyHighCardValue = highCard.Count<=0 ?0:(int)this.highCard.ElementAt(0).cardValue;
-        
+        //highCard= highCard.OrderByDescending(x => x.cardValue);
+        //   Debug.LogError("High Card Count " + highCard.Count);
+        Game.Get().MyHighCardValue = highCard.Count <= 0 ? 0 : (int)this.highCard.ElementAt(0).cardValue;
+
         return this.PAIR;
     }
 
@@ -1205,23 +1205,23 @@ public class PokerHand
             this.highCard.Add(cards.ElementAt(j));
         }
         int combinationHighCardValue = (int)highCard.Find(x => x.cardValue == highCard.Max(y => y.cardValue)).cardValue;
-        if(combinationHighCardValue > Game.Get().MyHighCardValue)
-        { Game.Get().MyHighCardValue =combinationHighCardValue ; }
+        if (combinationHighCardValue > Game.Get().MyHighCardValue)
+        { Game.Get().MyHighCardValue = combinationHighCardValue; }
         ResetAllTempItem();
         HIGH_CARD_Temp = true;
         this.HIGH_CARD = true;
         strength = 0;
-        if(strength > tempstrength)
+        if (strength > tempstrength)
         {
             tempstrength = strength;
             bestIndex = currentCombinationIndex;
         }
     }
-    public void SaveCards(Card[] cards) 
+    public void SaveCards(Card[] cards)
     {
         combinations.Clear();
-        GFG.Main(new int[] { 0,1,2,3,4,5,6 },5);
-      
+        GFG.Main(new int[] { 0, 1, 2, 3, 4, 5, 6 }, 5);
+
         //Debug.LogError("CARD LENGTH " + cards.Length);
         //for (int i = 0; i < cards.Length; i++)
         //{
@@ -1234,14 +1234,14 @@ public class PokerHand
         //this.highCard = _cardsArray.ToList();
     }
 
-    public static List<CardCombination> combinations=new List<CardCombination>();
+    public static List<CardCombination> combinations = new List<CardCombination>();
 }
 [Serializable]
-public class CardCombination 
+public class CardCombination
 {
     public int[] items = new int[5];
 }
-public  class GFG
+public class GFG
 {
 
     /* arr[] ---> Input Array
@@ -1252,17 +1252,17 @@ public  class GFG
     index ---> Current index in data[]
     r ---> Size of a combination
            to be printed */
-    static void combinationUtil(int[] arr,int n,
-                                int r,int index,
-                                int[] data,int i)
+    static void combinationUtil(int[] arr, int n,
+                                int r, int index,
+                                int[] data, int i)
     {
         // Current combination is ready
         // to be printed, print it
-        if(index == r)
+        if (index == r)
         {
-            int[] comb = new int[] { -1,-1,-1,-1,-1 };
+            int[] comb = new int[] { -1, -1, -1, -1, -1 };
             CardCombination combination = new CardCombination();
-            for(int j = 0 ; j < r ; j++)
+            for (int j = 0; j < r; j++)
             {
 
                 comb[j] = data[j];
@@ -1270,37 +1270,37 @@ public  class GFG
                 //s+=" ,"+data[j].ToString();
                 //Debug.Log(data[j] + " "); 
             }
-           
-           // Debug.Log("C "+ s);
+
+            // Debug.Log("C "+ s);
             PokerHand.combinations.Add(combination);
             return;
         }
 
         // When no more elements are
         // there to put in data[]
-        if(i >= n)
+        if (i >= n)
             return;
 
         // current is included, put
         // next at next location
         data[index] = arr[i];
-        combinationUtil(arr,n,r,
-                        index + 1,data,i + 1);
+        combinationUtil(arr, n, r,
+                        index + 1, data, i + 1);
 
         // current is excluded, replace
         // it with next (Note that
         // i+1 is passed, but index
         // is not changed)
-        combinationUtil(arr,n,r,index,
-                        data,i + 1);
+        combinationUtil(arr, n, r, index,
+                        data, i + 1);
     }
 
     // The main function that prints
     // all combinations of size r
     // in arr[] of size n. This
     // function mainly uses combinationUtil()
-     static void printCombination(int[] arr,
-                                 int n,int r)
+    static void printCombination(int[] arr,
+                                int n, int r)
     {
         // A temporary array to store
         // all combination one by one
@@ -1308,17 +1308,17 @@ public  class GFG
 
         // Print all combination
         // using temporary array 'data[]'
-        combinationUtil(arr,n,r,0,data,0);
+        combinationUtil(arr, n, r, 0, data, 0);
     }
 
     // Driver Code
     static public void Main(int[] arr, int r)
     {
-       // int[] arr = { 1,2,3,4,5 };
-       // int r = 3;
+        // int[] arr = { 1,2,3,4,5 };
+        // int r = 3;
         int n = arr.Length;
-        printCombination(arr,n,r);
+        printCombination(arr, n, r);
         Debug.Log("C COUNT " + PokerHand.combinations.Count);
-       
+
     }
 }

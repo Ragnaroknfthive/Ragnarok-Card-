@@ -1044,8 +1044,8 @@ RectTransform:
   m_Father: {fileID: 1474475726}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1.0752882, y: 0.9388029}
-  m_AnchorMax: {x: 2.0970273, y: 1.3190217}
+  m_AnchorMin: {x: 1.0751879, y: 0.93749994}
+  m_AnchorMax: {x: 2.0977445, y: 1.4943181}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.000000059604645}
@@ -10030,7 +10030,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.43529412, g: 0.019607844, b: 0.019607844, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10039,18 +10039,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_FontSize: 0
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 3
-    m_MaxSize: 35
+    m_MinSize: 0
+    m_MaxSize: 17
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Counter Attack for xx
 --- !u!222 &657501609
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15204,7 +15204,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15232,7 +15232,6 @@ MonoBehaviour:
   speedTx: {fileID: 1239717611}
   UsedSpeedTx: {fileID: 1439795473}
   UsedSpeedButton: {fileID: 2126149956}
-  action: 0
 --- !u!1 &972566297
 GameObject:
   m_ObjectHideFlags: 0
@@ -15797,6 +15796,10 @@ MonoBehaviour:
   MyMainDeck: {fileID: 144861245}
   OppoMainDeck: {fileID: 274369053}
   spawned_ids: 
+  DestroyCardEff: {fileID: 7862228594200613705, guid: ea83ee77df6d0ab428dea6f5e900faff,
+    type: 3}
+  DestroyCardEffOppo: {fileID: 7862228594200613705, guid: 4d47f2dfaabecc240aa8a5a5a2e6135a,
+    type: 3}
   offset_card: 50
   isShowCasing: 0
 --- !u!4 &1017387614
@@ -18863,6 +18866,7 @@ MonoBehaviour:
   IsPetTurn: 0
   timer: 0
   ChessTimer: 0
+  LastAtkAmt: 0
   criticalHitPercentage: 0
   isResultScreenOn: 0
   isReset: 0
@@ -25938,7 +25942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.046624985, y: 0.01875}
   m_AnchorMax: {x: 0.296625, y: 0.08125}
-  m_AnchoredPosition: {x: -860.69946, y: -344.45715}
+  m_AnchoredPosition: {x: -860.69916, y: -344.45715}
   m_SizeDelta: {x: 259.23822, y: 28.467705}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1648655086
@@ -27398,7 +27402,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750217230}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
@@ -27406,7 +27410,7 @@ RectTransform:
   - {fileID: 2102901346}
   m_Father: {fileID: 1194406682}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.22921732, y: -0.19355556}
   m_AnchorMax: {x: 0.77391315, y: -0.000000028257016}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -27425,14 +27429,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c79e6fb983d86144a9183da778c55c1c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -31235,8 +31239,8 @@ RectTransform:
   m_Father: {fileID: 1194406682}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1.0869566, y: -0.08391251}
-  m_AnchorMax: {x: 2.1086957, y: 0.29630622}
+  m_AnchorMin: {x: 1.0864662, y: -0.3124999}
+  m_AnchorMax: {x: 2.1090226, y: 0.24431823}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.000000059604645}
@@ -31318,14 +31322,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: c79e6fb983d86144a9183da778c55c1c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -33387,14 +33391,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2102901345}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.0000243, y: 1.0000243, z: 1.0000243}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1750217231}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -33428,7 +33432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.43529412, g: 0.019607844, b: 0.019607844, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -33437,11 +33441,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_FontSize: 17
     m_FontStyle: 0
     m_BestFit: 1
-    m_MinSize: 3
-    m_MaxSize: 35
+    m_MinSize: 1
+    m_MaxSize: 17
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1

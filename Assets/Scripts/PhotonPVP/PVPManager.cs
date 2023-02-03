@@ -10,22 +10,24 @@ using System;
 using UnityEngine.SceneManagement;
 using TMPro;
 [System.Serializable]
-public enum PVPStates{
+public enum PVPStates
+{
     AttackLoc,
     Attack,
     ExtraAttack,
     DefendLoc,
     Resolve,
-    CounterAttack_reraise,Brace_fold,Defend_check,engage_call
+    CounterAttack_reraise, Brace_fold, Defend_check, engage_call
 }
 
-public struct PlayerChoice{
-        public AttackLocation attackLoc;
-        public AttackType attack;
-        public List<AttackType> ExtraAttack;
-        public AttackLocation defendLoc;
+public struct PlayerChoice
+{
+    public AttackLocation attackLoc;
+    public AttackType attack;
+    public List<AttackType> ExtraAttack;
+    public AttackLocation defendLoc;
 
-    }
+}
 
 public class PVPManager : MonoBehaviour
 {
@@ -34,7 +36,7 @@ public class PVPManager : MonoBehaviour
     public static PVPManager manager;
     public GameObject player1, player2;
     public Image p1Image, p2Image;
-    public Image p1Outline, p2Outline,chessTurnIndicator;
+    public Image p1Outline, p2Outline, chessTurnIndicator;
 
     public Text[] p1Name, p2Name;
 
@@ -72,21 +74,21 @@ public class PVPManager : MonoBehaviour
 
     public int P1HeavyComboIndex, P2HeavyComboIndex;
     public int P1SpeedComboIndex, P2SpeedComboIndex;
-    public int P1RemainingHandHealth , P2RemainingHandHealth,P2LastAttackValue=0;
+    public int P1RemainingHandHealth, P2RemainingHandHealth, P2LastAttackValue = 0;
     public int p1bar { get { return P1RemainingHandHealth; } set { P1RemainingHandHealth = value; } }
     public Text winTxt;
     public Image winIm;
-   
+
     public Vector2 p1Pos, p2Pos;
-    public Chessman p1Obj,p2Obj;
-    private float lowestSpeedNeeded = 1.5f; 
-    
-    
-    
+    public Chessman p1Obj, p2Obj;
+    private float lowestSpeedNeeded = 1.5f;
+
+
+
     bool isattackerMaster;
 
     public Button skipTurn;
-    public GameObject LocationChoices, AttackChoices,LocationChoiceHeading;
+    public GameObject LocationChoices, AttackChoices, LocationChoiceHeading;
 
     public Text P1StaTxt, P2StaTxt, P1HealthTxt, P2HealthTxt, P1RageTxt, P2RageTxt;
     public Text MyManaBarTxt, OppoManaBarTxt;
@@ -97,14 +99,14 @@ public class PVPManager : MonoBehaviour
     public float BatPoints = 0;
     public float p1SliderAttack, p2SliderAttack;
     public Button EndTurnBtn;
-    public Text BetTextObj,EndTurnTimerText,ChessTurnTimerText;
+    public Text BetTextObj, EndTurnTimerText, ChessTurnTimerText;
     int choice = -1;
-    public GameObject PlayerCards, BoardCards,OpponetPlayerCards;
+    public GameObject PlayerCards, BoardCards, OpponetPlayerCards;
     public int rangeCounter = 0;
-    public SliderAttack lastAttackType= SliderAttack.nun;
-    public int PlayerChoiceOnce = -1,OpponentChoiceOne=-1,OpponentRangCounter=0;
-    public int[] opponentCardColor = new int[2] { -1,-1 };
-    public int[] opponentCardValue = new int[2] { -1,-1 };
+    public SliderAttack lastAttackType = SliderAttack.nun;
+    public int PlayerChoiceOnce = -1, OpponentChoiceOne = -1, OpponentRangCounter = 0;
+    public int[] opponentCardColor = new int[2] { -1, -1 };
+    public int[] opponentCardValue = new int[2] { -1, -1 };
     public List<Sprite> opponentCardSprite = new List<Sprite>();
     public Card_SO[] deckFullList;
     public List<RectTransform> OpponentPlayerCardPositions;
@@ -116,40 +118,40 @@ public class PVPManager : MonoBehaviour
     public bool isAttackLocationSelected = false, isDefenceLocationSelected = false;
     public int MyLastAttackAmount = 0;
     public int P1StartHealth = 100, P2StartHealth = 100;
-    public int myLocalBatAmount=0;
+    public int myLocalBatAmount = 0;
     public Text resultText;
     public Text LocationChoiceText;
     public GameObject choiceConfPopup;
-    public int EndTurnTimer = 5,ChessTurnTimer=30;
-    public int OriginalTimerVal = 30 ,OriginalChessTimerValue=30;
+    public int EndTurnTimer = 5, ChessTurnTimer = 30;
+    public int OriginalTimerVal = 30, OriginalChessTimerValue = 30;
     public GameObject moveChoiceConfirmation;
     public GameObject TimerObject;
     public Text p1AttackFor, p2AttackFor;
-    public int AttackFor=0;
+    public int AttackFor = 0;
     public int OpponentBestIndex = 0;
     public GameObject extraDamageMessageP1, extraDamageMessageP2;
     public bool isAttackViaSpeedPoints = false;
-    public float p1DamageCapacityReducedby = 0, p2DamageCapacityReducedby = 0, p1StaminRecoveryReducedBy = 0, p2StaminaRecovertReducedby = 0, p1DamageIncreasedby = 0, p2DamageIncreasedby = 0, p1SpeedSlowBy = 0, opponentAttackWeakPercentageVal=0, p2SpeedSlowedBy;
+    public float p1DamageCapacityReducedby = 0, p2DamageCapacityReducedby = 0, p1StaminRecoveryReducedBy = 0, p2StaminaRecovertReducedby = 0, p1DamageIncreasedby = 0, p2DamageIncreasedby = 0, p1SpeedSlowBy = 0, opponentAttackWeakPercentageVal = 0, p2SpeedSlowedBy;
     public float myExtraDamagePercentage, my_OpponetSpeedMakeSlowerPercentage, my_opponentAttackMadeWeakerPerntage, my_opponentStaminaLessRecovertPerncetage;
-    public Text myExtraDamagePercentageTxt, my_opponentAttackMadeWeakerPerntageTxt, my_opponentStaminaLessRecovertPerncetageTxt,myOpponentAttackSpeedSlowTxt;
-    public Text p2ExtraDamagePercentageTxt, p2_opponentAttackMadeWeakerPerntageTxt, p2_opponentStaminaLessRecovertPerncetageTxt,p2OpponentAttackSpeedSlowTxt;
+    public Text myExtraDamagePercentageTxt, my_opponentAttackMadeWeakerPerntageTxt, my_opponentStaminaLessRecovertPerncetageTxt, myOpponentAttackSpeedSlowTxt;
+    public Text p2ExtraDamagePercentageTxt, p2_opponentAttackMadeWeakerPerntageTxt, p2_opponentStaminaLessRecovertPerncetageTxt, p2OpponentAttackSpeedSlowTxt;
     public GameObject p1SpeedSlowObj, p2SpeedSlowObj;
 
     public GameObject p1Weakness, p2Weakness;
     private void Awake()
     {
-        manager = this;        
+        manager = this;
     }
 
     public MovePlate selectedMove;
 
-    public PieceType myPiece, opponentpiece,tempPiece,opponentPieceAttack,tempPieceOpp;
+    public PieceType myPiece, opponentpiece, tempPiece, opponentPieceAttack, tempPieceOpp;
 
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
     public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
-    public GameObject speedAttackChoices,speedAttackButton;
+    public GameObject speedAttackChoices, speedAttackButton;
     public Slider speedAttackSlider;
-    public int isAttackedOnLeftSide=0, isAttackedOnRightSide=0, isAttackedInMiddle=0, isAttackedHigh=0, isAttackedLow=0;
+    public int isAttackedOnLeftSide = 0, isAttackedOnRightSide = 0, isAttackedInMiddle = 0, isAttackedHigh = 0, isAttackedLow = 0;
     public int isAttackedOnLeftSideOpponent = 0, isAttackedOnRightSideOpponent = 0, isAttackedInMiddleOpponent = 0, isAttackedHighOpponent = 0, isAttackedLowOpponent = 0;
     public TextMeshProUGUI debug;
 
@@ -164,7 +166,7 @@ public class PVPManager : MonoBehaviour
 
     public bool IsAttacker;
 
-    public bool IsPetTurn = false; 
+    public bool IsPetTurn = false;
 
     // Start is called before the first frame update
     void Start()
@@ -176,22 +178,24 @@ public class PVPManager : MonoBehaviour
 
         int a = 2;
         a *= 2;
-        Debug.Log("a is "+a);
+        Debug.Log("a is " + a);
         Debug.Log("<color=yellow> pvp manager start  </color>");
         //UpdateHMTxt();
-        
-        
-    }  
 
-    public void UpdateLocationChoices(){
-        if(!isAttackLocationSelected && IsAttacker)
+
+    }
+
+    public void UpdateLocationChoices()
+    {
+        if (!isAttackLocationSelected && IsAttacker)
         {
             LocationChoiceHeading.GetComponent<Text>().text = "Choose Attack Location";
             LocationChoiceHeading.SetActive(true);
             LocationChoices.SetActive(true);
             isLocationChoose = true;
         }
-        else if(!isDefenceLocationSelected && !IsAttacker){
+        else if (!isDefenceLocationSelected && !IsAttacker)
+        {
             LocationChoiceHeading.GetComponent<Text>().text = "Choose Defence Location";
             LocationChoiceHeading.SetActive(true);
             LocationChoices.SetActive(true);
@@ -204,7 +208,7 @@ public class PVPManager : MonoBehaviour
         }
     }
 
-     public void StartChessTimer() 
+    public void StartChessTimer()
     {
         endChessTurn = false;
         ChessTurnTimer = OriginalChessTimerValue;
@@ -213,9 +217,9 @@ public class PVPManager : MonoBehaviour
         //Debug.LogError("Chess Timer STARTED FROM HERE");
         // if(!startChesstimer)
         // {
-            TimerObject.SetActive(true);
-            //StartCoroutine(UpdateChessTurnTimer());
-            startChesstimer = true;
+        TimerObject.SetActive(true);
+        //StartCoroutine(UpdateChessTurnTimer());
+        startChesstimer = true;
         ///}
     }
     bool timerStarted = false;
@@ -223,29 +227,30 @@ public class PVPManager : MonoBehaviour
     {
         timerStarted = true;
         //Debug.LogError("TICK");
-        ChessTurnTimerText.text = 
-            
+        ChessTurnTimerText.text =
+
         ChessTurnTimer.ToString();
 
         //while(EndTurnTimer > 0) 
         //{
-       
-        
 
-        while(ChessTurnTimer > 0){
+
+
+        while (ChessTurnTimer > 0)
+        {
             yield return new WaitForSeconds(1);
             ChessTurnTimer -= 1;
-            if(ChessTurnTimer < 0)
+            if (ChessTurnTimer < 0)
             {
                 ChessTurnTimer = 0;
             }
             ChessTurnTimerText.text = ChessTurnTimer.ToString();
             //}
-            if(ChessTurnTimer <= 0)
+            if (ChessTurnTimer <= 0)
             {
-                if(!endChessTurn)
+                if (!endChessTurn)
                 {
-                    if(Game.Get().ChessCanvas.activeSelf) 
+                    if (Game.Get().ChessCanvas.activeSelf)
                     {
                         Game.Get().NextTurn();
                     }
@@ -294,53 +299,58 @@ public class PVPManager : MonoBehaviour
 
     private void Update()
     {
-        if(DemoManager.instance._pokerButtons.activeSelf) 
+        if (DemoManager.instance._pokerButtons.activeSelf)
         {
             //if(p1Speed>0)
             //speedAttackButton.SetActive(true);
-             if(P1RageBar.value > 50)
-                 SpecialAttackButton.SetActive(true);
+            if (P1RageBar.value > 50)
+                SpecialAttackButton.SetActive(true);
         }
-        else 
+        else
         {
             SpecialAttackButton.SetActive(false);
-           // speedAttackChoices.SetActive(false);
+            // speedAttackChoices.SetActive(false);
             //speedAttackButton.SetActive(false);
         }
 
-        if(starttimer){
+        if (starttimer)
+        {
             timer -= Time.unscaledDeltaTime;
-            if(timer < 0)
+            if (timer < 0)
             {
                 timer = 0;
             }
             EndTurnTimerText.text = Mathf.RoundToInt(timer).ToString();
-            if(timer <= 0f){
-                if(!endTurn)
+            if (timer <= 0f)
+            {
+                if (!endTurn)
                 {
                     OnClickEndTurn();
-                    
+
                     EndTurnTimer = 30;
                     timer = 30;
                     starttimer = false;
                     endTurnTimeStarted = false;
-                    
+
                 }
             }
         }
 
-        if(startChesstimer){
+        if (startChesstimer)
+        {
             timerStarted = true;
             ChessTimer -= Time.unscaledDeltaTime;
-            if(ChessTimer < 0){
+            if (ChessTimer < 0)
+            {
                 ChessTimer = 0;
             }
             ChessTurnTimerText.text = Mathf.RoundToInt(ChessTimer).ToString();
-            
-            if(ChessTimer <= 0){
-                if(!endChessTurn)
+
+            if (ChessTimer <= 0)
+            {
+                if (!endChessTurn)
                 {
-                    if(Game.Get().ChessCanvas.activeSelf) 
+                    if (Game.Get().ChessCanvas.activeSelf)
                     {
                         Game.Get().NextTurn();
                     }
@@ -355,9 +365,9 @@ public class PVPManager : MonoBehaviour
 
         }
     }
-     public IEnumerator UpdateEndTurnTimer() 
+    public IEnumerator UpdateEndTurnTimer()
     {
-        
+
         //Debug.LogError("TICK");
         // EndTurnTimerText.text = EndTurnTimer.ToString();
 
@@ -390,17 +400,18 @@ public class PVPManager : MonoBehaviour
         EndTurnTimer = 30;
         EndTurnTimerText.text = EndTurnTimer.ToString();
 
-        while(EndTurnTimer > 0){
+        while (EndTurnTimer > 0)
+        {
             yield return new WaitForSecondsRealtime(1f);
             EndTurnTimer -= 1;
 
 
-            
+
             EndTurnTimerText.text = EndTurnTimer.ToString();
             //}
-            if(EndTurnTimer <= 0)
+            if (EndTurnTimer <= 0)
             {
-                if(!endTurn)
+                if (!endTurn)
                 {
                     OnClickEndTurn();
                     // if(Game.Get().ChessCanvas.activeSelf) 
@@ -408,7 +419,7 @@ public class PVPManager : MonoBehaviour
                     //     Game.Get().NextTurn();
                     // }
                     //StopCoroutine(UpdateChessTurnTimer());
-                    
+
                     EndTurnTimer = 30;
                     endTurnTimeStarted = false;
                     yield break;
@@ -416,13 +427,13 @@ public class PVPManager : MonoBehaviour
             }
         }
 
-        
-        
+
+
     }
 
-    public void StartTimer() 
+    public void StartTimer()
     {
-        if(endTurnTimeStarted)
+        if (endTurnTimeStarted)
             return;
         endTurn = false;
         EndTurnTimer = OriginalTimerVal;
@@ -435,14 +446,14 @@ public class PVPManager : MonoBehaviour
 
     }
 
-    public void ChessMoveConfirmed() 
+    public void ChessMoveConfirmed()
     {
-        if(selectedMove != null) 
+        if (selectedMove != null)
         {
-           
-            Debug.Log("SELECTED MOVE TYPE "+selectedMove.GetReference().type);
+
+            Debug.Log("SELECTED MOVE TYPE " + selectedMove.GetReference().type);
             selectedMove.GetPieceTypeOnThisPlate();
-           // SetLastPieceInfo(tempPiece,tempPieceOpp);
+            // SetLastPieceInfo(tempPiece,tempPieceOpp);
             selectedMove.MovePiece();
 
             selectedMove = null;
@@ -450,48 +461,48 @@ public class PVPManager : MonoBehaviour
             PVPManager.manager.endChessTurn = true;
             StopCoroutine(UpdateChessTurnTimer());
             timerStarted = false;
-          //  Invoke("SetChessSpriteForPVP",0.5f);
+            //  Invoke("SetChessSpriteForPVP",0.5f);
         }
-       
+
     }
-    private void SetLastPieceInfo(PieceType type,PieceType oppPiece)
+    private void SetLastPieceInfo(PieceType type, PieceType oppPiece)
     {
-        if(PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
-       {
+        if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
+        {
             PVPManager.manager.myPiece = type;
             PVPManager.manager.opponentpiece = oppPiece;
-            photonView.RPC("SetPieceType",RpcTarget.Others,type,oppPiece);
-       }
+            photonView.RPC("SetPieceType", RpcTarget.Others, type, oppPiece);
+        }
     }
-    public void ShowSpeedAttackSlider() 
+    public void ShowSpeedAttackSlider()
     {
         //AttackChoices.SetActive(false);
         //speedAttackChoices.SetActive(true);
     }
     public void SetOpponentAttackPieceInfo(PieceType type)
     {
-       
-       // opponentpiece = type;
-        if(PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer)
+
+        // opponentpiece = type;
+        if (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer)
         {
-          //  PVPManager.manager.myPiece = type;
-          //  Debug.Log("OPP PIECe TYPE " + type + " This Player is Turn Player-" + (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer));
+            //  PVPManager.manager.myPiece = type;
+            //  Debug.Log("OPP PIECe TYPE " + type + " This Player is Turn Player-" + (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer));
 
 
             //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
         }
-        if(PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
+        if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
         {
             Debug.Log("OPP PIECe TYPE " + type + " This Player is Turn Player-" + (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer));
 
 
             PVPManager.manager.tempPieceOpp = type;
 
-          //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
+            //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
         }
     }
     [PunRPC]
-    public void SetPieceType(PieceType type,PieceType myType)
+    public void SetPieceType(PieceType type, PieceType myType)
     {
         Debug.Log("MY TYPE " + myPiece);
 
@@ -508,9 +519,9 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void SetOpponentAttackedSide_RPC(int location)
     {
-      bool  isSlowedDown = false;
-      Chessman pObj = opponentObj;
-        switch(location)
+        bool isSlowedDown = false;
+        Chessman pObj = opponentObj;
+        switch (location)
         {
             case ((int)AttackLocation.None):
                 break;
@@ -518,7 +529,7 @@ public class PVPManager : MonoBehaviour
                 isAttackedHighOpponent += 1;
                 myExtraDamagePercentage += (isAttackedHighOpponent * 0.05f);
                 pObj.high = isAttackedHighOpponent;
-                myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString()+" %";
+                myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString() + " %";
                 break;
             case ((int)AttackLocation.Low):
                 isAttackedLowOpponent += 1;
@@ -549,20 +560,20 @@ public class PVPManager : MonoBehaviour
             default:
                 break;
         }
-        if(isSlowedDown)
+        if (isSlowedDown)
         {
-            LeanTween.scale(p2SpeedSlowObj.gameObject,Vector3.one,0.3f);
-            Invoke("ResetSpeed",1.5f);
+            LeanTween.scale(p2SpeedSlowObj.gameObject, Vector3.one, 0.3f);
+            Invoke("ResetSpeed", 1.5f);
         }
-        photonView.RPC("UpdateOpponentEffects_RPC",RpcTarget.Others,myExtraDamagePercentage,my_opponentAttackMadeWeakerPerntage,my_opponentStaminaLessRecovertPerncetage,my_OpponetSpeedMakeSlowerPercentage,isSlowedDown);
-      
+        photonView.RPC("UpdateOpponentEffects_RPC", RpcTarget.Others, myExtraDamagePercentage, my_opponentAttackMadeWeakerPerntage, my_opponentStaminaLessRecovertPerncetage, my_OpponetSpeedMakeSlowerPercentage, isSlowedDown);
+
 
 
     }
-    public void ResetSpeed() 
+    public void ResetSpeed()
     {
-        LeanTween.scale(p1SpeedSlowObj.gameObject,Vector3.zero,0.3f);
-        LeanTween.scale(p2SpeedSlowObj.gameObject,Vector3.zero,0.3f);
+        LeanTween.scale(p1SpeedSlowObj.gameObject, Vector3.zero, 0.3f);
+        LeanTween.scale(p2SpeedSlowObj.gameObject, Vector3.zero, 0.3f);
     }
     [PunRPC]
     public void SetOpponentAttackWeakPercentage_RPC(float val)
@@ -570,25 +581,25 @@ public class PVPManager : MonoBehaviour
         opponentAttackWeakPercentageVal = val;
     }
     [PunRPC]
-    public void UpdateOpponentEffects_RPC(float p2ExtraD,float weakAttack,float staminaLow,float speed_slow,bool isSlowedDown=false)
+    public void UpdateOpponentEffects_RPC(float p2ExtraD, float weakAttack, float staminaLow, float speed_slow, bool isSlowedDown = false)
     {
-        p2ExtraDamagePercentageTxt.text = (p2ExtraD*100).ToString() +" %";
-        p2_opponentAttackMadeWeakerPerntageTxt.text = (weakAttack*100).ToString() + " %";
-        p2_opponentStaminaLessRecovertPerncetageTxt.text = (staminaLow*100).ToString() +" %";
+        p2ExtraDamagePercentageTxt.text = (p2ExtraD * 100).ToString() + " %";
+        p2_opponentAttackMadeWeakerPerntageTxt.text = (weakAttack * 100).ToString() + " %";
+        p2_opponentStaminaLessRecovertPerncetageTxt.text = (staminaLow * 100).ToString() + " %";
         p2StaminaRecovertReducedby = staminaLow;
-        myOpponentAttackSpeedSlowTxt.text = (speed_slow*100).ToString() +" %";
+        myOpponentAttackSpeedSlowTxt.text = (speed_slow * 100).ToString() + " %";
 
-        if(isSlowedDown)
+        if (isSlowedDown)
         {
-            LeanTween.scale(p1SpeedSlowObj.gameObject,Vector3.one,0.3f);
-            Invoke("ResetSpeed",1.5f);
+            LeanTween.scale(p1SpeedSlowObj.gameObject, Vector3.one, 0.3f);
+            Invoke("ResetSpeed", 1.5f);
         }
     }
 
     public void SetOpponentAttackedSide_Local(int location)
     {
         //Debug.LogError("opponent attacked : " + location);
-        switch (location)   
+        switch (location)
         {
             case ((int)AttackLocation.None):
                 break;
@@ -618,13 +629,13 @@ public class PVPManager : MonoBehaviour
 
         //Debug.LogError("myObj updated : " + myObj.high);
     }
-    public void ResetAttackLocation() 
+    public void ResetAttackLocation()
     {
-        isAttackedHigh =0;
-        isAttackedLow =0;
-        isAttackedOnLeftSide =0;
-        isAttackedOnRightSide =0;
-        isAttackedInMiddle =0;
+        isAttackedHigh = 0;
+        isAttackedLow = 0;
+        isAttackedOnLeftSide = 0;
+        isAttackedOnRightSide = 0;
+        isAttackedInMiddle = 0;
 
 
         isAttackedHighOpponent = 0;
@@ -633,8 +644,8 @@ public class PVPManager : MonoBehaviour
         isAttackedOnRightSideOpponent = 0;
         isAttackedInMiddleOpponent = 0;
 
-        myExtraDamagePercentageTxt.text = "0"; my_opponentAttackMadeWeakerPerntageTxt.text = "0"; my_opponentStaminaLessRecovertPerncetageTxt.text = "0";myOpponentAttackSpeedSlowTxt.text = "0";
-        p2ExtraDamagePercentageTxt.text = "0"; p2_opponentAttackMadeWeakerPerntageTxt.text = "0"; p2_opponentStaminaLessRecovertPerncetageTxt.text = "0";p2OpponentAttackSpeedSlowTxt.text = "0";
+        myExtraDamagePercentageTxt.text = "0"; my_opponentAttackMadeWeakerPerntageTxt.text = "0"; my_opponentStaminaLessRecovertPerncetageTxt.text = "0"; myOpponentAttackSpeedSlowTxt.text = "0";
+        p2ExtraDamagePercentageTxt.text = "0"; p2_opponentAttackMadeWeakerPerntageTxt.text = "0"; p2_opponentStaminaLessRecovertPerncetageTxt.text = "0"; p2OpponentAttackSpeedSlowTxt.text = "0";
 
         p1DamageIncreasedby = 0;
         p1DamageCapacityReducedby = 0;
@@ -648,30 +659,30 @@ public class PVPManager : MonoBehaviour
         p2DamageIncreasedby = 0;
         opponentAttackWeakPercentageVal = 0;
 
-        myExtraDamagePercentage =0; my_OpponetSpeedMakeSlowerPercentage = 0; my_opponentAttackMadeWeakerPerntage = 0;
-        my_opponentStaminaLessRecovertPerncetage=0;
+        myExtraDamagePercentage = 0; my_OpponetSpeedMakeSlowerPercentage = 0; my_opponentAttackMadeWeakerPerntage = 0;
+        my_opponentStaminaLessRecovertPerncetage = 0;
 
     }
     public void ChessMoveRejected()
     {
-         selectedMove = null;
+        selectedMove = null;
         moveChoiceConfirmation.gameObject.SetActive(false);
     }
 
     bool endTurnTimeStarted = false;
-   
-   
+
+
     public void UpdateHMTxt()
     {
-       
-        P1HealthTxt.text =  P1HealthBar.value+" / "+P1HealthBar.maxValue;
-        P2HealthTxt.text = P2HealthBar.value+" / "+P2HealthBar.maxValue;
-        P1StaTxt.text = "Stamina "+MathF.Round(P1StaVal,2)+" / "+P1StaBar.maxValue;
-        P2StaTxt.text = "Stamina "+MathF.Round(P2StaVal,2)+" / "+P2StaBar.maxValue;
-        P1RageTxt.text = "Rage "+P1RageBar.value.ToString();//+//" / "+P1RageBar.maxValue;
-        P2RageTxt.text = "Rage "+P2RageBar.value.ToString();//+" / "+P2RageBar.maxValue;
-        P1SpeedTxt.text  = p1Speed.ToString();
-        P2SpeedTxt.text  = p2Speed.ToString();
+
+        P1HealthTxt.text = P1HealthBar.value + " / " + P1HealthBar.maxValue;
+        P2HealthTxt.text = P2HealthBar.value + " / " + P2HealthBar.maxValue;
+        P1StaTxt.text = "Stamina " + MathF.Round(P1StaVal, 2) + " / " + P1StaBar.maxValue;
+        P2StaTxt.text = "Stamina " + MathF.Round(P2StaVal, 2) + " / " + P2StaBar.maxValue;
+        P1RageTxt.text = "Rage " + P1RageBar.value.ToString();//+//" / "+P1RageBar.maxValue;
+        P2RageTxt.text = "Rage " + P2RageBar.value.ToString();//+" / "+P2RageBar.maxValue;
+        P1SpeedTxt.text = p1Speed.ToString();
+        P2SpeedTxt.text = p2Speed.ToString();
         P1StaBar.value = P1StaVal;
         P2StaBar.value = P2StaVal;
         //Debug.LogError("P1 STAMIN " + P1StaBar.value + " Time "+ DateTime.Now);
@@ -680,14 +691,15 @@ public class PVPManager : MonoBehaviour
 
     public void UpdateManaTxt()
     {
-        
+
         MyManaBar.value = MyManabarVal;
         OppoManaBar.value = OppoManabarVal;
         MyManaBarTxt.text = MyManabarVal + " / " + MaxManaBarVal;
         OppoManaBarTxt.text = OppoManabarVal + " / " + MaxManaBarVal;
     }
 
-    public void SetData(Vector2 posP1, Vector2 posP2, bool localplayerTurn,bool isReverse){
+    public void SetData(Vector2 posP1, Vector2 posP2, bool localplayerTurn, bool isReverse)
+    {
 
         Debug.Log("<color=yellow> ==== === = set data = === ==== </color>");
 
@@ -697,10 +709,10 @@ public class PVPManager : MonoBehaviour
             Debug.Log("CARD GENERATION CALL 2");
             DemoManager.instance.Generate3CardsStack();
         }
-        
-       
+
+
         isLocalPVPTurn = localplayerTurn;
-        
+
         player1Choice.attack = AttackType.None;
         player1Choice.attackLoc = AttackLocation.None;
         player1Choice.defendLoc = AttackLocation.None;
@@ -715,12 +727,12 @@ public class PVPManager : MonoBehaviour
         P1SpeedComboIndex = 0;
         P2SpeedComboIndex = 0;
 
-     
+
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
             //_playersNameInPvP[i].text = PhotonNetwork.PlayerList[i].NickName;
-            
-            if (PhotonNetwork.PlayerList[i]==PhotonNetwork.LocalPlayer)
+
+            if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
             {
                 _playersNameInPvP[0].GetComponent<Text>().text = "Hero";//PhotonNetwork.PlayerList[i].NickName;
                 //Debug.Log("if name change "+_playersNameInPvP[i].GetComponent<Text>().text);
@@ -732,7 +744,8 @@ public class PVPManager : MonoBehaviour
             }
         }
 
-        if (isLocalPVPTurn){
+        if (isLocalPVPTurn)
+        {
             //SetModePanel();
             Game.Get().IsDefender = false;
             isLocalPVPFirstTurn = true;
@@ -742,12 +755,14 @@ public class PVPManager : MonoBehaviour
             // }else{
             //     isLocalPVPFirstTurn = false;
 
-               
+
             // }
-            
-        }else{
+
+        }
+        else
+        {
             Game.Get().IsDefender = true;
-            isLocalPVPFirstTurn = false;              
+            isLocalPVPFirstTurn = false;
             // if(PhotonNetwork.LocalPlayer.IsMasterClient){
             //     isLocalPVPFirstTurn = false;              
             // }
@@ -755,7 +770,7 @@ public class PVPManager : MonoBehaviour
             //     isLocalPVPFirstTurn = true;
 
             // }
-            
+
             // ModePanel.SetActive(false);
             // waitPanel.SetActive(true);
         }
@@ -763,39 +778,39 @@ public class PVPManager : MonoBehaviour
         //IsPetTurn = isLocalPVPFirstTurn;
 
         isattackerMaster = isLocalPVPFirstTurn && PhotonNetwork.LocalPlayer.IsMasterClient;
-        if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient)
             isattackerMaster = !isLocalPVPFirstTurn && !PhotonNetwork.LocalPlayer.IsMasterClient;
 
         //Info:Set laoding screen to avoid lag view and Reset Spell Cards
         Game.Get().loadingScreen.SetActive(true);
         SpellManager.instance.RemoveOldSpellData();
         SpellManager.instance.spawned_ids = new List<int>();
-        
-        //
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            photonView.RPC("SetDataRPC",RpcTarget.AllBuffered,posP1,posP2,isReverse);
 
-        
-        
-        
-        
-        
-        
+        //
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            photonView.RPC("SetDataRPC", RpcTarget.AllBuffered, posP1, posP2, isReverse);
+
+
+
+
+
+
+
         //Debug.Log("<color=yellow> ==== === = set data end = === ==== </color>");
 
     }
     [PunRPC]
-    public void UpdateAttackForText(int sliderVal,bool isCounter=false,bool isAllin=false) 
+    public void UpdateAttackForText(int sliderVal, bool isCounter = false, bool isAllin = false)
     {
-        if(isAllin) { p2AttackFor.text = "All In"; } 
+        if (isAllin) { p2AttackFor.text = "All In"; }
         else
         {
             p2AttackFor.text = isCounter ? "Counter attack for " + sliderVal : "Attack For " + sliderVal;
         }
 
-        p2AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
-        
-        Invoke("ResetText",3f);
+        p2AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one, 0.3f);
+
+        Invoke("ResetText", 3f);
     }
     [PunRPC]
     public void UpdatePotAmountForText(int sliderVal)
@@ -809,7 +824,7 @@ public class PVPManager : MonoBehaviour
         AttackFor = sliderVal;
         BetTextObj.text = "TOTAL ATTACK : " + AttackFor;
     }
-    public void ResetText() 
+    public void ResetText()
     {
         p2AttackFor.text = "";
         p1AttackFor.text = "";
@@ -817,16 +832,25 @@ public class PVPManager : MonoBehaviour
         p1AttackFor.gameObject.transform.parent.localScale = Vector3.zero;
         p2AttackFor.gameObject.transform.parent.localScale = Vector3.zero;
     }
-    public void sliderAttackbuttonClick(float sliderAttack, float StaminaConsumed)
+
+    public float LastAtkAmt;
+    [PunRPC]
+    public void UpdateLastAtkAmt(float f)
     {
-        Game.Get().UpdateLastAction(PlayerAction.attack);
+        LastAtkAmt = f;
+    }
+    public void sliderAttackbuttonClick(float sliderAttack, float StaminaConsumed, PlayerAction action)
+    {
+        MyLastAttackAmount = Mathf.FloorToInt(sliderAttack);
+        Game.Get().UpdateLastAction(action);
+        photonView.RPC("UpdateLastAtkAmt", RpcTarget.All, sliderAttack);
         //LocationChoiceHeading.SetActive(false);
         if (AttackSlider.instance._sliderAttack == SliderAttack.HeavyAttack)
         {
             AttackChoices.SetActive(false);
-            
+
             state = PVPStates.Attack;
-           
+
             if (PhotonNetwork.IsMasterClient)
             {
                 p1SliderAttack = sliderAttack;
@@ -902,15 +926,16 @@ public class PVPManager : MonoBehaviour
             }
         }
 
-        if(!isAttackLocationSelected && IsAttacker)
+        if (!isAttackLocationSelected && IsAttacker)
         {
             LocationChoiceHeading.GetComponent<Text>().text = "Choose Attack Location";
             LocationChoiceHeading.SetActive(true);
             LocationChoices.SetActive(true);
             isLocationChoose = true;
-            
+
         }
-        else if(!isDefenceLocationSelected && !IsAttacker){
+        else if (!isDefenceLocationSelected && !IsAttacker)
+        {
             LocationChoiceHeading.GetComponent<Text>().text = "Choose Defence Location";
             LocationChoiceHeading.SetActive(true);
             LocationChoices.SetActive(true);
@@ -922,7 +947,7 @@ public class PVPManager : MonoBehaviour
             //// StartTimer();
         }
 
-        
+
         DeductStamina(StaminaConsumed);
 
         // if(!isDefenceLocationSelected && !isLocalPVPFirstTurn){
@@ -930,53 +955,60 @@ public class PVPManager : MonoBehaviour
         //     LocationChoiceHeading.gameObject.SetActive(true);
         //     LocationChoices.SetActive(true);
         // }
-        
-       
+
+
     }
 
-    public void LaunchSpecialAttack(){
+    public void LaunchSpecialAttack()
+    {
         SpellManager.instance.CastSpell(p1Char.SpecialAttack);
         SpecialAttackButton.SetActive(false);
         DeductRage(p1Char.SpecialAttackCost);
     }
 
-    public void DeductRage(int v){
+    public void DeductRage(int v)
+    {
         P1RageBar.value -= v;
         UpdateHMTxt();
-        photonView.RPC("DeductRageRPC",RpcTarget.Others,v);
+        photonView.RPC("DeductRageRPC", RpcTarget.Others, v);
     }
 
     [PunRPC]
-    public void DeductRageRPC(int i){
+    public void DeductRageRPC(int i)
+    {
         P2RageBar.value -= i;
         UpdateHMTxt();
     }
 
-    public void DeductStamina(float i){
+    public void DeductStamina(float i)
+    {
         P1StaVal -= i;
         UpdateHMTxt();
-        photonView.RPC("DeductStaminaRPC",RpcTarget.Others,i);
+        photonView.RPC("DeductStaminaRPC", RpcTarget.Others, i);
     }
 
     [PunRPC]
-    public void DeductStaminaRPC(float i){
+    public void DeductStaminaRPC(float i)
+    {
         P2StaVal -= i;
         UpdateHMTxt();
     }
 
-    public void DeductSpeed(float i){
+    public void DeductSpeed(float i)
+    {
         p1Speed -= i;
-        p1Speed = Mathf.Clamp(p1Speed,0,p1Speed);
+        p1Speed = Mathf.Clamp(p1Speed, 0, p1Speed);
 
         UpdateHMTxt();
-        photonView.RPC("DeductSpeedRPC",RpcTarget.Others,i);
+        photonView.RPC("DeductSpeedRPC", RpcTarget.Others, i);
     }
 
     [PunRPC]
-    public void DeductSpeedRPC(float i){
+    public void DeductSpeedRPC(float i)
+    {
         p2Speed -= i;
         UpdateHMTxt();
-    }    
+    }
 
     [PunRPC]
     public void RPC_otherplayerTurnPoker(Player _player)
@@ -986,18 +1018,18 @@ public class PVPManager : MonoBehaviour
         LocationChoices.SetActive(false);
         AttackChoices.SetActive(false);
         choiceConfPopup.SetActive(false);
-        if(PhotonNetwork.LocalPlayer.NickName==_player.NickName)//(Game.Get().IsDefender==false)// != Game.Get().GetCurrentPlayer())
+        if (PhotonNetwork.LocalPlayer.NickName == _player.NickName)//(Game.Get().IsDefender==false)// != Game.Get().GetCurrentPlayer())
         {
-            if(isCheck)
+            if (isCheck)
             {
-                float checkCost = 1f-p1StaminRecoveryReducedBy;
-                
-                if(checkCost < 0) checkCost = 0;
+                float checkCost = 1f - p1StaminRecoveryReducedBy;
+
+                if (checkCost < 0) checkCost = 0;
 
                 P1StaBar.value += checkCost;
                 isCheck = false;
                 UpdateHMTxt();
-                photonView.RPC("UpdateOpponentStamina",RpcTarget.Others,checkCost);
+                photonView.RPC("UpdateOpponentStamina", RpcTarget.Others, checkCost);
             }
             //AttackChoices.SetActive(false);
             //LocationChoices.SetActive(false);
@@ -1016,33 +1048,34 @@ public class PVPManager : MonoBehaviour
 
             AttackChoices.SetActive(false);
             LocationChoices.SetActive(false);
-           // ModePanel.SetActive(false);
+            // ModePanel.SetActive(false);
             PlayerCards.SetActive(true);
             waitPanel.SetActive(true); //Debug.LogError("**ATTACKER_TURN NO_"+Game.Get().turn);
             IsPetTurn = false;
         }
         else
         {
-            if(Game.Get().turn < 8){
+            if (Game.Get().turn < 8)
+            {
                 StartTimer();
                 EndTurnBtn.gameObject.SetActive(true);
             }
-            
+
             AttackChoices.SetActive(false);
             LocationChoices.SetActive(false);
-           
+
             ModePanel.SetActive(true);
-           // PlayerCards.SetActive(false);
+            // PlayerCards.SetActive(false);
             waitPanel.SetActive(false);
-            if(Game.Get().turn < 2)
+            if (Game.Get().turn < 2)
             {
                 PokerButtonManager.instance.bet_attack.gameObject.SetActive(false);
                 PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(false);
-               
+
             }
-           
-           // else
-           // {
+
+            // else
+            // {
             //    if(P1HealthBar.value<(2*Game.Get().BatAmount))
             //{
             //    PokerButtonManager.instance.Reraise_CouterAttack.interactable = false;
@@ -1052,29 +1085,29 @@ public class PVPManager : MonoBehaviour
             //    PokerButtonManager.instance.Reraise_CouterAttack.interactable = true;
             //}
 
-            
-                PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(true);
+
+            PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(true);
             //PokerButtonManager.instance.Reraise_CouterAttack.interactable = Game.Get().BetAmount * 2 <= P1HealthBar.value ? true : false;
 
             //   PokerButtonManager.instance.Reraise_CouterAttack.interactable = Game.Get().BetAmount * 2 <= P1RemainingHandHealth ? true : false;
 
-            
+
 
             //Debug.LogError("**GAME Bet AMOUNT" + Game.Get().BetAmount);
             //Debug.LogError("**P1 TEMP HEALTH" + P1RemainingHandHealth);
-            PokerButtonManager.instance.bet_attack.interactable = Game.Get().BetAmount  <= P1RemainingHandHealth ? true : false;
+            PokerButtonManager.instance.bet_attack.interactable = Game.Get().BetAmount <= P1RemainingHandHealth ? true : false;
 
             PokerButtonManager.instance.call_Engauge.gameObject.SetActive(true);
-              //  PokerButtonManager.instance.call_Engauge.interactable = Game.Get().BetAmount <= P1HealthBar.value ? true:false;
+            //  PokerButtonManager.instance.call_Engauge.interactable = Game.Get().BetAmount <= P1HealthBar.value ? true:false;
             PokerButtonManager.instance.call_Engauge.interactable = Game.Get().BetAmount <= P1RemainingHandHealth ? true : false;
 
             PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(true);
             // }
-            if(Game.Get().turn >= 1)
+            if (Game.Get().turn >= 1)
             {
-               // PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(true);
-              
-                if(Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
+                // PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(true);
+
+                if (Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
                 {
                     //Debug.LogError("***LAST ATTACK TYPE 1" + Game.Get().lastAction);
                     PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(true);
@@ -1082,27 +1115,24 @@ public class PVPManager : MonoBehaviour
                     PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(true);
                     PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(false);
                 }
-                if(Game.Get().lastAction == PlayerAction.defend)
+                if (Game.Get().lastAction == PlayerAction.defend)
                 {
                     //Debug.LogError("***LAST ATTACK TYPE 2" + Game.Get().lastAction);
                     PokerButtonManager.instance.bet_attack.gameObject.SetActive(true);
                     PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(true);
-
                     PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(false);
                     PokerButtonManager.instance.call_Engauge.gameObject.SetActive(false);
                     PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(false);
 
                 }
 
-                if( Game.Get().lastAction== PlayerAction.engage)//(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8) &&
+                if (Game.Get().lastAction == PlayerAction.engage)//(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8) &&
                 {
                     //Debug.LogError("***LAST ATTACK TYPE 3" + Game.Get().lastAction);
                     PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(false);
                     PokerButtonManager.instance.call_Engauge.gameObject.SetActive(false);
-
                     PokerButtonManager.instance.bet_attack.gameObject.SetActive(true);
                     PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(true);
-
                     PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(false);
                 }
                 // if((Game.Get().turn == 3 || Game.Get().turn == 5 || Game.Get().turn == 7)  && Game.Get().lastAction == PlayerAction.engage)
@@ -1131,47 +1161,48 @@ public class PVPManager : MonoBehaviour
             //    PokerButtonManager.instance.allIn_btn.interactable = false;
             //}
 
+
             //All In
-            if(P2LastAttackValue * 2 > P1RemainingHandHealth) // if(Game.Get().BetAmount * 2 > P1RemainingHandHealth)
+            if (P2LastAttackValue > P1RemainingHandHealth) // if(Game.Get().BetAmount * 2 > P1RemainingHandHealth)
             {
                 PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(false);
-                if(!PokerButtonManager.instance.bet_attack.gameObject.activeSelf)
+                if (!PokerButtonManager.instance.bet_attack.gameObject.activeSelf)
                 {
-                    if(P2LastAttackValue < P1RemainingHandHealth)
+                    if (P2LastAttackValue > P1RemainingHandHealth)
                     {
                         //Debug.LogError("ALL IN TRUE FROM HERE " + P2LastAttackValue + " Remaining Health " + P1RemainingHandHealth);
                         PokerButtonManager.instance.allIn_btn.gameObject.SetActive(true);
                     }
-                    else 
+                    else
                     {
                         //Debug.LogError("ALL IN SET FALSE FROM HERE ");
                         PokerButtonManager.instance.allIn_btn.gameObject.SetActive(false);
                     }
                 }
-               
+
             }
             else
             {
-                if(P2RemainingHandHealth <= 0) 
+                if (P2RemainingHandHealth <= 0)
                 {
                     PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(false);
                     PokerButtonManager.instance.allIn_btn.gameObject.SetActive(true);
                 }
-                else 
+                else
                 {
 
                     PokerButtonManager.instance.allIn_btn.gameObject.SetActive(false);
                 }
             }
-            if(PokerButtonManager.instance.bet_attack.gameObject.activeSelf) 
+            if (PokerButtonManager.instance.bet_attack.gameObject.activeSelf)
             {
                 PokerButtonManager.instance.allIn_btn.gameObject.SetActive(false);
             }
             DemoManager.instance._pokerButtons.SetActive(true);
-            if(P1RageBar.value > 50)
+            if (P1RageBar.value > 50)
                 SpecialAttackButton.SetActive(true);
             //Debug.LogError("**DEFENDER NO_" + Game.Get().turn);
-            if(Game.Get().lastAction != PlayerAction.attack && Game.Get().lastAction != PlayerAction.counterAttack && !isAttackLocationSelected)// || !isDefenceLocationSelected
+            if (Game.Get().lastAction != PlayerAction.attack && Game.Get().lastAction != PlayerAction.counterAttack && !isAttackLocationSelected)// || !isDefenceLocationSelected
             {
                 // LocationChoices.SetActive(true);
                 // LocationChoiceHeading.SetActive(true);
@@ -1181,7 +1212,7 @@ public class PVPManager : MonoBehaviour
             }
             else
             {
-                
+
             }
             //if(PhotonNetwork.LocalPlayer.IsMasterClient)
             //{
@@ -1192,8 +1223,8 @@ public class PVPManager : MonoBehaviour
             //    P2HealthBar.value -= Game.Get().HealthDemage;
             //}
             UpdateHMTxt();
-           IsPetTurn = true;
-           SpellManager.PetAlreadyAttacked = false;
+            IsPetTurn = true;
+            SpellManager.PetAlreadyAttacked = false;
 
         }
         //
@@ -1223,7 +1254,7 @@ public class PVPManager : MonoBehaviour
 
         //}
         //
-        if (_player!=PhotonNetwork.LocalPlayer)
+        if (_player != PhotonNetwork.LocalPlayer)
         {
             //isLocalPVPTurn = true;
             SpellManager.PetAlreadyAttacked = false;
@@ -1239,17 +1270,17 @@ public class PVPManager : MonoBehaviour
         }
         else
         {
-            
-           // Debug.Log("you are not turn player please wait");
+
+            // Debug.Log("you are not turn player please wait");
         }
     }
     [PunRPC]
-    public void UpdateOpponentStamina(float val) 
+    public void UpdateOpponentStamina(float val)
     {
-           // float checkCost = 1f;
-            P2StaBar.value += val;
+        // float checkCost = 1f;
+        P2StaBar.value += val;
         UpdateHMTxt();
-           // isCheck = false;
+        // isCheck = false;
     }
     [PunRPC]
     public void RPC_SetLastAttackerColor(string _Last_color)
@@ -1259,7 +1290,7 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void RPC_SetOpponentAttackChoice(int c)
     {
-      
+
         OpponentChoiceOne = c;
     }
 
@@ -1271,26 +1302,27 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void RPC_UpdateTurn()
     {
-       
+
         //&&( Game.Get().lastAction!= PlayerAction.defend && Game.Get().lastAction!=PlayerAction.engage && Game.Get().lastAction != PlayerAction.brace)
         Debug.Log("LAST ATTACK TYPE " + Game.Get().lastAction + PVPManager.manager.isattackerMaster);
         //debug.text = "LAST ATTACK TYPE " + Game.Get().lastAction + " - "+ LastGameTurn;
         //if(PhotonNetwork.LocalPlayer.NickName== Game.Get()._currnetTurnPlayer.NickName  && Game.Get().localBetAmount>=P2RemainingHandHealth && Game.Get().turn==7 && P1RemainingHandHealth>0 && MyLastBatAmount>P2RemainingHandHealth && !isAutoTurn ) 
-        if(PhotonNetwork.LocalPlayer.NickName == Game.Get()._currnetTurnPlayer.NickName && Game.Get().turn == 7 && P1RemainingHandHealth > 0 && MyLastBatAmount >= P2RemainingHandHealth && !isAutoTurn)
+        if (PhotonNetwork.LocalPlayer.NickName == Game.Get()._currnetTurnPlayer.NickName && Game.Get().turn == 7 && P1RemainingHandHealth > 0 && MyLastBatAmount >= P2RemainingHandHealth && !isAutoTurn)
         {
             Debug.Log("LOCAL PLAYER ALL IN RAISED ");
         }
-        else if(PhotonNetwork.LocalPlayer.NickName != Game.Get()._currnetTurnPlayer.NickName && P2LastAttackValue>=P1RemainingHandHealth && Game.Get().turn == 7 && P2RemainingHandHealth>0 && !isAutoTurn) 
+        else if (PhotonNetwork.LocalPlayer.NickName != Game.Get()._currnetTurnPlayer.NickName && P2LastAttackValue >= P1RemainingHandHealth && Game.Get().turn == 7 && P2RemainingHandHealth > 0 && !isAutoTurn)
         {
 
             Debug.Log("Other PLAYER ALL IN OPPONENT " + P2LastAttackValue);
         }
-        else 
+        else
         {
             Game.Get().turn += 1;
         }
 
-        if(Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1)){
+        if (Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1))
+        {
             Game.Get().turn -= 1;
             return;
         }
@@ -1303,28 +1335,28 @@ public class PVPManager : MonoBehaviour
 
 
         //1
-        if(Game.Get().turn == 2)
+        if (Game.Get().turn == 2)
         {
 
-            for(int i = 0 ; i < DemoManager.instance.board_cards.Count ; i++)
+            for (int i = 0; i < DemoManager.instance.board_cards.Count; i++)
             {
-                DemoManager.instance.board_cards[i].gameObject.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(40 * i,0,0);
+                DemoManager.instance.board_cards[i].gameObject.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(40 * i, 0, 0);
                 DemoManager.instance.board_cards[i].gameObject.SetActive(true);
             }
 
             AddMana();
             AddStamina();
             //SpellManager.instance.DrawCard();
-            
+
         }
-        if(Game.Get().turn == 4)
+        if (Game.Get().turn == 4)
         {
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.Log("CARD GENERATION CALL  4rth Card");
-                DemoManager.instance.Generate3CardsStack(); 
+                DemoManager.instance.Generate3CardsStack();
             }
-            
+
             //for(int i = 0 ; i < DemoManager.instance.board_cards.Count ; i++)
             //{
             //    DemoManager.instance.board_cards[i].gameObject.SetActive(true);
@@ -1333,9 +1365,9 @@ public class PVPManager : MonoBehaviour
             AddMana();
             AddStamina();
             //SpellManager.instance.DrawCard();
-            
+
         }
-        if(Game.Get().turn == 6)
+        if (Game.Get().turn == 6)
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -1350,57 +1382,60 @@ public class PVPManager : MonoBehaviour
             //    DemoManager.instance.board_cards[i].gameObject.SetActive(true);
 
             //}
-            
-        }
-        if(Game.Get().turn == 8)
-        {
-          AddMana();
-          AddStamina();
 
-            for(int i = 0 ; i < DemoManager.instance.player_cards.Length ; i++)
+        }
+        if (Game.Get().turn == 8)
+        {
+            AddMana();
+            AddStamina();
+
+            for (int i = 0; i < DemoManager.instance.player_cards.Length; i++)
             {
-                if(DemoManager.instance.player_cards[i] != null && DemoManager.instance.player_cards[i].Count>0)
+                if (DemoManager.instance.player_cards[i] != null && DemoManager.instance.player_cards[i].Count > 0)
                 {
                     PokerHand myHand = DemoManager.instance.CompareHandWithStrength(i);
                     //Debug.LogError("***PLAYER NO " + i + " RESULT" + myHand.strength);
                     Game.Get().PokerHandResults[0] = myHand.printResult();
                     Game.Get().PlayerStrengths[0] = myHand.strength;
-                   //Game.Get().MyHighCardValue= (Int32) myHand.highCard.Find(x => x.cardValue == myHand.highCard.Max(x=>x.cardValue)).cardValue;
-                  //  Debug.LogError("MY HIGH CARD VAL " + Game.Get().MyHighCardValue);
-                    photonView.RPC("RPC_SetOthersPlayerStrength",RpcTarget.Others,myHand.strength,myHand.printResult(),Game.Get().MyHighCardValue,Game.Get().MySecondHighCardValue,Game.Get().MyHighCardList.ToArray());
+                    //Game.Get().MyHighCardValue= (Int32) myHand.highCard.Find(x => x.cardValue == myHand.highCard.Max(x=>x.cardValue)).cardValue;
+                    //  Debug.LogError("MY HIGH CARD VAL " + Game.Get().MyHighCardValue);
+                    photonView.RPC("RPC_SetOthersPlayerStrength", RpcTarget.Others, myHand.strength, myHand.printResult(), Game.Get().MyHighCardValue, Game.Get().MySecondHighCardValue, Game.Get().MyHighCardList.ToArray());
                     PhotonNetwork.SendAllOutgoingCommands();
-                    if(!isAttackLocationSelected && IsAttacker){
+                    if (!isAttackLocationSelected && IsAttacker)
+                    {
                         tempChoiceNo = 0;
                         ConfirmChoice();
                     }
-                    if(!isDefenceLocationSelected && !IsAttacker){
+                    if (!isDefenceLocationSelected && !IsAttacker)
+                    {
                         tempChoiceNo = 1;
                         ConfirmChoice();
                     }
-                    Invoke("DisplayResult",1f);
+                    Invoke("DisplayResult", 1f);
                 }
             }
-            
-           //int S=    DemoManager.instance.CompareHandWithStrength(1);
-           //     //Debug.LogError("*** PLAYER STRENGTH " +S+"===PLAYER NAME :"+ (PhotonNetwork.LocalPlayer.IsMasterClient?_playersNameInPvP[0].GetComponentInChildren<Text>().text.ToString(): _playersNameInPvP[1].GetComponentInChildren<Text>().text.ToString()));
-               
-          
-    //        int indexMax
-    //= !PlayerStrengths.Any() ? -1 :
-    //PlayerStrengths
-    //.Select((value,index) => new { Value = value,Index = index })
-    //.Aggregate((a,b) => (a.Value > b.Value) ? a : b)
-    //.Index;
+
+            //int S=    DemoManager.instance.CompareHandWithStrength(1);
+            //     //Debug.LogError("*** PLAYER STRENGTH " +S+"===PLAYER NAME :"+ (PhotonNetwork.LocalPlayer.IsMasterClient?_playersNameInPvP[0].GetComponentInChildren<Text>().text.ToString(): _playersNameInPvP[1].GetComponentInChildren<Text>().text.ToString()));
+
+
+            //        int indexMax
+            //= !PlayerStrengths.Any() ? -1 :
+            //PlayerStrengths
+            //.Select((value,index) => new { Value = value,Index = index })
+            //.Aggregate((a,b) => (a.Value > b.Value) ? a : b)
+            //.Index;
             // PlayerStrengths.Max
-            
+
         }
 
-        
+
     }
 
-    public void AddMana(){
+    public void AddMana()
+    {
         MaxManaBarVal += 1;
-        MaxManaBarVal = Mathf.Clamp(MaxManaBarVal,0,9);
+        MaxManaBarVal = Mathf.Clamp(MaxManaBarVal, 0, 9);
         MyManaBar.maxValue = MaxManaBarVal;
         OppoManaBar.maxValue = MaxManaBarVal;
         MyManabarVal = MaxManaBarVal;
@@ -1408,32 +1443,36 @@ public class PVPManager : MonoBehaviour
         UpdateManaTxt();
     }
 
-    public void AddStamina(){
+    public void AddStamina()
+    {
         float val = 1f - (p1StaminRecoveryReducedBy);
         P1StaVal += val;
-        Debug.LogError("Stamina recovery : "+val+" - "+ p1StaminRecoveryReducedBy);
-        P1StaVal = Mathf.Clamp(P1StaVal,0,P1StaBar.maxValue);
+        Debug.LogError("Stamina recovery : " + val + " - " + p1StaminRecoveryReducedBy);
+        P1StaVal = Mathf.Clamp(P1StaVal, 0, P1StaBar.maxValue);
         UpdateHMTxt();
-        photonView.RPC("AddStaminaRPC",RpcTarget.Others,val);
+        photonView.RPC("AddStaminaRPC", RpcTarget.Others, val);
     }
 
     [PunRPC]
-    public void AddStaminaRPC(float i){
+    public void AddStaminaRPC(float i)
+    {
         P2StaVal += i;
-        P2StaVal = Mathf.Clamp(P2StaVal,0,P2StaBar.maxValue);
+        P2StaVal = Mathf.Clamp(P2StaVal, 0, P2StaBar.maxValue);
         UpdateHMTxt();
     }
 
-    
 
-    public void DeductMana(int i){
+
+    public void DeductMana(int i)
+    {
         MyManabarVal -= i;
         UpdateManaTxt();
-        photonView.RPC("UpdateManaRPC",RpcTarget.Others,i);
+        photonView.RPC("UpdateManaRPC", RpcTarget.Others, i);
     }
 
     [PunRPC]
-    public void UpdateManaRPC(int i){
+    public void UpdateManaRPC(int i)
+    {
         OppoManabarVal -= i;
         UpdateManaTxt();
     }
@@ -1449,34 +1488,38 @@ public class PVPManager : MonoBehaviour
 
     public void DisplayResult()
     {
-        for(int s = 0 ; s < Game.Get().PlayerStrengths.Count ; s++)
+        for (int s = 0; s < Game.Get().PlayerStrengths.Count; s++)
         {
-            if(s == 0)
+            if (s == 0)
             {
                 //Debug.LogError("***MY STRENGTH " + Game.Get().PlayerStrengths[0]);
 
             }
-            if(s == 1)
+            if (s == 1)
             {
                 //Debug.LogError("***OPPONENT STRENGTH " + Game.Get().PlayerStrengths[1]);
             }
-            
-            resultText.text = "Your Hand :"+ Game.Get().PokerHandResults[0] 
-                            + ", Opponent Hand :"+ Game.Get().PokerHandResults[1];
+
+            resultText.text = "Your Hand :" + Game.Get().PokerHandResults[0]
+                            + ", Opponent Hand :" + Game.Get().PokerHandResults[1];
 
         }
 
-        if(Game.Get().IsDefender){
-            resultText.text += "\nYou Defended : "+playerDefenceLocation.ToString()+", Opponent Attacked : "+opponentAttackLocation.ToString();
-        }else{
-            resultText.text += "\nYou Attacked : "+playerAttackLocation.ToString()+", Opponent defended : "+opponentDefendLocation.ToString();
+        if (Game.Get().IsDefender)
+        {
+            resultText.text += "\nYou Defended : " + playerDefenceLocation.ToString() + ", Opponent Attacked : " + opponentAttackLocation.ToString();
         }
-        if(playerDefenceLocation == opponentAttackLocation || playerAttackLocation == opponentDefendLocation){
-            resultText.text += "\n Damage Dealt = "+(int)(AttackFor * 0.5f);
+        else
+        {
+            resultText.text += "\nYou Attacked : " + playerAttackLocation.ToString() + ", Opponent defended : " + opponentDefendLocation.ToString();
+        }
+        if (playerDefenceLocation == opponentAttackLocation || playerAttackLocation == opponentDefendLocation)
+        {
+            resultText.text += "\n Damage Dealt = " + (int)(AttackFor * 0.5f);
         }
         ResultRPCLocal();
         //if(PhotonNetwork.IsMasterClient)
-       // photonView.RPC("ResultRPC",RpcTarget.Others);
+        // photonView.RPC("ResultRPC",RpcTarget.Others);
         //Invoke("ResetData",2f);
 
         //Invoke("SetModePanel",3f);
@@ -1488,7 +1531,7 @@ public class PVPManager : MonoBehaviour
     //public void ResultRPC()
     //{
     //    bool isLocationMatch = false;
-        
+
     //    if(Game.Get().PlayerStrengths[0] > Game.Get().PlayerStrengths[1])
     //    {
     //        if(Game.Get().lastAction == PlayerAction.defend && isAttackLocationSelected)
@@ -1622,50 +1665,50 @@ public class PVPManager : MonoBehaviour
         SpecialAttackButton.SetActive(false);
         //bool isLocationMatch = false;
         bool isPlayer1Win = false;
-        if(Game.Get().PlayerStrengths[0] > Game.Get().PlayerStrengths[1])
+        if (Game.Get().PlayerStrengths[0] > Game.Get().PlayerStrengths[1])
         {
             isPlayer1Win = WinMethod();
             //..MathF.Round(p1Speed,2);
         }
-        else if(Game.Get().PlayerStrengths[0] < Game.Get().PlayerStrengths[1])
+        else if (Game.Get().PlayerStrengths[0] < Game.Get().PlayerStrengths[1])
         {
             LoseMethod();
             // Game.Get().NextTurn();
         }
-        else if(Game.Get().PlayerStrengths[0] == Game.Get().PlayerStrengths[1])
+        else if (Game.Get().PlayerStrengths[0] == Game.Get().PlayerStrengths[1])
         {
-            CardValue mCard =(CardValue) Enum.Parse(typeof(CardValue),Game.Get().MyHighCardValue.ToString());
-            CardValue oCard = (CardValue)Enum.Parse(typeof(CardValue),Game.Get().OpponentHighCardValue.ToString());
+            CardValue mCard = (CardValue)Enum.Parse(typeof(CardValue), Game.Get().MyHighCardValue.ToString());
+            CardValue oCard = (CardValue)Enum.Parse(typeof(CardValue), Game.Get().OpponentHighCardValue.ToString());
             //Debug.LogError("MY HIGH CARD " + mCard);
             //Debug.LogError("OPPONANT HIGH CARD " + oCard);
-            
-            if(Game.Get().MyHighCardValue > Game.Get().OpponentHighCardValue)
+
+            if (Game.Get().MyHighCardValue > Game.Get().OpponentHighCardValue)
             {
                 isPlayer1Win = WinMethod();
             }
-            else if(Game.Get().MyHighCardValue < Game.Get().OpponentHighCardValue)
+            else if (Game.Get().MyHighCardValue < Game.Get().OpponentHighCardValue)
             {
                 LoseMethod();
             }
-            else if(Game.Get().MyHighCardValue == Game.Get().OpponentHighCardValue)
+            else if (Game.Get().MyHighCardValue == Game.Get().OpponentHighCardValue)
             {
-                if(Game.Get().PlayerStrengths[0]==1) 
+                if (Game.Get().PlayerStrengths[0] == 1)
                 {
-                    if(Game.Get().MySecondHighCardValue> Game.Get().OpponentSecondHighCardValue) 
+                    if (Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue) 
+                    else if (Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
                     {
                         LoseMethod();
                     }
-                    else 
+                    else
                     {
-                        if(Game.Get().MyHighCardList[1]> Game.Get().OpponentHighCardList[1]) 
+                        if (Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
                         {
-                            isPlayer1Win = WinMethod() ;
+                            isPlayer1Win = WinMethod();
                         }
-                        else if(Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1]) 
+                        else if (Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
                         {
                             LoseMethod();
                         }
@@ -1676,94 +1719,94 @@ public class PVPManager : MonoBehaviour
 
                     }
                 }
-                else if(Game.Get().PlayerStrengths[0] == 2)
+                else if (Game.Get().PlayerStrengths[0] == 2)
                 {
-                    if(Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
+                    if (Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
+                    else if (Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
                     {
                         LoseMethod();
                     }
                     else
                     {
-                        if(Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
+                        if (Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
                         {
                             isPlayer1Win = WinMethod();
                         }
-                        else if(Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
+                        else if (Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
                         {
                             LoseMethod();
                         }
                         else
                         {
-                            isPlayer1Win = TieMethod();                         
+                            isPlayer1Win = TieMethod();
                         }
 
                     }
                 }
-                else if(Game.Get().PlayerStrengths[0] == 3)
+                else if (Game.Get().PlayerStrengths[0] == 3)
                 {
-                    if(Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
+                    if (Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
+                    else if (Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
                     {
                         LoseMethod();
                     }
                     else
                     {
-                        if(Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
+                        if (Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
                         {
                             isPlayer1Win = WinMethod();
                         }
-                        else if(Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
+                        else if (Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
                         {
                             LoseMethod();
                         }
                         else
                         {
-                           isPlayer1Win= TieMethod();
+                            isPlayer1Win = TieMethod();
                         }
 
                     }
                 }
-                else if(Game.Get().PlayerStrengths[0] == 7)
+                else if (Game.Get().PlayerStrengths[0] == 7)
                 {
-                    if(Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
+                    if (Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
+                    else if (Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
                     {
                         LoseMethod();
                     }
                     else
                     {
-                        if(Game.Get().MyHighCardList[0] > Game.Get().OpponentHighCardList[0])
+                        if (Game.Get().MyHighCardList[0] > Game.Get().OpponentHighCardList[0])
                         {
                             isPlayer1Win = WinMethod();
                         }
-                        else if(Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
+                        else if (Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
                         {
                             LoseMethod();
                         }
                         else
                         {
-                          isPlayer1Win =   TieMethod();
+                            isPlayer1Win = TieMethod();
                         }
 
                     }
                 }
-                else if(Game.Get().PlayerStrengths[0] == 6)
+                else if (Game.Get().PlayerStrengths[0] == 6)
                 {
-                    if(Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
+                    if (Game.Get().MySecondHighCardValue > Game.Get().OpponentSecondHighCardValue)
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
+                    else if (Game.Get().MySecondHighCardValue < Game.Get().OpponentSecondHighCardValue)
                     {
                         LoseMethod();
                     }
@@ -1773,34 +1816,34 @@ public class PVPManager : MonoBehaviour
 
                     }
                 }
-                else if(Game.Get().PlayerStrengths[0] == 0) 
+                else if (Game.Get().PlayerStrengths[0] == 0)
                 {
                     //High Card Comparison
-                    if(Game.Get().MyHighCardList[0] > Game.Get().OpponentHighCardList[0]) 
+                    if (Game.Get().MyHighCardList[0] > Game.Get().OpponentHighCardList[0])
                     {
                         isPlayer1Win = WinMethod();
                     }
-                    else if(Game.Get().MyHighCardList[0] < Game.Get().OpponentHighCardList[0]) 
+                    else if (Game.Get().MyHighCardList[0] < Game.Get().OpponentHighCardList[0])
                     {
                         LoseMethod();
                     }
-                    else  
+                    else
                     {
-                        if(Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1]) 
+                        if (Game.Get().MyHighCardList[1] > Game.Get().OpponentHighCardList[1])
                         {
                             isPlayer1Win = WinMethod();
                         }
-                        else if(Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1]) 
+                        else if (Game.Get().MyHighCardList[1] < Game.Get().OpponentHighCardList[1])
                         {
                             LoseMethod();
                         }
-                        else 
+                        else
                         {
-                            isPlayer1Win = TieMethod(); 
+                            isPlayer1Win = TieMethod();
                         }
                     }
                 }
-                else 
+                else
                 {
                     isPlayer1Win = TieMethod();
                 }
@@ -1829,9 +1872,9 @@ public class PVPManager : MonoBehaviour
     {
 
         bool isLocationMatch = false;
-        if( isDefenceLocationSelected)//Game.Get().lastAction == PlayerAction.defend &&
+        if (isDefenceLocationSelected)//Game.Get().lastAction == PlayerAction.defend &&
         {
-            if(playerDefenceLocation == opponentAttackLocation)
+            if (playerDefenceLocation == opponentAttackLocation)
             {
                 isLocationMatch = true;
             }
@@ -1842,34 +1885,34 @@ public class PVPManager : MonoBehaviour
         }
         //Debug.LogError("***MY HEALTH DEC");
         BetTextObj.text = "YOU LOSE";
-        
+
         //Check for weakness factor
-       // ChekcForWeaknessFactor();
+        // ChekcForWeaknessFactor();
         // ReaduceAttackAmount();
         // ManangeAttackLocationEffects();
-        Invoke("CheckForEffects",1.5f);
+        Invoke("CheckForEffects", 1.5f);
         Debug.Log("LOCATION MATCH " + isLocationMatch);
         DemoManager.instance.HighLightWinnerHand(false);
-       // float TempVal = P1HealthBar.value;
-       //// P1HealthBar.value = isLocationMatch ? P1StartHealth : TempVal;
-       // //P1HealthBar.value -= isLocationMatch ? (Game.Get().BatAmount / 2) : Game.Get().BatAmount; //50% reduce damage
-       // // P1HealthBar.value -= isLocationMatch ? 0 : Game.Get().BetAmount; //100% nutralize damage
-       // float myAttackRisk = P2StartHealth - P2HealthBar.value;
-       // P2HealthBar.value = P2StartHealth;
-       // P1StartHealth = (int)P1HealthBar.value;
-       // //P2StaBar.value -= (int)Game.Get().BetAmount * 0.1f;
-       // P2StaBar.value -= myAttackRisk * 0.1f;
-       // P2StaTxt.text = (P2StaBar.value).ToString();
-       // //p2Speed += (int)Game.Get().BetAmount * 0.1f;
-       // p2Speed += (int)myAttackRisk * 0.1f;
-       // P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
-       // UpdateHMTxt();
+        // float TempVal = P1HealthBar.value;
+        //// P1HealthBar.value = isLocationMatch ? P1StartHealth : TempVal;
+        // //P1HealthBar.value -= isLocationMatch ? (Game.Get().BatAmount / 2) : Game.Get().BatAmount; //50% reduce damage
+        // // P1HealthBar.value -= isLocationMatch ? 0 : Game.Get().BetAmount; //100% nutralize damage
+        // float myAttackRisk = P2StartHealth - P2HealthBar.value;
+        // P2HealthBar.value = P2StartHealth;
+        // P1StartHealth = (int)P1HealthBar.value;
+        // //P2StaBar.value -= (int)Game.Get().BetAmount * 0.1f;
+        // P2StaBar.value -= myAttackRisk * 0.1f;
+        // P2StaTxt.text = (P2StaBar.value).ToString();
+        // //p2Speed += (int)Game.Get().BetAmount * 0.1f;
+        // p2Speed += (int)myAttackRisk * 0.1f;
+        // P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
+        // UpdateHMTxt();
     }
 
-    public void CheckForEffects() 
+    public void CheckForEffects()
     {
         ManangeAttackLocationEffects();
-        ChekcForWeaknessFactor();        
+        ChekcForWeaknessFactor();
     }
 
     public bool WinMethod()
@@ -1881,9 +1924,9 @@ public class PVPManager : MonoBehaviour
         DemoManager.instance.HighLightWinnerHand(true);
         isPlayer1Win = true;
 
-        if( isAttackLocationSelected) //Game.Get().lastAction == PlayerAction.defend &&
+        if (isAttackLocationSelected) //Game.Get().lastAction == PlayerAction.defend &&
         {
-            if(opponentDefendLocation == playerAttackLocation)
+            if (opponentDefendLocation == playerAttackLocation)
             {
                 isLocationMatch = true;
             }
@@ -1892,8 +1935,8 @@ public class PVPManager : MonoBehaviour
                 isLocationMatch = false;
             }
         }
-        
-        
+
+
         //float TempVal = P2HealthBar.value;
         //P2HealthBar.value = isLocationMatch ? P2StartHealth : TempVal;
         //float myAttackRisk = P1StartHealth - P1HealthBar.value;
@@ -1913,23 +1956,23 @@ public class PVPManager : MonoBehaviour
 
     private void ChekcForWeaknessFactor()
     {
-        CharacterType myCharWeakAgainst= CharacterType.Earth,opponent = CharacterType.Earth;
-        if(Game.Get().IsDefender) 
+        CharacterType myCharWeakAgainst = CharacterType.Earth, opponent = CharacterType.Earth;
+        if (Game.Get().IsDefender)
         {
             myCharWeakAgainst = p2Char.weakAgainst;
             opponent = p1Char.type;
         }
-        else 
+        else
         {
             myCharWeakAgainst = p1Char.weakAgainst;
             opponent = p2Char.type;
         }
-        
+
         int player1weaknessfactor = myCharWeakAgainst == opponent ? (int)(0.2f * AttackFor) : 0;
         //
 
         //Debug.LogError("ATTACK FOR " + AttackFor + "  w factor " + ((int)(0.2f * AttackFor)));
-        Debug.Log("P1 weak agains p2 " + myCharWeakAgainst.ToString() + "  ----" + opponent.ToString() + " --Extra damamge"+player1weaknessfactor);
+        Debug.Log("P1 weak agains p2 " + myCharWeakAgainst.ToString() + "  ----" + opponent.ToString() + " --Extra damamge" + player1weaknessfactor);
 
 
         //Check if opponent attack has weak effect 
@@ -1939,21 +1982,21 @@ public class PVPManager : MonoBehaviour
         //Location Effect
         int extraDamageForHighLimbAttack = (int)(((isAttackedHigh * 0.05f)) * AttackFor);
 
-        Debug.LogError("Damage new Effs : "+ player2weakEffectFactor+" - "+ extraDamageForHighLimbAttack);
+        //Debug.LogError("Damage new Effs : " + player2weakEffectFactor + " - " + extraDamageForHighLimbAttack);
 
         Debug.Log("Less DAMAGE opponent Weakness % val___" + player2weakEffectFactor);
         Debug.Log("EXTRA DAMAGE High limb succeesfull attack by opponent %___" + extraDamageForHighLimbAttack);
         Debug.Log("Total amount differenc " + (-player1weaknessfactor + player2weakEffectFactor - extraDamageForHighLimbAttack));
         //
-        if(myCharWeakAgainst == opponent)
+        if (myCharWeakAgainst == opponent)
         {
             int total = (-player1weaknessfactor + player2weakEffectFactor - extraDamageForHighLimbAttack);
             UpdateRemainingHandHealthPlus(total);
-          //  UpdateRemainingHandHealth(player1weaknessfactor);
+            //  UpdateRemainingHandHealth(player1weaknessfactor);
             ShowExtraDamageMessage(0);
-          Debug.Log("EXTRA DAMAGE Weakness 20%___" + player1weaknessfactor); 
+            Debug.Log("EXTRA DAMAGE Weakness 20%___" + player1weaknessfactor);
         }
-        else 
+        else
         {
             UpdateRemainingHandHealthPlus((+player2weakEffectFactor - extraDamageForHighLimbAttack));
         }
@@ -1962,15 +2005,15 @@ public class PVPManager : MonoBehaviour
     //{
     //    int player1weaknessfactor =  (int)(opponentAttackWeakPercentageVal * AttackFor);
     //    UpdateRemainingHandHealthPlus(player1weaknessfactor);
-           
+
     //        Debug.Log("Less DAMAGE %___" + opponentAttackWeakPercentageVal);
 
     //}
-    public int criticalHitPercentage=0;
+    public int criticalHitPercentage = 0;
     private void ManangeAttackLocationEffects()
     {
-         
-        photonView.RPC("SetOpponentAttackedSide_RPC",RpcTarget.Others,(int)opponentAttackLocation);
+
+        photonView.RPC("SetOpponentAttackedSide_RPC", RpcTarget.Others, (int)opponentAttackLocation);
         PhotonNetwork.SendAllOutgoingCommands();
         switch (opponentAttackLocation)
         {
@@ -2028,9 +2071,9 @@ public class PVPManager : MonoBehaviour
 
     }
 
-    
 
-    public void ResumeChessGame() 
+
+    public void ResumeChessGame()
     {
         StartCoroutine(CheckWinNew(1f));
     }
@@ -2041,13 +2084,13 @@ public class PVPManager : MonoBehaviour
     {
         isReset = val;
     }
-    public void ResetData(bool isGameOver=false,bool IsMaster=false)
+    public void ResetData(bool isGameOver = false, bool IsMaster = false)
     {
-       
-        photonView.RPC("ResetPVPUIData",RpcTarget.All,isGameOver);
+
+        photonView.RPC("ResetPVPUIData", RpcTarget.All, isGameOver);
         PhotonNetwork.SendAllOutgoingCommands();
 
-        photonView.RPC("RPC_ResetTurn",RpcTarget.All);
+        photonView.RPC("RPC_ResetTurn", RpcTarget.All);
         PhotonNetwork.SendAllOutgoingCommands();
         if (PhotonNetwork.IsMasterClient)
         {
@@ -2056,17 +2099,18 @@ public class PVPManager : MonoBehaviour
         SpellManager.instance.DrawCard();
 
     }
-    public void GenerateCardFromMaster(bool isGameOver) 
+    public void GenerateCardFromMaster(bool isGameOver)
     {
         if (!isGameOver)
         {
             Debug.Log("CARD GENERATION CALL 5");
-            DemoManager.instance.Generate3CardsStack(); }
+            DemoManager.instance.Generate3CardsStack();
+        }
     }
     [PunRPC]
     public void ResetPVPUIData(bool isGameOver = false)
     {
-        if(isReset)
+        if (isReset)
         {
             isGameOver = isReset;
             //Debug.LogError("**DATA RESET");
@@ -2086,13 +2130,13 @@ public class PVPManager : MonoBehaviour
             //p2Speed = 0;
             //P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
             P1RageBar.value = 0;
-            P1RageTxt.text =  "Rage 0";
+            P1RageTxt.text = "Rage 0";
             P2RageBar.value = 0;
             P2RageTxt.text = "Rage 0";
             UpdateHMTxt();
             PVPManager.manager.myLocalBatAmount = 0;
             UpdateHMTxt();
-            photonView.RPC("Rset_BOOL_RPC",RpcTarget.All,false);
+            photonView.RPC("Rset_BOOL_RPC", RpcTarget.All, false);
             PhotonNetwork.SendAllOutgoingCommands();
             //ResetAttackLocation();
         }
@@ -2102,7 +2146,7 @@ public class PVPManager : MonoBehaviour
         List<Card_SO> temp = new List<Card_SO>(deckFullList.Length);
         temp = deckFullList.ToList<Card_SO>();
         DemoManager.instance.deck.Clear();
-        DemoManager.instance.deck = temp.GetRange(0,temp.Count);
+        DemoManager.instance.deck = temp.GetRange(0, temp.Count);
         DemoManager.instance.listofCards = DemoManager.instance.deck;
         temp.Clear();
         isDefenceLocationSelected = false;
@@ -2143,27 +2187,27 @@ public class PVPManager : MonoBehaviour
         attackSlider._slider.value = 0;
         P2LastAttackValue = 0;
         //Removed Old Board Cards
-        foreach(Card item in DemoManager.instance.board_cards)
+        foreach (Card item in DemoManager.instance.board_cards)
         {
             //Debug.LogError("BOARD CARDS REMOVED");
             Destroy(item.gameObject);
         }
         //
         DemoManager.instance.board_cards.Clear();
-        
-        foreach(Transform child in DemoManager.instance.placeholderHand.transform)
+
+        foreach (Transform child in DemoManager.instance.placeholderHand.transform)
         {
-            if(child.gameObject.GetComponent<Card>())
+            if (child.gameObject.GetComponent<Card>())
             {
                 //Debug.LogError("PLACE HOLDER HAND CARD REMOVED");
                 Destroy(child.gameObject);
             }
         }
-       
-       
+
+
         DemoManager.instance.ResetnumCards(isGameOver);
-       
-      //  //Debug.LogError("***CHILD COUNT " + DemoManager.instance.placeholderHand.transform.childCount);
+
+        //  //Debug.LogError("***CHILD COUNT " + DemoManager.instance.placeholderHand.transform.childCount);
         //TODO pvp start 
         //if (PhotonNetwork.IsMasterClient && !isGameOver)
         //{
@@ -2174,12 +2218,12 @@ public class PVPManager : MonoBehaviour
 
     }
     bool alreadyGenerated = false;
-    public void ResetAllreadyGenerated() 
+    public void ResetAllreadyGenerated()
     {
         alreadyGenerated = false;
     }
-    
-    public IEnumerator GenerateCardWithDelayFunction(bool isGameOver,float delay=1.5f) 
+
+    public IEnumerator GenerateCardWithDelayFunction(bool isGameOver, float delay = 1.5f)
     {
         yield return new WaitForSeconds(delay);
         if (PhotonNetwork.IsMasterClient && !isGameOver)
@@ -2190,11 +2234,11 @@ public class PVPManager : MonoBehaviour
     }
     private void RemovePlayerCards()
     {
-        foreach(Transform item in PlayerCards.transform)
+        foreach (Transform item in PlayerCards.transform)
         {
-            if(item.CompareTag("dontRemove"))
+            if (item.CompareTag("dontRemove"))
             {
-                foreach(Transform itemC in item.transform)
+                foreach (Transform itemC in item.transform)
                 {
                     Destroy(itemC.gameObject);
                 }
@@ -2204,11 +2248,11 @@ public class PVPManager : MonoBehaviour
 
     private void RemoveOpponentCards()
     {
-        foreach(Transform item in OpponetPlayerCards.transform)
+        foreach (Transform item in OpponetPlayerCards.transform)
         {
-            if(item.CompareTag("dontRemove"))
+            if (item.CompareTag("dontRemove"))
             {
-                foreach(Transform itemC in item.transform)
+                foreach (Transform itemC in item.transform)
                 {
                     Destroy(itemC.gameObject);
                 }
@@ -2217,23 +2261,23 @@ public class PVPManager : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_SetOthersAsDefenders(float damageVal,bool isDefender=false)
+    public void RPC_SetOthersAsDefenders(float damageVal, bool isDefender = false)
     {
         Game.Get().IsDefender = isDefender;
         Game.Get().HealthDemage = damageVal;
     }
     [PunRPC]
-    public void RPC_SetOthersPlayerStrength(int strength,string result,int highCardVal,int secondHighCardValue,int[] myHighCardList)
+    public void RPC_SetOthersPlayerStrength(int strength, string result, int highCardVal, int secondHighCardValue, int[] myHighCardList)
     {
         Game.Get().PokerHandResults[1] = result;
         Game.Get().PlayerStrengths[1] = strength;
         Game.Get().OpponentHighCardValue = highCardVal;
 
         Game.Get().OpponentSecondHighCardValue = secondHighCardValue;
-        if(myHighCardList != null)
+        if (myHighCardList != null)
         {
             Game.Get().OpponentHighCardList.Clear();
-            Game.Get().OpponentHighCardList = myHighCardList.ToList(); 
+            Game.Get().OpponentHighCardList = myHighCardList.ToList();
         }
     }
     int tempChoiceNo = -1;
@@ -2241,7 +2285,7 @@ public class PVPManager : MonoBehaviour
     {
         tempChoiceNo = c;
         choiceConfPopup.SetActive(true);
-        
+
         //if((!isAttackLocationSelected || !isDefenceLocationSelected) && Game.Get().turn>0)
         //{
         ////    if(!isAttackLocationSelected)
@@ -2325,139 +2369,139 @@ public class PVPManager : MonoBehaviour
         //        //EndTurn(c);
         //    }
         //}
-       
-    }
-    public void ConfirmChoice() 
-    {
-        
-            int c = -1;
-            if(tempChoiceNo != -1)
-                c = tempChoiceNo;
-            
-            if ((!isAttackLocationSelected || !isDefenceLocationSelected)  && Game.Get().turn > 0)
-            {
-                Debug.LogError("Going here dumbass");
 
-                //    if(!isAttackLocationSelected)
-                //    {
+    }
+    public void ConfirmChoice()
+    {
+
+        int c = -1;
+        if (tempChoiceNo != -1)
+            c = tempChoiceNo;
+
+        if ((!isAttackLocationSelected || !isDefenceLocationSelected) && Game.Get().turn > 0)
+        {
+            // Debug.LogError("Going here dumbass");
+
+            //    if(!isAttackLocationSelected)
+            //    {
+            isAttackLocationSelected = true;
+            UpdateAttackLocation(GetAttackLocation(c));
+            //}
+
+            /* if*///(!isDefenceLocationSelected);
+                   //{
+            isDefenceLocationSelected = true;
+            UpdateDefenceLocation(GetAttackLocation(c));
+            //}
+
+            LocationChoices.SetActive(false);
+            PVPManager.Get().AttackChoices.SetActive(true);
+            DemoManager.instance._pokerButtons.SetActive(false);
+            if (P1RageBar.value > 50)
+                SpecialAttackButton.SetActive(true);
+        }
+        else
+        {
+            if (!isAttackLocationSelected)
+            {
                 isAttackLocationSelected = true;
                 UpdateAttackLocation(GetAttackLocation(c));
-                //}
-
-                /* if*///(!isDefenceLocationSelected);
-                       //{
-                isDefenceLocationSelected = true;
-                UpdateDefenceLocation(GetAttackLocation(c));
-                //}
-
-                LocationChoices.SetActive(false);
-                PVPManager.Get().AttackChoices.SetActive(true);
-                DemoManager.instance._pokerButtons.SetActive(false);
-                if(P1RageBar.value > 50)
-                    SpecialAttackButton.SetActive(true);
-            }
-            else
-            {
-                if (!isAttackLocationSelected)
+                if (isattackerMaster)
                 {
-                    isAttackLocationSelected = true;
-                    UpdateAttackLocation(GetAttackLocation(c));
-                    if(isattackerMaster)
-                    {
-                        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-                            SetOpponentAttackedSide_Local(c);
-                    }
-                    else
-                    {
-                        if (!PhotonNetwork.LocalPlayer.IsMasterClient)
-                            SetOpponentAttackedSide_Local(c);
-                    }
-                }
-                if (!isDefenceLocationSelected)
-                {
-                    isDefenceLocationSelected = true;
-                    UpdateDefenceLocation(GetAttackLocation(c));
-                }
-
-                if (!isCheck)
-                {
-                    //if(!isAttackLocationSelected)
-                    //{
-                    //    isAttackLocationSelected = true;
-                    //    UpdateAttackLocation(GetAttackLocation(c));
-                    //}
-
-                    LocationChoices.SetActive(false);
-                    PlayerChoiceOnce = c;
-                    photonView.RPC("RPC_SetOpponentAttackChoice", RpcTarget.Others, c);
-                    //Debug.Log($"<color=yellow>c is {c} state is {state} {AttackData.GetLocationFrmInt(c)} and poker attack {AttackSlider.instance._sliderAttack.ToString()}</color>");
-                    //Debug.LogError("Slider val " + AttackSlider.instance._slider.value);
-
-                    //// EndTurnBtn.gameObject.SetActive(true);
-                    //// StartTimer();
-                    choice = c;
-
-                    //UpdateRangeCounter();
-                    //  photonView.RPC("UpdateOpponentRangePoints",RpcTarget.Others,rangeCounter);
-                    //photonView.RPC("UpdateRangePoints",RpcTarget.All,rangeCounter);
-                    // UpdateRangePoints(rangeCounter);
-                    if(isAttackViaSpeedPoints) 
-                    {
-
-                        photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)SpeedAttackSlider.instance._slider.value);
-                        UpdateBatAmountLocal((int)SpeedAttackSlider.instance._slider.value);
-                        photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)SpeedAttackSlider.instance._slider.value);
-                      //  UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
-                        PhotonNetwork.SendAllOutgoingCommands();
-                    }
-                    else
-                    {
-
-                        photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
-                        UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
-                        photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
-                        //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
-                        PhotonNetwork.SendAllOutgoingCommands();
-                    }
-                    //EndTurn(c);
+                    if (PhotonNetwork.LocalPlayer.IsMasterClient)
+                        SetOpponentAttackedSide_Local(c);
                 }
                 else
                 {
-                    //if(!isDefenceLocationSelected)
-                    //{
-                    //    isDefenceLocationSelected = true;
-                    //    UpdateDefenceLocation(GetAttackLocation(c));
-                    //}
-                    LocationChoices.SetActive(false);
-                    //PlayerChoiceOnce = c;
-                    //photonView.RPC("RPC_SetOpponentAttackChoice",RpcTarget.Others,c);
-                    //Debug.Log($"<color=yellow>c is {c} state is {state} {AttackData.GetLocationFrmInt(c)} and poker attack {AttackSlider.instance._sliderAttack.ToString()}</color>");
-                    //Debug.LogError("Slider val " + AttackSlider.instance._slider.value);
-
-                    //// EndTurnBtn.gameObject.SetActive(true);
-                    //// StartTimer();
-                    //choice = c;
-
-                    //UpdateRangeCounter();
-                    //  photonView.RPC("UpdateOpponentRangePoints",RpcTarget.Others,rangeCounter);
-                    //photonView.RPC("UpdateRangePoints",RpcTarget.All,rangeCounter);
-                    // UpdateRangePoints(rangeCounter);
-                    // photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
-                    PhotonNetwork.SendAllOutgoingCommands();
-                    //EndTurn(c);
+                    if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                        SetOpponentAttackedSide_Local(c);
                 }
             }
-            choiceConfPopup.SetActive(false);
-        
+            if (!isDefenceLocationSelected)
+            {
+                isDefenceLocationSelected = true;
+                UpdateDefenceLocation(GetAttackLocation(c));
+            }
+
+            if (!isCheck)
+            {
+                //if(!isAttackLocationSelected)
+                //{
+                //    isAttackLocationSelected = true;
+                //    UpdateAttackLocation(GetAttackLocation(c));
+                //}
+
+                LocationChoices.SetActive(false);
+                PlayerChoiceOnce = c;
+                photonView.RPC("RPC_SetOpponentAttackChoice", RpcTarget.Others, c);
+                //Debug.Log($"<color=yellow>c is {c} state is {state} {AttackData.GetLocationFrmInt(c)} and poker attack {AttackSlider.instance._sliderAttack.ToString()}</color>");
+                //Debug.LogError("Slider val " + AttackSlider.instance._slider.value);
+
+                //// EndTurnBtn.gameObject.SetActive(true);
+                //// StartTimer();
+                choice = c;
+
+                //UpdateRangeCounter();
+                //  photonView.RPC("UpdateOpponentRangePoints",RpcTarget.Others,rangeCounter);
+                //photonView.RPC("UpdateRangePoints",RpcTarget.All,rangeCounter);
+                // UpdateRangePoints(rangeCounter);
+                if (isAttackViaSpeedPoints)
+                {
+
+                    photonView.RPC("UpdateBatAmount", RpcTarget.All, (int)SpeedAttackSlider.instance._slider.value);
+                    UpdateBatAmountLocal((int)SpeedAttackSlider.instance._slider.value);
+                    photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, (int)SpeedAttackSlider.instance._slider.value);
+                    //  UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+                    PhotonNetwork.SendAllOutgoingCommands();
+                }
+                else
+                {
+
+                    photonView.RPC("UpdateBatAmount", RpcTarget.All, Mathf.FloorToInt(AttackSlider.instance._slider.value));
+                    UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
+                    photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, Mathf.FloorToInt(AttackSlider.instance._slider.value));
+                    //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
+                    PhotonNetwork.SendAllOutgoingCommands();
+                }
+                //EndTurn(c);
+            }
+            else
+            {
+                //if(!isDefenceLocationSelected)
+                //{
+                //    isDefenceLocationSelected = true;
+                //    UpdateDefenceLocation(GetAttackLocation(c));
+                //}
+                LocationChoices.SetActive(false);
+                //PlayerChoiceOnce = c;
+                //photonView.RPC("RPC_SetOpponentAttackChoice",RpcTarget.Others,c);
+                //Debug.Log($"<color=yellow>c is {c} state is {state} {AttackData.GetLocationFrmInt(c)} and poker attack {AttackSlider.instance._sliderAttack.ToString()}</color>");
+                //Debug.LogError("Slider val " + AttackSlider.instance._slider.value);
+
+                //// EndTurnBtn.gameObject.SetActive(true);
+                //// StartTimer();
+                //choice = c;
+
+                //UpdateRangeCounter();
+                //  photonView.RPC("UpdateOpponentRangePoints",RpcTarget.Others,rangeCounter);
+                //photonView.RPC("UpdateRangePoints",RpcTarget.All,rangeCounter);
+                // UpdateRangePoints(rangeCounter);
+                // photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
+                PhotonNetwork.SendAllOutgoingCommands();
+                //EndTurn(c);
+            }
+        }
+        choiceConfPopup.SetActive(false);
+
 
         AttackChoices.SetActive(false);
         //// StartTimer();
         //// EndTurnBtn.gameObject.SetActive(true);
         // if(!isLocalPVPFirstTurn){
-           
+
         // }
     }
-    public void RejectChoice() 
+    public void RejectChoice()
     {
         choiceConfPopup.SetActive(false);
         tempChoiceNo = -1;
@@ -2468,36 +2512,36 @@ public class PVPManager : MonoBehaviour
         //photonView.RPC("UpdateOpponentRangePoints",RpcTarget.Others,rangeCounter);
         // UpdateRangePoints(rangeCounter);
         //photonView.RPC("UpdateRangePoints",RpcTarget.All,rangeCounter);
-        
-        if(isAttackViaSpeedPoints)
+
+        if (isAttackViaSpeedPoints)
         {
-            photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)SpeedAttackSlider.instance._slider.value);
-            photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)SpeedAttackSlider.instance._slider.value);
+            photonView.RPC("UpdateBatAmount", RpcTarget.All, Mathf.FloorToInt(SpeedAttackSlider.instance._slider.value));
+            photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, Mathf.FloorToInt(SpeedAttackSlider.instance._slider.value));
             //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
-            UpdateBatAmountLocal((int)SpeedAttackSlider.instance._slider.value);
+            UpdateBatAmountLocal(Mathf.FloorToInt(SpeedAttackSlider.instance._slider.value));
             PhotonNetwork.SendAllOutgoingCommands();
         }
         else
         {
-            photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
-            photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
+            photonView.RPC("UpdateBatAmount", RpcTarget.All, Mathf.FloorToInt(AttackSlider.instance._slider.value));
+            photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, Mathf.FloorToInt(AttackSlider.instance._slider.value));
             //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
-            UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
+            UpdateBatAmountLocal(Mathf.FloorToInt(AttackSlider.instance._slider.value));
             PhotonNetwork.SendAllOutgoingCommands();
         }
-        
+
     }
 
     public void UpdateRangeCounter()
     {
-        if(lastAttackType == SliderAttack.nun)
+        if (lastAttackType == SliderAttack.nun)
         {
             lastAttackType = AttackSlider.instance._sliderAttack;
             rangeCounter = 1;
         }
         else
         {
-            if(lastAttackType == AttackSlider.instance._sliderAttack)
+            if (lastAttackType == AttackSlider.instance._sliderAttack)
             {
                 rangeCounter += 1;
             }
@@ -2505,61 +2549,61 @@ public class PVPManager : MonoBehaviour
     }
     public void UpdateBatText(int c)
     {
-        photonView.RPC("UpdateBatAmount",RpcTarget.All,c);
+        photonView.RPC("UpdateBatAmount", RpcTarget.All, c);
         UpdateBatAmountLocal(c);
-        photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,c);
-       
+        photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, c);
+
     }
     public void UpdateBatTextFold(int c)
     {
-        photonView.RPC("UpdateBatAmount",RpcTarget.All,c);
+        photonView.RPC("UpdateBatAmount", RpcTarget.All, c);
         UpdateBatAmountLocal(0);
-        photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,c);
+        photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, c);
 
     }
     public void UpdateRemainingHandHealth(int c)
     {
         P1RemainingHandHealth -= c;
-        if(P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
+        if (P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
         P1HealthBar.value = P1RemainingHandHealth;
-        Debug.Log("P1 HEALTH BAR " + P1HealthBar.value  + " C "+ c);
-        photonView.RPC("SetOpponentRemainingHandHealth_RPC",RpcTarget.Others,c);
-        
+        Debug.Log("P1 HEALTH BAR " + P1HealthBar.value + " C " + c);
+        photonView.RPC("SetOpponentRemainingHandHealth_RPC", RpcTarget.Others, c);
+
     }
     [PunRPC]
     public void SetOpponentRemainingHandHealth_RPC(int h)
     {
         P2RemainingHandHealth -= h;
         P2HealthBar.value = P2RemainingHandHealth;
-        
+
     }
     public void UpdateRemainingHandHealthPlus(int c)
     {
         P1RemainingHandHealth += c;
-        if(P1RemainingHandHealth > P1StartHealth) P1RemainingHandHealth = P1StartHealth;
+        if (P1RemainingHandHealth > P1StartHealth) P1RemainingHandHealth = P1StartHealth;
 
-        if(P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
+        if (P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
 
         P1HealthBar.value = P1RemainingHandHealth;
-        photonView.RPC("SetOpponentRemainingHandHealth_RPCPlus",RpcTarget.Others,P1RemainingHandHealth);
+        photonView.RPC("SetOpponentRemainingHandHealth_RPCPlus", RpcTarget.Others, P1RemainingHandHealth);
         PhotonNetwork.SendAllOutgoingCommands();
         //Update Values in loser
-        
+
         float TempVal = P1HealthBar.value;
         //Debug.LogError(TempVal+" - "+(c)+" - "+P1RemainingHandHealth);
-        P1HealthBar.value = playerDefenceLocation== opponentAttackLocation ?  P1RemainingHandHealth + (int)(0.5f * (float)AttackFor) : TempVal;
-        
+        P1HealthBar.value = playerDefenceLocation == opponentAttackLocation ? P1RemainingHandHealth + (int)(0.5f * (float)AttackFor) : TempVal;
+
         // P1HealthBar.value -= isLocationMatch ? (Game.Get().BatAmount / 2) : Game.Get().BatAmount; //50% reduce damage
         // P1HealthBar.value -= isLocationMatch ? 0 : Game.Get().BetAmount; //100% nutralize damage
         float myAttackRisk = P2StartHealth - P2HealthBar.value;
-        P2HealthBar.value = P2StartHealth;
+        P2HealthBar.value = P2StartHealth <= 0 ? AttackFor : P2StartHealth;
         P1StartHealth = (int)P1HealthBar.value;
         //P2StaBar.value -= (int)Game.Get().BetAmount * 0.1f;
         P2StaBar.value -= AttackFor * 0.1f;
         P2StaTxt.text = (P2StaBar.value).ToString();
         //p2Speed += (int)Game.Get().BetAmount * 0.1f;
         p2Speed += (myAttackRisk * 0.1f) - p2SpeedSlowedBy;
-        P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
+        P2SpeedTxt.text = MathF.Round(p2Speed, 2).ToString();
         UpdateHMTxt();
     }
 
@@ -2567,58 +2611,59 @@ public class PVPManager : MonoBehaviour
     public void SetOpponentRemainingHandHealth_RPCPlus(int h)
     {
         P2RemainingHandHealth = h;
-        if(P2RemainingHandHealth > P2StartHealth) P2RemainingHandHealth = P2StartHealth;
+        if (P2RemainingHandHealth > P2StartHealth) P2RemainingHandHealth = P2StartHealth;
         P2HealthBar.value = P2RemainingHandHealth;
         //Update Data in Winner
         //Debug.LogError("loc match : "+(playerAttackLocation == opponentDefendLocation).ToString()+" deduct : "+(P2RemainingHandHealth - (int)(0.5f * (float)h)).ToString());
         float TempVal = P2HealthBar.value;
         P2HealthBar.value = playerAttackLocation == opponentDefendLocation ? P2RemainingHandHealth + (int)(0.5f * (float)AttackFor) : TempVal;
         float myAttackRisk = P1StartHealth - P1HealthBar.value;
-        P1HealthBar.value = P1StartHealth;
+
+        P1HealthBar.value = P1StartHealth <= 0 ? AttackFor : P1StartHealth;
         P2StartHealth = (int)P2HealthBar.value;
         // P2HealthBar.value -= isLocationMatch ? 0 : Game.Get().BetAmount;
         //P1StaBar.value -= Game.Get().BetAmount * 0.1f;
         P1StaBar.value -= AttackFor * 0.1f;
         P1StaTxt.text = (P1StaBar.value).ToString();
         //p1Speed += (int)Game.Get().BetAmount * 0.1f;
-        Debug.LogError("Speed Calc To be increased : "+(int)(myAttackRisk * 0.1f) + "Actually increased :"+p1SpeedSlowBy);
+        //Debug.LogError("Speed Calc To be increased : " + (int)(myAttackRisk * 0.1f) + "Actually increased :" + p1SpeedSlowBy);
         p1Speed += (float)((myAttackRisk * 0.1f));
         P1SpeedTxt.text = "";
-        P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
+        P1SpeedTxt.text = MathF.Round(p1Speed, 2).ToString();
         UpdateHMTxt();
     }
-    
+
     public void ShowExtraDamageMessage(int c)
     {
-        LeanTween.scale(extraDamageMessageP1,Vector3.one,.3f);
-        photonView.RPC("ShowExtraDamageMessage_RPC",RpcTarget.Others,c);
+        LeanTween.scale(extraDamageMessageP1, Vector3.one, .3f);
+        photonView.RPC("ShowExtraDamageMessage_RPC", RpcTarget.Others, c);
         UpdateHMTxt();
-        Invoke("ResetDamageMessage",3f);
+        Invoke("ResetDamageMessage", 3f);
     }
     [PunRPC]
     public void ShowExtraDamageMessage_RPC(int h)
     {
-        LeanTween.scale(extraDamageMessageP2,Vector3.one,.3f);
-        Invoke("ResetDamageMessage",3f);
+        LeanTween.scale(extraDamageMessageP2, Vector3.one, .3f);
+        Invoke("ResetDamageMessage", 3f);
         UpdateHMTxt();
     }
-    public void ResetDamageMessage() 
+    public void ResetDamageMessage()
     {
-        LeanTween.scale(extraDamageMessageP2,Vector3.zero,.3f);
-        LeanTween.scale(extraDamageMessageP1,Vector3.zero,.3f);
+        LeanTween.scale(extraDamageMessageP2, Vector3.zero, .3f);
+        LeanTween.scale(extraDamageMessageP1, Vector3.zero, .3f);
     }
     //
     [PunRPC]
     public void UpdateBatAmount(int c)
     {
         //Debug.LogError("**BET VALUE UPDATED");
-        if(c == -1)
+        if (c == -1)
         {
 
             BetTextObj.gameObject.SetActive(true);
             BetTextObj.text = "Brace Call";
         }
-        else if(c == -2)
+        else if (c == -2)
         {
 
             BetTextObj.gameObject.SetActive(true);
@@ -2627,7 +2672,7 @@ public class PVPManager : MonoBehaviour
         else
         {
             BetTextObj.gameObject.SetActive(true);
-            
+
             //Game.Get().BetAmount += c;
             //if(Game.Get().BetAmount > Mathf.Min(P1RemainingHandHealth,P2RemainingHandHealth))
             //{
@@ -2640,13 +2685,13 @@ public class PVPManager : MonoBehaviour
     public void UpdateLastBatAmount(int c)
     {
         //Debug.LogError("**BET VALUE UPDATED");
-        if(c == -1)
+        if (c == -1)
         {
 
             BetTextObj.gameObject.SetActive(true);
             BetTextObj.text = "Brace Call";
         }
-        else if(c == -2)
+        else if (c == -2)
         {
 
             BetTextObj.gameObject.SetActive(true);
@@ -2654,7 +2699,7 @@ public class PVPManager : MonoBehaviour
         }
         else
         {
-              BetTextObj.gameObject.SetActive(true);
+            BetTextObj.gameObject.SetActive(true);
             P2LastAttackValue = c;
             //Game.Get().BetAmount += c;
             //if(Game.Get().BetAmount > Mathf.Min(P1RemainingHandHealth,P2RemainingHandHealth))
@@ -2664,7 +2709,7 @@ public class PVPManager : MonoBehaviour
             //Info: This is Working line
             // BetTextObj.text = "BET Value : " + P2LastAttackValue;
 
-           // BetTextObj.text = "BET Value : " + myLocalBatAmount;
+            // BetTextObj.text = "BET Value : " + myLocalBatAmount;
         }
     }
     public int MyLastBatAmount = -1;
@@ -2684,7 +2729,7 @@ public class PVPManager : MonoBehaviour
         }
         Game.Get().localBetAmount = myLocalBatAmount;
         //Info:: This is working ::BetTextObj.text = "BET Value : " +c;
-      //  BetTextObj.text = "BET Value : " + myLocalBatAmount;
+        //  BetTextObj.text = "BET Value : " + myLocalBatAmount;
 
     }
     [PunRPC]
@@ -2692,27 +2737,27 @@ public class PVPManager : MonoBehaviour
     {
         OpponentRangCounter = c;
 
-        if(c >= 3)
+        if (c >= 3)
         {
             P2RageBar.value += 10;
             UpdateHMTxt();
             OpponentRangCounter = 0;
         }   //rangeCounter = 0;
-         
+
     }
-   
+
     public void UpdateRangePoints(int c)
     {
 
         //if(PhotonNetwork.LocalPlayer.IsLocal)
         //{
-            if(rangeCounter >= 3)
-            {
-                P1RageBar.value += 10;
-                P1RageTxt.text ="Rage "+((int)P1RageBar.value).ToString();
-                rangeCounter = 0;
-                lastAttackType = SliderAttack.nun;
-            }
+        if (rangeCounter >= 3)
+        {
+            P1RageBar.value += 10;
+            P1RageTxt.text = "Rage " + ((int)P1RageBar.value).ToString();
+            rangeCounter = 0;
+            lastAttackType = SliderAttack.nun;
+        }
         //}
         //else
         //{
@@ -2724,7 +2769,7 @@ public class PVPManager : MonoBehaviour
         //    }           
         //}
     }
-    public bool isNormalBat = false,isAllIn=false,isFromInbetween=false;
+    public bool isNormalBat = false, isAllIn = false, isFromInbetween = false;
     public bool IsAnyAllIn = false;
     public bool isfold = false;
     public bool isCheck = false;
@@ -2741,20 +2786,25 @@ public class PVPManager : MonoBehaviour
     //     StartCoroutine(UpdateEndTurnTimer());
     // }
     bool endTurn = false;
-    public bool endChessTurn=false;
+    public bool endChessTurn = false;
 
     public bool LastActionUpdated;
     public void OnClickEndTurn()
     {
-        if(!LastActionUpdated){
-            if(Game.Get().turn < 1){
+        if (!LastActionUpdated)
+        {
+            if (Game.Get().turn <= 1 || (Game.Get().lastAction == PlayerAction.counterAttack || Game.Get().lastAction == PlayerAction.attack))
+            {
                 PokerButtonManager.instance.Fold();
                 isfold = true;
             }
-            else if(Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1)){
-                Debug.LogError("Es ist okay....");
-                PokerButtonManager.instance.Bet();
-            }else{
+            // else if (Game.Get().lastAction == PlayerAction.counterAttack || (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn % 2 == 0 && Game.Get().turn > 1))
+            // {
+            //     Debug.LogError("Es ist okay....");
+            //     PokerButtonManager.instance.Bet();
+            // }
+            else
+            {
                 PokerButtonManager.instance.Check();
             }
             // AttackChoices.SetActive(false);
@@ -2763,45 +2813,57 @@ public class PVPManager : MonoBehaviour
             // choiceConfPopup.SetActive(false);
         }
 
+        Debug.LogError(P1RemainingHandHealth + " - " + P2RemainingHandHealth);
+
+        if (P1RemainingHandHealth <= 0 || P2RemainingHandHealth <= 0)
+        {
+            PVPManager.manager.isAllIn = true;
+            PVPManager.manager.IsAnyAllIn = true;
+            PVPManager.manager.SyncAllIn(true);
+            PVPManager.manager.isNormalBat = true;
+            PVPManager.manager.isFromInbetween = true;
+            PVPManager.manager.isAutoTurn = false;
+        }
+
         endTurn = true;
         endTurnTimeStarted = false;
         EndTurnTimer = 30;
         StopCoroutine(UpdateEndTurnTimer());
         LocationChoices.SetActive(false);
-        if(Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
+        if (Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
         {
-            
-            if(Game.Get().lastAction == PlayerAction.attack && Game.Get().turn >= 2)
+
+            if (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn >= 2)
             {
                 UpdateDataForReraise();
                 //Debug.LogError("END TURN CALLED ");
             }
             UpdateRangeCounter();
             UpdateRangePoint(rangeCounter);
-            if(isAttackViaSpeedPoints) 
+            if (isAttackViaSpeedPoints)
             {
 
                 p1AttackFor.text = (Game.Get().lastAction == PlayerAction.counterAttack) ? "Counter attack for " + (int)speedAttackSlider.value
                     : "Attack For " + (int)speedAttackSlider.value;
-                photonView.RPC("UpdateAttackForText",RpcTarget.Others,(int)speedAttackSlider.value,Game.Get().lastAction == PlayerAction.counterAttack,false);
-                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
+                photonView.RPC("UpdateAttackForText", RpcTarget.Others, (int)speedAttackSlider.value, Game.Get().lastAction == PlayerAction.counterAttack, false);
+                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one, 0.3f);
             }
-            else 
+            else
             {
-                p1AttackFor.text = (Game.Get().lastAction == PlayerAction.counterAttack) ? "Counter attack for " + (int)attackSlider._slider.value
-                    : "Attack For " + (int)attackSlider._slider.value;
-                photonView.RPC("UpdateAttackForText",RpcTarget.Others,(int)attackSlider._slider.value,Game.Get().lastAction == PlayerAction.counterAttack,false);
-                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
+                p1AttackFor.text = (Game.Get().lastAction == PlayerAction.counterAttack) ? "Counter attack for " + MyLastAttackAmount
+                    : "Attack For " + MyLastAttackAmount;
+                photonView.RPC("UpdateAttackForText", RpcTarget.Others, MyLastAttackAmount, Game.Get().lastAction == PlayerAction.counterAttack, false);
+                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one, 0.3f);
             }
-            
+
             //if(!Game.Get().IsDefender)
-          //  {
-                //photonView.RPC("UpdatePotAmountForText",RpcTarget.All,(int)attackSlider._slider.value);
-                photonView.RPC("UpdatePotAmountForText",RpcTarget.All,P2LastAttackValue);
-          //  }
-            Invoke("ResetText",3f);
+            //  {
+            //photonView.RPC("UpdatePotAmountForText",RpcTarget.All,(int)attackSlider._slider.value);
+            photonView.RPC("UpdatePotAmountForText", RpcTarget.All, P2LastAttackValue);
+            //  }
+            Invoke("ResetText", 3f);
         }
-        if(!isNormalBat && !isCheck && !isfold && !isReraiseAfterOnce)
+        if (!isNormalBat && !isCheck && !isfold && !isReraiseAfterOnce)
         {
             //if(PVPManager.manager.P1HealthBar.value == Game.Get().BetAmount)
             //{
@@ -2813,36 +2875,40 @@ public class PVPManager : MonoBehaviour
         }
         else
         {
-            if(isCheck)
+            if (isNormalBat)
             {
+                Debug.LogError("Going here");
+                EndTurnNormalBat();
+                isNormalBat = false;
                 //isCheck = false;
                 // PokerButtonManager.instance.Check();
-                EndTurn(0);
+
             }
-            else if(isfold)
+            else if (isfold)
             {
                 //Debug.LogError("FOLD ");
                 isfold = false;
-                
+
                 PokerButtonManager.instance.FoldAction();
             }
-            else if(isNormalBat)
+            else if (isCheck)
             {
-                EndTurnNormalBat();
-                isNormalBat = false;
+
+
+                EndTurn(0);
 
                 //Debug.LogError("**END TURN CALLED from NORMAL BET");
             }
-            else if(isReraiseAfterOnce)
+            else if (isReraiseAfterOnce)
             {
                 isReraiseAfterOnce = false;
                 // UpdateRangeCounter();
-                 UpdateDataForReraise();
-                 EndTurn(PlayerChoiceOnce);
+                UpdateDataForReraise();
+                EndTurn(PlayerChoiceOnce);
                 //Debug.LogError("**END TURN CALLED from RERAISE");
             }
 
-          
+
         }
         choice = -1;
         //if(Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
@@ -2856,45 +2922,47 @@ public class PVPManager : MonoBehaviour
         //    UpdateRangePoint(rangeCounter);
         //}
         EndTurnBtn.gameObject.SetActive(false);
-        if(isAttackViaSpeedPoints) {
-           float maxVal= Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth);
+        if (isAttackViaSpeedPoints)
+        {
+            float maxVal = Mathf.Min(PVPManager.manager.P1RemainingHandHealth, PVPManager.manager.P2RemainingHandHealth);
             float perSpeedPoint = maxVal * 0.1f;
-           float usedPoints=  speedAttackSlider.value / perSpeedPoint;
+            float usedPoints = speedAttackSlider.value / perSpeedPoint;
             Debug.Log("SPEED POINTs " + p1Speed + " --Used Points  " + usedPoints);
 
             p1Speed -= usedPoints;
-            if(p1Speed < 0) p1Speed = 0;
-            P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
-            photonView.RPC("UpdateSpeedPoints",RpcTarget.Others,p1Speed);
-            
-            isAttackViaSpeedPoints = false; 
+            if (p1Speed < 0) p1Speed = 0;
+            P1SpeedTxt.text = MathF.Round(p1Speed, 2).ToString();
+            photonView.RPC("UpdateSpeedPoints", RpcTarget.Others, p1Speed);
+
+            isAttackViaSpeedPoints = false;
         }
 
-        if(Game.Get().turn <= 1){
-            if(isAttackViaSpeedPoints) 
+        if (Game.Get().turn <= 1)
+        {
+            if (isAttackViaSpeedPoints)
             {
 
-                photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)SpeedAttackSlider.instance._slider.value);
+                photonView.RPC("UpdateBatAmount", RpcTarget.All, (int)SpeedAttackSlider.instance._slider.value);
                 UpdateBatAmountLocal((int)SpeedAttackSlider.instance._slider.value);
-                photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)SpeedAttackSlider.instance._slider.value);
+                photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, (int)SpeedAttackSlider.instance._slider.value);
                 //  UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
                 PhotonNetwork.SendAllOutgoingCommands();
             }
             else
             {
 
-                photonView.RPC("UpdateBatAmount",RpcTarget.All,(int)AttackSlider.instance._slider.value);
-                UpdateBatAmountLocal((int)AttackSlider.instance._slider.value);
-                photonView.RPC("UpdateLastBatAmount",RpcTarget.Others,(int)AttackSlider.instance._slider.value);
+                photonView.RPC("UpdateBatAmount", RpcTarget.All, Mathf.FloorToInt(AttackSlider.instance._slider.value));
+                UpdateBatAmountLocal(Mathf.FloorToInt(AttackSlider.instance._slider.value));
+                photonView.RPC("UpdateLastBatAmount", RpcTarget.Others, Mathf.FloorToInt(AttackSlider.instance._slider.value));
                 //UpdateRemainingHandHealth((int)AttackSlider.instance._slider.value);
                 PhotonNetwork.SendAllOutgoingCommands();
             }
         }
-        
+
         //speedAttackButton.SetActive(false);
         SpecialAttackButton.SetActive(false);
         //if(Game.Get().lastAction != PlayerAction.brace)
-        photonView.RPC("SwitchPVPTurn",RpcTarget.All);
+        photonView.RPC("SwitchPVPTurn", RpcTarget.All);
         //p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
 
         LastActionUpdated = false;
@@ -2903,30 +2971,30 @@ public class PVPManager : MonoBehaviour
 
 
     [PunRPC]
-    public void UpdateSpeedPoints(float points) 
+    public void UpdateSpeedPoints(float points)
     {
         p2Speed = points;
-        P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
+        P2SpeedTxt.text = MathF.Round(p2Speed, 2).ToString();
     }
     public void EndTurn(int c)
     {
         #region old code
         //return;
         //Debug.LogError("***PVP STATE " + state);
-        if(state == PVPStates.Attack || 1 == 1)
+        if (state == PVPStates.Attack || 1 == 1)
         {
             AttackType type = AttackData.GetAttackTypeFrmInt(c);
             playerChoice.attack = type;
 
             Debug.Log("local : " + isLocalPVPTurn + " master : " + PhotonNetwork.LocalPlayer.IsMasterClient + " 1 - " + p1Speed + " 2 - " + p2Speed);
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
-                photonView.RPC("RPC_UpdateTurn",RpcTarget.All);
+                photonView.RPC("RPC_UpdateTurn", RpcTarget.All);
                 // photonView.RPC("RPC_SetLastAttackerColor",RpcTarget.All,Game.Get().GetCurrentPlayer());
                 // Game.Get().IsDefender = false;
                 //   photonView.RPC("RPC_SetOthersAsDefenders",RpcTarget.Others,AttackSlider.instance._slider.value,true);
                 //  Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
-                photonView.RPC("RPC_otherplayerTurnPoker",RpcTarget.All,PhotonNetwork.LocalPlayer);
+                photonView.RPC("RPC_otherplayerTurnPoker", RpcTarget.All, PhotonNetwork.LocalPlayer);
                 Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
                 Game.Get().NextTurn();
 
@@ -2992,16 +3060,16 @@ public class PVPManager : MonoBehaviour
                 //SetModePanelOptions("DefendLoc");
                 //}
             }
-            else if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+            else if (!PhotonNetwork.LocalPlayer.IsMasterClient)
             {
-                photonView.RPC("RPC_UpdateTurn",RpcTarget.All);
+                photonView.RPC("RPC_UpdateTurn", RpcTarget.All);
                 // photonView.RPC("RPC_SetLastAttackerColor",RpcTarget.All,Game.Get().GetCurrentPlayer());
                 //  Game.Get().IsDefender = false;
                 // photonView.RPC("RPC_SetOthersAsDefenders",RpcTarget.Others,AttackSlider.instance._slider.value,true);
 
                 //Game.Get().NextTurn();
 
-                photonView.RPC("RPC_otherplayerTurnPoker",RpcTarget.All,PhotonNetwork.LocalPlayer);
+                photonView.RPC("RPC_otherplayerTurnPoker", RpcTarget.All, PhotonNetwork.LocalPlayer);
                 Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
 
                 Game.Get().NextTurn();
@@ -3061,14 +3129,14 @@ public class PVPManager : MonoBehaviour
                 //    //SetModePanelOptions("DefendLoc");
                 //}
             }
-            if(type == AttackType.Defend)
+            if (type == AttackType.Defend)
             {
                 state = PVPStates.DefendLoc;
                 AttackChoices.SetActive(false);
                 //LocationChoices.SetActive(true);
                 skipTurn.gameObject.SetActive(false);
                 ModeTxT.text = "Choose Defend Location";
-                foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
+                foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                 {
                     item.gameObject.SetActive(true);
                     item.button.interactable = true;
@@ -3081,16 +3149,16 @@ public class PVPManager : MonoBehaviour
             //ModeTxT.text = state.ToString();
 
         }
-        else if(state == PVPStates.ExtraAttack)
+        else if (state == PVPStates.ExtraAttack)
         {
             AttackType type = AttackData.GetAttackTypeFrmInt(c);
             playerChoice.ExtraAttack.Add(type);
 
-            if(PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 p1Speed -= GameData.Get().GetAttack(type).speed;
                 UpdateSpeed();
-                if(p1Speed >= lowestSpeedNeeded)
+                if (p1Speed >= lowestSpeedNeeded)
                 {
                     state = PVPStates.ExtraAttack;
                     skipTurn.gameObject.SetActive(true);
@@ -3099,17 +3167,17 @@ public class PVPManager : MonoBehaviour
                     Debug.Log("AttackChoices true");
                     //LocationChoices.SetActive(false);
                     ModeTxT.text = "Choose Extra Attack Type";
-                    foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
+                    foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
                         item.button.interactable = item.data.speed <= p1Speed;
-                        if(item.data.type != AttackType.None)
+                        if (item.data.type != AttackType.None)
                             item.ComboTxt.text = item.data.type.ToString();
-                        if(item.data.type == AttackType.Defend)
+                        if (item.data.type == AttackType.Defend)
                         {
                             item.gameObject.SetActive(false);
                             Debug.Log($"<color=yellow> defend button false here ..{item.name} </color>");
                         }
-                    }   
+                    }
                     //SetModePanelOptions("ExtraAttack");
                     Debug.Log("EXTRA DONE");
 
@@ -3121,7 +3189,7 @@ public class PVPManager : MonoBehaviour
                     AttackChoices.SetActive(false);
                     //LocationChoices.SetActive(true);
                     ModeTxT.text = "Choose Defend Location";
-                    foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
+                    foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
                         item.gameObject.SetActive(true);
                         item.button.interactable = true;
@@ -3129,11 +3197,11 @@ public class PVPManager : MonoBehaviour
                     //SetModePanelOptions("DefendLoc");
                 }
             }
-            else if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+            else if (!PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 p2Speed -= GameData.Get().GetAttack(type).speed;
                 UpdateSpeed();
-                if(p2Speed >= lowestSpeedNeeded)
+                if (p2Speed >= lowestSpeedNeeded)
                 {
                     state = PVPStates.ExtraAttack;
                     skipTurn.gameObject.SetActive(true);
@@ -3142,12 +3210,12 @@ public class PVPManager : MonoBehaviour
                     Debug.Log("AttackChoices true");
                     //LocationChoices.SetActive(false);
                     ModeTxT.text = "Choose Extra Attack Type";
-                    foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
+                    foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
                         item.button.interactable = item.data.speed <= p2Speed;
-                        if(item.data.type != AttackType.None)
+                        if (item.data.type != AttackType.None)
                             item.ComboTxt.text = item.data.type.ToString();
-                        if(item.data.type == AttackType.Defend)
+                        if (item.data.type == AttackType.Defend)
                         {
                             item.gameObject.SetActive(false);
                             Debug.Log($"<color=yellow> defend button false here .. {item.name}</color>");
@@ -3162,7 +3230,7 @@ public class PVPManager : MonoBehaviour
                     AttackChoices.SetActive(false);
                     //LocationChoices.SetActive(true);
                     ModeTxT.text = "Choose Defend Location";
-                    foreach(var item in GameObject.FindObjectsOfType<AttackSelection>())
+                    foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                     {
                         item.gameObject.SetActive(true);
                         item.button.interactable = true;
@@ -3174,99 +3242,104 @@ public class PVPManager : MonoBehaviour
             //state = PVPStates.Defend;
             //ModeTxT.text = state.ToString();
         }
-        else if(state == PVPStates.DefendLoc)
+        else if (state == PVPStates.DefendLoc)
         {
             AttackLocation type = AttackData.GetLocationFrmInt(c);
             playerChoice.defendLoc = type;
-           // ModePanel.SetActive(false);
+            // ModePanel.SetActive(false);
             waitPanel.SetActive(true);
             AttackChoices.SetActive(false);
             //LocationChoices.SetActive(true);
             int[] extraChoices = new int[playerChoice.ExtraAttack != null ? playerChoice.ExtraAttack.Count : 0];
-            for(int i = 0 ; i < extraChoices.Length ; i++)
+            for (int i = 0; i < extraChoices.Length; i++)
             {
                 extraChoices[i] = (int)playerChoice.ExtraAttack[i];
             }
 
-            object[] data = new object[] { p1Speed,p2Speed };
+            object[] data = new object[] { p1Speed, p2Speed };
 
             Debug.Log($" <color=yellow> playerChoice.attackLoc {playerChoice.attackLoc} playerChoice.attack {playerChoice.attack} playerChoice.defendLoc {playerChoice.defendLoc} </color>");
 
-            int counterAttackRandomForBothPlayers = UnityEngine.Random.Range(1,10);
-            int criticalhits = UnityEngine.Random.Range(1,100);
+            int counterAttackRandomForBothPlayers = UnityEngine.Random.Range(1, 10);
+            int criticalhits = UnityEngine.Random.Range(1, 100);
             //photonView.RPC("SyncPlayerChoice",RpcTarget.All,(int)playerChoice.attackLoc,(int)playerChoice.attack,(int)playerChoice.defendLoc,extraChoices,data,counterAttackRandomForBothPlayers,criticalhits);
         }
         #endregion
     }
 
-    public void StopTimer(){
+    public void StopTimer()
+    {
         StopCoroutine("UpdateEndTurnTimer");
         EndTurnBtn.gameObject.SetActive(false);
     }
 
-    public void SyncAllIn(bool b){
-        photonView.RPC("SyncAllInRPC",RpcTarget.All,b);
+    public void SyncAllIn(bool b)
+    {
+        photonView.RPC("SyncAllInRPC", RpcTarget.All, b);
     }
 
     [PunRPC]
-    public void SyncAllInRPC(bool b){
+    public void SyncAllInRPC(bool b)
+    {
         PVPManager.manager.IsAnyAllIn = b;
     }
-   
+
     public void EndTurnNormalBat()
     {
-        if(isAllIn)
+        if (isAllIn)
         {
+            Debug.LogError("is all in");
             isAllIn = false;
             PVPManager.manager.IsAnyAllIn = false;
             PVPManager.manager.SyncAllIn(false);
-           // photonView.RPC("DisplayOpponentCard_RPC",RpcTarget.All); 
-            photonView.RPC("SetALLButtonsOff_RPC",RpcTarget.All);
-            if(!isFromInbetween)
+            // photonView.RPC("DisplayOpponentCard_RPC",RpcTarget.All); 
+            photonView.RPC("SetALLButtonsOff_RPC", RpcTarget.All);
+            if (!isFromInbetween)
             {
+                Debug.LogError("Not from between");
                 //UpdateBatAmountLocal(P1RemainingHandHealth);
                 // p1AttackFor.text = "Attack For " + (int)attackSlider._slider.value;
                 p1AttackFor.text = "All In";
-                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one,0.3f);
-                photonView.RPC("UpdateAttackForText",RpcTarget.Others,(int)attackSlider._slider.value,false,true);
+                p1AttackFor.gameObject.transform.parent.GetComponent<RectTransform>().LeanScale(Vector3.one, 0.3f);
+                photonView.RPC("UpdateAttackForText", RpcTarget.Others, MyLastAttackAmount, false, true);
                 //  if(!Game.Get().IsDefender)
                 //   {
                 // photonView.RPC("UpdatePotAmountForText",RpcTarget.All,(int)attackSlider._slider.value);
-                
-                    photonView.RPC("UpdatePotAmountForAllInText",RpcTarget.All,P2StartHealth);
-             //   }
-                Invoke("ResetText",3f);
+
+                photonView.RPC("UpdatePotAmountForAllInText", RpcTarget.All, P2StartHealth);
+                //   }
+                Invoke("ResetText", 3f);
             }
-            else 
+            else
             {
-                photonView.RPC("UpdatePotAmountForText",RpcTarget.All,P2LastAttackValue);
-                isFromInbetween = false; 
+                photonView.RPC("UpdatePotAmountForText", RpcTarget.All, P2LastAttackValue);
+                isFromInbetween = false;
             }
             StartCoroutine(UpdateTurn());
         }
         else
         {
-          //  int player1weaknessfactor = p1Char.weakAgainst == p2Char.type ? (int)(0.2f * player1Dmg) : 0;
+            //  int player1weaknessfactor = p1Char.weakAgainst == p2Char.type ? (int)(0.2f * player1Dmg) : 0;
             // if(!Game.Get().IsDefender)
             // {
             // photonView.RPC("UpdatePotAmountForText",RpcTarget.All,(int)attackSlider._slider.value);
-            photonView.RPC("UpdatePotAmountForText",RpcTarget.All,P2LastAttackValue);
-         //   }
-            photonView.RPC("RPC_UpdateTurn",RpcTarget.All);
-            photonView.RPC("RPC_otherplayerTurnPoker",RpcTarget.All,PhotonNetwork.LocalPlayer);
+            photonView.RPC("UpdatePotAmountForText", RpcTarget.All, P2LastAttackValue);
+            //   }
+            photonView.RPC("RPC_UpdateTurn", RpcTarget.All);
+            photonView.RPC("RPC_otherplayerTurnPoker", RpcTarget.All, PhotonNetwork.LocalPlayer);
             Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
             Game.Get().NextTurn();
         }
 
-        
+
 
     }
     [PunRPC]
     public void DisplayOpponentCard_RPC()
     {
-        for(int i = 0 ; i < OpponentPlayerCardPositions.Count ; i++)
+        for (int i = 0; i < OpponentPlayerCardPositions.Count; i++)
         {
-            for(int j = 0 ; j < OpponentPlayerCardPositions[i].childCount ; j++)
+            for (int j = 0; j < OpponentPlayerCardPositions[i].childCount; j++)
             {
                 //OpponentPlayerCardPositions[i].GetChild(j).gameObject.SetActive(true);
                 OpponentPlayerCardPositions[i].GetChild(j).GetChild(1).gameObject.GetComponent<Image>().sprite = opponentCardSprite[i];
@@ -3275,20 +3348,20 @@ public class PVPManager : MonoBehaviour
     }
     public void UpdateRangePoint(int ragePoints)
     {
-        if(rangeCounter >= 3)
+        if (rangeCounter >= 3)
         {
             P1RageBar.value += RagePointReward;
-            P1RageTxt.text = "Rage "+P1RageBar.value.ToString();
-            photonView.RPC("UpdateRagePoints_RPC",RpcTarget.Others,RagePointReward);
+            P1RageTxt.text = "Rage " + P1RageBar.value.ToString();
+            photonView.RPC("UpdateRagePoints_RPC", RpcTarget.Others, RagePointReward);
             rangeCounter = 0;
         }
-       
+
     }
     [PunRPC]
     public void UpdateRagePoints_RPC(int ragePoints)
     {
-            P2RageBar.value += ragePoints;
-            UpdateHMTxt();
+        P2RageBar.value += ragePoints;
+        UpdateHMTxt();
     }
     [PunRPC]
     public void SetALLButtonsOff_RPC()
@@ -3298,36 +3371,39 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void SetAutoTurnOnOff_RPC(bool isOn)
     {
-        isAutoTurn=isOn;
+        isAutoTurn = isOn;
     }
     public bool isAutoTurn = false;
     public IEnumerator UpdateTurn()
     {
-        if(isAutoTurn == false) 
+        Debug.LogError("Updating turn");
+        if (isAutoTurn == false)
         {
-            photonView.RPC("SetAutoTurnOnOff_RPC",RpcTarget.All,true);
+            Debug.LogError("setting auto turn");
+            photonView.RPC("SetAutoTurnOnOff_RPC", RpcTarget.All, true);
             PhotonNetwork.SendAllOutgoingCommands();
         }
         yield return new WaitForSeconds(0.9f);
-        if(Game.Get().turn < 8)
+        if (Game.Get().turn < 8)
         {
-            photonView.RPC("RPC_UpdateTurn",RpcTarget.All);
+            photonView.RPC("RPC_UpdateTurn", RpcTarget.All);
             Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
             StartCoroutine(UpdateTurn());
         }
         else
         {
-            
+
             StopCoroutine(UpdateTurn());
-            photonView.RPC("DisplayOpponentCard_RPC",RpcTarget.All);
-            photonView.RPC("SetAutoTurnOnOff_RPC",RpcTarget.All,false);
+            photonView.RPC("DisplayOpponentCard_RPC", RpcTarget.All);
+            photonView.RPC("SetAutoTurnOnOff_RPC", RpcTarget.All, false);
             PhotonNetwork.SendAllOutgoingCommands();
         }
 
     }
-    public void SetModePanelOptions(string s){
+    public void SetModePanelOptions(string s)
+    {
         Debug.Log($"<color=yellow>  {s}  </color>");
-        
+
         switch (s)
         {
             case "AttackLoc":
@@ -3366,7 +3442,8 @@ public class PVPManager : MonoBehaviour
                 foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
                 {
                     item.button.interactable = item.data.speed <= p1Speed;
-                    if(item.data.type == AttackType.Defend){
+                    if (item.data.type == AttackType.Defend)
+                    {
                         item.gameObject.SetActive(false);
                         Debug.Log($"<color=yellow> defend button false here .. {item.name}</color>");
                     }
@@ -3439,7 +3516,7 @@ public class PVPManager : MonoBehaviour
     #endregion
 
     [PunRPC]
-    public void SyncPlayerChoice(int attackLoc,int attack) //,  int defendLoc, int[] extraChoices,object[] data,int counterAttackRandomForBothPlayers,int criticalhits)
+    public void SyncPlayerChoice(int attackLoc, int attack) //,  int defendLoc, int[] extraChoices,object[] data,int counterAttackRandomForBothPlayers,int criticalhits)
     {
         //p1Speed = (float)data[0];
         //p2Speed = (float)data[1];
@@ -3453,88 +3530,108 @@ public class PVPManager : MonoBehaviour
         //    playerChoice.ExtraAttack.Add(AttackData.GetAttackTypeFrmInt(item));
         //}
 
-        if(isLocalPVPFirstTurn){
-            if(PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(isLocalPVPTurn){
+        if (isLocalPVPFirstTurn)
+        {
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                if (isLocalPVPTurn)
+                {
                     player1Choice.attackLoc = playerChoice.attackLoc;
                     player1Choice.attack = playerChoice.attack;
                     //player1Choice.defendLoc = playerChoice.defendLoc;
                     player1Choice.ExtraAttack = playerChoice.ExtraAttack;
                     //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
-                }else{
+                }
+                else
+                {
                     player2Choice.attackLoc = playerChoice.attackLoc;
                     player2Choice.attack = playerChoice.attack;
                     //player2Choice.defendLoc = playerChoice.defendLoc;
                     player2Choice.ExtraAttack = playerChoice.ExtraAttack;
                     state = PVPStates.Resolve;
-                    Debug.Log("STATE = "+state.ToString());
-                    
+                    Debug.Log("STATE = " + state.ToString());
+
                 }
             }
-            if(!PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(isLocalPVPTurn){
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                if (isLocalPVPTurn)
+                {
                     player2Choice.attackLoc = playerChoice.attackLoc;
                     player2Choice.attack = playerChoice.attack;
                     //player2Choice.defendLoc = playerChoice.defendLoc;
                     player2Choice.ExtraAttack = playerChoice.ExtraAttack;
                     state = PVPStates.Resolve;
-                    Debug.Log("STATE = "+state.ToString());
+                    Debug.Log("STATE = " + state.ToString());
                     //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
                     //photonView.RPC("Resolve",RpcTarget.AllBuffered, counterAttackRandomForBothPlayers, criticalhits);
-                }else{
+                }
+                else
+                {
                     player1Choice.attackLoc = playerChoice.attackLoc;
                     player1Choice.attack = playerChoice.attack;
-                   // player1Choice.defendLoc = playerChoice.defendLoc;
+                    // player1Choice.defendLoc = playerChoice.defendLoc;
                     player1Choice.ExtraAttack = playerChoice.ExtraAttack;
 
                     Debug.Log(" == set mode panel here == ");
                     SetModePanel();
-                }
-            }
-        }else{
-            if(PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(isLocalPVPTurn){
-                    player1Choice.attackLoc = playerChoice.attackLoc;
-                    player1Choice.attack = playerChoice.attack;
-                    //player1Choice.defendLoc = playerChoice.defendLoc;
-                    player1Choice.ExtraAttack = playerChoice.ExtraAttack;
-                    state = PVPStates.Resolve;
-                    Debug.Log("STATE = "+state.ToString());
-                    //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
-                   // photonView.RPC("Resolve",RpcTarget.AllBuffered, counterAttackRandomForBothPlayers, criticalhits);
-                    
-                }else{
-                    player2Choice.attackLoc = playerChoice.attackLoc;
-                    player2Choice.attack = playerChoice.attack;
-                    //player2Choice.defendLoc = playerChoice.defendLoc;
-                    player2Choice.ExtraAttack = playerChoice.ExtraAttack;
-                    Debug.Log(" == set mode panel here == ");
-                    SetModePanel();
-                    
-                }
-            }
-            if(!PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(isLocalPVPTurn){
-                    player2Choice.attackLoc = playerChoice.attackLoc;
-                    player2Choice.attack = playerChoice.attack;
-                   // player2Choice.defendLoc = playerChoice.defendLoc;
-                    player2Choice.ExtraAttack = playerChoice.ExtraAttack;
-                    //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
-                }else{
-                    player1Choice.attackLoc = playerChoice.attackLoc;
-                    player1Choice.attack = playerChoice.attack;
-                   // player1Choice.defendLoc = playerChoice.defendLoc;
-                    player1Choice.ExtraAttack = playerChoice.ExtraAttack;
-                    state = PVPStates.Resolve;
-                    Debug.Log("STATE = "+state.ToString());
-                    
                 }
             }
         }
-        
+        else
+        {
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                if (isLocalPVPTurn)
+                {
+                    player1Choice.attackLoc = playerChoice.attackLoc;
+                    player1Choice.attack = playerChoice.attack;
+                    //player1Choice.defendLoc = playerChoice.defendLoc;
+                    player1Choice.ExtraAttack = playerChoice.ExtraAttack;
+                    state = PVPStates.Resolve;
+                    Debug.Log("STATE = " + state.ToString());
+                    //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
+                    // photonView.RPC("Resolve",RpcTarget.AllBuffered, counterAttackRandomForBothPlayers, criticalhits);
+
+                }
+                else
+                {
+                    player2Choice.attackLoc = playerChoice.attackLoc;
+                    player2Choice.attack = playerChoice.attack;
+                    //player2Choice.defendLoc = playerChoice.defendLoc;
+                    player2Choice.ExtraAttack = playerChoice.ExtraAttack;
+                    Debug.Log(" == set mode panel here == ");
+                    SetModePanel();
+
+                }
+            }
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                if (isLocalPVPTurn)
+                {
+                    player2Choice.attackLoc = playerChoice.attackLoc;
+                    player2Choice.attack = playerChoice.attack;
+                    // player2Choice.defendLoc = playerChoice.defendLoc;
+                    player2Choice.ExtraAttack = playerChoice.ExtraAttack;
+                    //photonView.RPC("SwitchPVPTurn",RpcTarget.AllBuffered);
+                }
+                else
+                {
+                    player1Choice.attackLoc = playerChoice.attackLoc;
+                    player1Choice.attack = playerChoice.attack;
+                    // player1Choice.defendLoc = playerChoice.defendLoc;
+                    player1Choice.ExtraAttack = playerChoice.ExtraAttack;
+                    state = PVPStates.Resolve;
+                    Debug.Log("STATE = " + state.ToString());
+
+                }
+            }
+        }
+
     }
 
-    public void SetModePanel(){
+    public void SetModePanel()
+    {
         //Debug.Log("FALSE");
         PVPManager.manager.BetTextObj.text = "";
         PVPManager.manager.resultText.text = "";
@@ -3545,12 +3642,12 @@ public class PVPManager : MonoBehaviour
         //LocationChoices.SetActive(true);
         ModeTxT.text = "Choose Attack Location";
 
-        Debug.Log("=========================================== set mode panel "+Game.Get()._currnetTurnPlayer);
+        Debug.Log("=========================================== set mode panel " + Game.Get()._currnetTurnPlayer);
         SpellManager.PetAlreadyAttacked = false;
 
         if (isLocalPVPTurn)
         {
-          
+
             waitPanel.SetActive(true);
             Debug.Log("=========================================== set mode panel ===========================================");
 
@@ -3569,8 +3666,8 @@ public class PVPManager : MonoBehaviour
             StartTimer();
             EndTurnBtn.gameObject.SetActive(true);
             DemoManager.instance._pokerButtons.SetActive(true);
-            if(P1RageBar.value > 50)
-                    SpecialAttackButton.SetActive(true);
+            if (P1RageBar.value > 50)
+                SpecialAttackButton.SetActive(true);
             PokerButtonManager.instance.bet_attack.gameObject.SetActive(true);
             PokerButtonManager.instance.Reraise_CouterAttack.gameObject.SetActive(false);
             PokerButtonManager.instance.fold_Brace_5_Stamina.gameObject.SetActive(true);
@@ -3578,7 +3675,7 @@ public class PVPManager : MonoBehaviour
             PokerButtonManager.instance.call_Engauge.gameObject.SetActive(false);
             PokerButtonManager.instance.check_Defend_5_Stamin.gameObject.SetActive(false);
             IsPetTurn = true;
-            
+
 
         }
 
@@ -3592,29 +3689,39 @@ public class PVPManager : MonoBehaviour
 
         foreach (var item in GameObject.FindObjectsOfType<AttackSelection>())
         {
-             //Debug.Log("FALSE "+item.name);
-             item.gameObject.SetActive(true);
-            
-            if(PhotonNetwork.LocalPlayer.IsMasterClient){
-                if(item.data.StaCost > (int)P1StaBar.value){
+            //Debug.Log("FALSE "+item.name);
+            item.gameObject.SetActive(true);
+
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                if (item.data.StaCost > (int)P1StaBar.value)
+                {
                     item.button.interactable = false;
                     Debug.Log("FALSE");
-                }else{
-                    item.button.interactable = true;
                 }
-            }else{
-                if(item.data.StaCost > (int)P2StaBar.value){
-                    item.button.interactable = false;
-                    Debug.Log("FALSE");
-                }else{
+                else
+                {
                     item.button.interactable = true;
                 }
             }
-            
-        }        
+            else
+            {
+                if (item.data.StaCost > (int)P2StaBar.value)
+                {
+                    item.button.interactable = false;
+                    Debug.Log("FALSE");
+                }
+                else
+                {
+                    item.button.interactable = true;
+                }
+            }
+
+        }
     }
 
-    public void SkipExtra(){
+    public void SkipExtra()
+    {
         state = PVPStates.DefendLoc;
         ModeTxT.text = "Choose Defend Location";
         skipTurn.gameObject.SetActive(false);
@@ -3622,10 +3729,11 @@ public class PVPManager : MonoBehaviour
         //LocationChoices.SetActive(true);
     }
 
-    
+
 
     [PunRPC]
-    public void ShowplayerChoices(){
+    public void ShowplayerChoices()
+    {
         waitPanel.SetActive(false);
         player1ChoiceTxt[0].text = player1Choice.attackLoc.ToString();
         player1ChoiceTxt[1].text = player1Choice.defendLoc.ToString();
@@ -3634,13 +3742,13 @@ public class PVPManager : MonoBehaviour
         ChoiceDetails.SetActive(true);
 
     }
-#region oldCode
+    #region oldCode
     // [PunRPC]
     // public void Resolve(int counterAttackRandomForBothPlayers,int criticalhits)
     // {
 
     //     Debug.Log("========================= <color=yellow> resolve start </color>===================================");
-        
+
     //     //Debug.Log($"<color=yellow> {name} health {p1Obj.character.health} </color>  high {p1Obj.high}" +
     //     //$"low {p1Obj.low} left {p1Obj.left} right {p1Obj.right} medle {p1Obj.medle}");
 
@@ -3674,22 +3782,22 @@ public class PVPManager : MonoBehaviour
     //         if (item==player1Choice.attackLoc && item== player2Choice.defendLoc)
     //         {
     //             //Debug.Log("<color=yellow> Both player same position attack and defend </color>");
-                                    
+
     //             if (counterAttackRandomForBothPlayers < 5)
     //             {
     //                 extra1Dmg = 20;
     //                 Debug.Log($"<color=yellow> player 1 is success heavy attack  counterAttackRandomForBothPlayers is {counterAttackRandomForBothPlayers}</color>");
 
     //                 StartCoroutine(P1TextAnimationExtraDamage(extra1Dmg + "-", Color.green, "Counter attack"));
-                    
+
     //             }
-                
+
     //         }
     //         else if (item == player1Choice.defendLoc && item == player2Choice.attackLoc)
     //         {
     //             Debug.Log("<color=yellow> Both player same position attack and defend </color>");
 
-                
+
     //             if (counterAttackRandomForBothPlayers < 5)
     //             {
     //                 extra2Dmg = 20;
@@ -3740,9 +3848,9 @@ public class PVPManager : MonoBehaviour
     //             StartCoroutine(P1TextAnimationExtraDamage(((player1Dmg * p1Obj.high) / 100) + "+", Color.black, "High"));
     //             StartCoroutine(P2TextAnimationExtraDamage(((player2Dmg * p2Obj.high) / 100) + "+", Color.black, "High"));
     //         }
-        
+
     //     }
-        
+
     //     if (player1Choice.attackLoc == AttackLocation.Low || player2Choice.attackLoc==AttackLocation.Low)
     //     {
     //         if (player1Choice.attackLoc == AttackLocation.Low)
@@ -3758,7 +3866,7 @@ public class PVPManager : MonoBehaviour
     //                 StartCoroutine(P2TextAnimationExtraDamage(((p2Speed * p2Obj.low) / 100) + "-", Color.black, "Low"));
     //             }
     //         }
-            
+
     //         if (player2Choice.attackLoc == AttackLocation.Low)
     //         {
     //             if (p1Obj.low <= 0)
@@ -3773,7 +3881,7 @@ public class PVPManager : MonoBehaviour
     //             }
     //         }            
     //     }
-        
+
     //     if (player1Choice.attackLoc == AttackLocation.Left || player2Choice.attackLoc==AttackLocation.Left)
     //     {
     //         if (p1Obj.left<=0)
@@ -3793,7 +3901,7 @@ public class PVPManager : MonoBehaviour
     //             StartCoroutine(P2TextAnimationExtraDamage(((player2Dmg * p2Obj.left) / 100) + "-", Color.black, "Left"));
     //         }
     //     }
-        
+
     //     if (player1Choice.attackLoc == AttackLocation.Right || player2Choice.attackLoc==AttackLocation.Right)
     //     {
     //         if (p1Obj.right <= 0)
@@ -3813,7 +3921,7 @@ public class PVPManager : MonoBehaviour
     //             StartCoroutine(P2TextAnimationExtraDamage(((player2Dmg * p2Obj.right) / 100) + "-", Color.black, "Right"));
     //         }
     //     }
-       
+
     //     if (player1Choice.attackLoc == AttackLocation.Middle || player2Choice.attackLoc==AttackLocation.Middle)
     //     {
     //         if (player1Choice.attackLoc == AttackLocation.Middle)
@@ -3821,7 +3929,7 @@ public class PVPManager : MonoBehaviour
     //             if (p1Obj.medle<=0)
     //             {
     //                 P2StaBar.value -= ((P2StaBar.value * 5) / 100);
-                   
+
     //                 StartCoroutine(P2TextAnimationExtraDamage(((P2StaBar.value * 5) / 100) + "-", Color.black, "Middle"));
     //             }
     //             else
@@ -3836,7 +3944,7 @@ public class PVPManager : MonoBehaviour
     //             if (p2Obj.medle<=0)
     //             {
     //                 P1StaBar.value -= ((P2StaBar.value * 5) / 100);
-                    
+
     //                 StartCoroutine(P1TextAnimationExtraDamage(((P1StaBar.value * 5) / 100) + "-", Color.black, "Middle"));
     //             }
     //             else
@@ -3846,7 +3954,7 @@ public class PVPManager : MonoBehaviour
     //             }
     //         }
     //     }
-       
+
 
     //     int player1weaknessfactor = p1Char.weakAgainst == p2Char.type ? (int) (0.2f * player1Dmg) : 0;
     //     int player1guessfactor = player1Choice.attackLoc == player2Choice.defendLoc ? (int) (0.2f * player1Dmg) : 0;
@@ -3867,7 +3975,7 @@ public class PVPManager : MonoBehaviour
     //     {
     //         player2Dmg *= 2;
     //         player1Dmg *= 2;
-            
+
     //         StartCoroutine(P1TextAnimationExtraDamage((player2Dmg *= 2) + "+", Color.red, "Critical"));
     //         StartCoroutine(P2TextAnimationExtraDamage((player1Dmg *= 2) + "+", Color.red, "Critical"));
 
@@ -3926,7 +4034,7 @@ public class PVPManager : MonoBehaviour
 
     //     //p1Speed -= GameData.Get().GetAttack(player1Choice.ExtraAttack).speed;
     //     //p2Speed -= GameData.Get().GetAttack(player2Choice.ExtraAttack).speed;
-        
+
     //     UpdateHMTxt();
     //     UpdateSpeed();
     //     UpdateComboIndex();
@@ -3946,12 +4054,12 @@ public class PVPManager : MonoBehaviour
     //     Debug.Log("========================= <color=yellow> resolve end </color>===================================");
     // }
 
-#endregion
-    public IEnumerator P1TextAnimationExtraDamage(string s,Color color,string attackName)
+    #endregion
+    public IEnumerator P1TextAnimationExtraDamage(string s, Color color, string attackName)
     {
 
         P1ExtraDamageAnimationText.gameObject.SetActive(true);
-        P1ExtraDamageAnimationText.text = attackName+"  "+s;
+        P1ExtraDamageAnimationText.text = attackName + "  " + s;
         P2ExtraDamageAnimationText.color = color;
         P1ExtraDamageAnimationText.GetComponent<Animator>().Play("MoveCharacter");
 
@@ -3961,7 +4069,7 @@ public class PVPManager : MonoBehaviour
         P1ExtraDamageAnimationText.gameObject.SetActive(false);
 
     }
-    public IEnumerator P2TextAnimationExtraDamage(string s,Color color, string attackName)
+    public IEnumerator P2TextAnimationExtraDamage(string s, Color color, string attackName)
     {
 
         P2ExtraDamageAnimationText.gameObject.SetActive(true);
@@ -3971,18 +4079,22 @@ public class PVPManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(3f);
         P2ExtraDamageAnimationText.text = "";
-        P2ExtraDamageAnimationText.color =Color.black;
+        P2ExtraDamageAnimationText.color = Color.black;
         P2ExtraDamageAnimationText.gameObject.SetActive(false);
     }
 
 
-    public void UpdateComboIndex(){
+    public void UpdateComboIndex()
+    {
         //Debug.Log("GETTING CALLED");
-        if(player1Choice.attack == AttackType.Heavy){
+        if (player1Choice.attack == AttackType.Heavy)
+        {
             P1SpeedComboIndex = 0;
             P1HeavyComboIndex++;
             P1HeavyComboIndex %= 3;
-        }else if(player1Choice.attack == AttackType.Speed){
+        }
+        else if (player1Choice.attack == AttackType.Speed)
+        {
             P1SpeedComboIndex++;
             P1HeavyComboIndex = 0;
             P1SpeedComboIndex %= 3;
@@ -3992,12 +4104,15 @@ public class PVPManager : MonoBehaviour
             P1HeavyComboIndex = 0;
             P1SpeedComboIndex = 0;
         }
-        if (player2Choice.attack == AttackType.Heavy){
+        if (player2Choice.attack == AttackType.Heavy)
+        {
             P2SpeedComboIndex = 0;
-            P2HeavyComboIndex ++;
+            P2HeavyComboIndex++;
             P2HeavyComboIndex %= 3;
-        }else if (player2Choice.attack == AttackType.Speed){
-            P2SpeedComboIndex ++;
+        }
+        else if (player2Choice.attack == AttackType.Speed)
+        {
+            P2SpeedComboIndex++;
             P2HeavyComboIndex = 0;
             P2SpeedComboIndex %= 3;
         }
@@ -4007,18 +4122,28 @@ public class PVPManager : MonoBehaviour
             P1SpeedComboIndex = 0;
         }
 
-        foreach (var item in AttackSelection.attackSelections){
+        foreach (var item in AttackSelection.attackSelections)
+        {
             //Debug.Log("ATTACKS FOUND");
-            if (item.data.type == AttackType.Heavy){
-                if(PhotonNetwork.LocalPlayer.IsMasterClient){
+            if (item.data.type == AttackType.Heavy)
+            {
+                if (PhotonNetwork.LocalPlayer.IsMasterClient)
+                {
                     item.UpdateComboTxt(P1HeavyComboIndex);
-                }else if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+                }
+                else if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                {
                     item.UpdateComboTxt(P2HeavyComboIndex);
                 }
-            }else if(item.data.type == AttackType.Speed){
-                if(PhotonNetwork.LocalPlayer.IsMasterClient){
+            }
+            else if (item.data.type == AttackType.Speed)
+            {
+                if (PhotonNetwork.LocalPlayer.IsMasterClient)
+                {
                     item.UpdateComboTxt(P1SpeedComboIndex);
-                }else if(!PhotonNetwork.LocalPlayer.IsMasterClient){
+                }
+                else if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                {
                     item.UpdateComboTxt(P2SpeedComboIndex);
                 }
             }
@@ -4026,7 +4151,8 @@ public class PVPManager : MonoBehaviour
     }
 
     [PunRPC]
-    public IEnumerator CheckWin(){
+    public IEnumerator CheckWin()
+    {
         P1StaBar.value += StaGainedPerMatch;
         P2StaBar.value += StaGainedPerMatch;
         yield return new WaitForSeconds(2f);
@@ -4034,18 +4160,19 @@ public class PVPManager : MonoBehaviour
         bool player1Win = false;
         ChoiceDetails.SetActive(false);
 
-        
-        if(P1HealthBar.value <= 0){
+
+        if (P1HealthBar.value <= 0)
+        {
             player2.SetActive(false);
-            player1.SetActive(false);            
-            winTxt.text = PhotonNetwork.PlayerList[1].NickName+" Wins !";
+            player1.SetActive(false);
+            winTxt.text = PhotonNetwork.PlayerList[1].NickName + " Wins !";
             winIm.sprite = p2Char.ChracterOppSp;
             winTxt.gameObject.SetActive(true);
-            PVPOver = true;            
+            PVPOver = true;
             player1Win = false;
             //if(isattackerMaster)
-                //p2Obj.pData.health = (int)P2HealthBar.value;
-                p2Obj.pData.stamina = P2StaBar.value;
+            //p2Obj.pData.health = (int)P2HealthBar.value;
+            p2Obj.pData.stamina = P2StaBar.value;
             // else
             //     Game.Get().GetPosition((int)p1Pos.x, (int)p1Pos.y).GetComponent<Chessman>().characterHealth = (int)P2HealthBar.value;
 
@@ -4062,17 +4189,17 @@ public class PVPManager : MonoBehaviour
                 Debug.Log("is null IHealthBar");
             }
 
-            if (p2Obj.GetComponent<ISaveHighLowLeftRightMedle>()!=null)
+            if (p2Obj.GetComponent<ISaveHighLowLeftRightMedle>() != null)
             {
                 p2Obj.high += 5;
                 p2Obj.low += 5;
                 p2Obj.left += 5;
                 p2Obj.right += 5;
                 p2Obj.medle += 5;
-                
+
                 Debug.Log($" is not null high {p2Obj.high} low {p2Obj.low} " +
                     $"left {p2Obj.left} right {p2Obj.right} medle {p2Obj.medle}  ");
-                
+
                 p2Obj.GetComponent<ISaveHighLowLeftRightMedle>().SaveHighLowLeftRightMedle(p2Obj.high, p2Obj.low, p2Obj.left
                     , p2Obj.right, p2Obj.medle);
             }
@@ -4082,17 +4209,18 @@ public class PVPManager : MonoBehaviour
             }
 
         }
-        else if(P2HealthBar.value <= 0){
+        else if (P2HealthBar.value <= 0)
+        {
             player2.SetActive(false);
             player1.SetActive(false);
-            winTxt.text = PhotonNetwork.PlayerList[0].NickName+" Wins !";
+            winTxt.text = PhotonNetwork.PlayerList[0].NickName + " Wins !";
             winIm.sprite = p1Char.ChracterSp;
             winTxt.gameObject.SetActive(true);
             PVPOver = true;
             player1Win = true;
             //if(isattackerMaster)
-                //p1Obj.pData.health = (int)P1HealthBar.value;
-                p1Obj.pData.stamina = P1StaBar.value;
+            //p1Obj.pData.health = (int)P1HealthBar.value;
+            p1Obj.pData.stamina = P1StaBar.value;
             // else
             //     Game.Get().GetPosition((int)p2Pos.x, (int)p2Pos.y).GetComponent<Chessman>().characterHealth = (int)P1HealthBar.value;
 
@@ -4127,33 +4255,39 @@ public class PVPManager : MonoBehaviour
                 Debug.Log("is null ISaveHighLowLeftRightMedle");
             }
         }
-        else{
-            
-            if(isLocalPVPTurn){
+        else
+        {
+
+            if (isLocalPVPTurn)
+            {
                 Debug.Log(" == set mode panel here == ");
                 SetModePanel();
-                
-            }else{
+
+            }
+            else
+            {
                 //ModePanel.SetActive(false);
-                waitPanel.SetActive(true);                
+                waitPanel.SetActive(true);
             }
         }
 
-        if(PVPOver){
+        if (PVPOver)
+        {
             yield return new WaitForSeconds(2f);
-            if(PhotonNetwork.LocalPlayer.IsMasterClient){
+            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
                 // if(isLocalPVPFirstTurn)
                 //     Game.Get().HandleWin(player1Win,isattackerMaster,p1Pos,p2Pos);
                 // else
                 //     Game.Get().HandleWin(!player1Win,isattackerMaster,p1Pos,p2Pos);
             }
-                
+
         }
 
     }
 
     //[PunRPC]
-    public IEnumerator CheckWinNew(float delay=10f)
+    public IEnumerator CheckWinNew(float delay = 10f)
     {
         // P1StaBar.value += StaGainedPerMatch;
         // P2StaBar.value += StaGainedPerMatch;
@@ -4163,7 +4297,7 @@ public class PVPManager : MonoBehaviour
         bool PVPOver = false;
         bool player1Win = false;
         ChoiceDetails.SetActive(false);
-        
+
 
         if (P1HealthBar.value <= 0)
         {
@@ -4200,7 +4334,7 @@ public class PVPManager : MonoBehaviour
                     else
                     { Game.Get().HandleWin(!player1Win, isattackerMaster, p1Pos, p2Pos); }
 
-                    Debug.LogError("P1 lose");
+                    //Debug.LogError("P1 lose");
                 }
             }
 
@@ -4279,17 +4413,17 @@ public class PVPManager : MonoBehaviour
         }
     }
 
-    public IEnumerator CheckWinNewWithoutReset(float delay=10f)
+    public IEnumerator CheckWinNewWithoutReset(float delay = 10f)
     {
         // P1StaBar.value += StaGainedPerMatch;
         // P2StaBar.value += StaGainedPerMatch;
         yield return new WaitForSeconds(delay); //3f
-        Debug.LogError("Is All in "+ IsAnyAllIn);
-        
+                                                // Debug.LogError("Is All in " + IsAnyAllIn);
+
         bool PVPOver = false;
         bool player1Win = false;
         ChoiceDetails.SetActive(false);
-        
+
 
         if (P1HealthBar.value <= 0)
         {
@@ -4324,7 +4458,7 @@ public class PVPManager : MonoBehaviour
                     else
                     { Game.Get().HandleWin(!player1Win, isattackerMaster, p1Pos, p2Pos); }
 
-                    Debug.LogError("P1 lose");
+                    //  Debug.LogError("P1 lose");
                 }
             }
 
@@ -4370,7 +4504,7 @@ public class PVPManager : MonoBehaviour
             }
             //
         }
-        
+
     }
 
 
@@ -4378,13 +4512,15 @@ public class PVPManager : MonoBehaviour
     CharacterData myChar = null, opponentChar = null;
 
 
-    public static PVPManager Get(){
+    public static PVPManager Get()
+    {
         return manager;
     }
 
     [PunRPC]
-    public void SetDataRPC(Vector2 posP1, Vector2 posP2,bool isReverse){
-        
+    public void SetDataRPC(Vector2 posP1, Vector2 posP2, bool isReverse)
+    {
+
         playerChoice.ExtraAttack = new List<AttackType>();
         winTxt.gameObject.SetActive(false);
         player1.SetActive(true);
@@ -4400,7 +4536,7 @@ public class PVPManager : MonoBehaviour
 
         p1Pos = posP1;
         p2Pos = posP2;
-       
+
         p1Obj = Game.Get().GetPosition((int)posP1.x, (int)posP1.y).GetComponent<Chessman>();
         p2Obj = Game.Get().GetPosition((int)posP2.x, (int)posP2.y).GetComponent<Chessman>();
 
@@ -4415,29 +4551,29 @@ public class PVPManager : MonoBehaviour
         //    opponentpiece = p2Obj.type;
         //    myPiece = p1Obj.type;
         //}
-        
-        if(isReverse && Game.Get().IsDefender)
+
+        if (isReverse && Game.Get().IsDefender)
         {
             myPiece = p1Obj.type;
             opponentpiece = p2Obj.type;
             myObj = p1Obj;
             opponentObj = p2Obj;
         }
-        else if(isReverse && !Game.Get().IsDefender)
+        else if (isReverse && !Game.Get().IsDefender)
         {
             myPiece = p2Obj.type;
             opponentpiece = p1Obj.type;
             myObj = p2Obj;
             opponentObj = p1Obj;
         }
-        else if(!isReverse && Game.Get().IsDefender)
+        else if (!isReverse && Game.Get().IsDefender)
         {
             myPiece = p2Obj.type;
             opponentpiece = p1Obj.type;
             myObj = p2Obj;
             opponentObj = p1Obj;
         }
-        else if(!isReverse && !Game.Get().IsDefender)
+        else if (!isReverse && !Game.Get().IsDefender)
         {
             myPiece = p1Obj.type;
             opponentpiece = p2Obj.type;
@@ -4453,17 +4589,18 @@ public class PVPManager : MonoBehaviour
         p1Char = p1Obj.character;
         p2Char = p2Obj.character;
 
-        
+
         if (!myObj.AlreadyPlayedPvP)
         {
             P1RemainingHandHealth = p1Char.health;
             P1HealthBar.value = p1Char.health;
             P1StartHealth = p1Char.health;
             myObj.AlreadyPlayedPvP = true;
-            
+
             P1StaVal = 10;
         }
-        else {
+        else
+        {
             P1RemainingHandHealth = myObj.pData.health;
             P1HealthBar.value = myObj.pData.health;
             P1StartHealth = myObj.pData.health;
@@ -4484,27 +4621,27 @@ public class PVPManager : MonoBehaviour
             P2HealthBar.value = opponentObj.pData.health;
             P2StartHealth = opponentObj.pData.health;
             P2StaVal = opponentObj.pData.stamina;
-            
+
         }
 
         P1HealthBar.maxValue = p1Char.health;
         P2HealthBar.maxValue = p2Char.health;
 
         //Debug.LogError("Set hp : 1 - " + P1HealthBar.value + " , 2 - " + P2HealthBar.value);
-        
+
 
         P1StaBar.maxValue = 10;
         P2StaBar.maxValue = 10;
         P1StaBar.value = P1StaVal;
         P2StaBar.value = P2StaVal;
-        
-        MaxManaBarVal = 1;
+
+        MaxManaBarVal = -1;
         MyManabarVal = MaxManaBarVal;
         OppoManabarVal = MaxManaBarVal;
         MyManaBar.maxValue = MaxManaBarVal;
         OppoManaBar.maxValue = MaxManaBarVal;
         UpdateManaTxt();
-        
+
 
         P1RageBar.maxValue = 100;
         P2RageBar.maxValue = 100;
@@ -4516,14 +4653,14 @@ public class PVPManager : MonoBehaviour
         p2Speed = 0; //opponentObj.pData.speed
 
 
-        P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
-        photonView.RPC("UpdateSpeedPoints",RpcTarget.Others,p1Speed);
+        P1SpeedTxt.text = MathF.Round(p1Speed, 2).ToString();
+        photonView.RPC("UpdateSpeedPoints", RpcTarget.Others, p1Speed);
 
 
         //Debug.LogError("Loading data myObj : " + myObj.left);
         isAttackedHigh = 0;
         isAttackedLow = 0;
-        isAttackedOnRightSide =0;
+        isAttackedOnRightSide = 0;
         isAttackedOnLeftSide = 0;
         isAttackedInMiddle = 0;
 
@@ -4537,18 +4674,18 @@ public class PVPManager : MonoBehaviour
         my_opponentAttackMadeWeakerPerntage = 0;//Mathf.Max(isAttackedOnLeftSideOpponent, isAttackedOnRightSideOpponent) * 0.05f
         my_OpponetSpeedMakeSlowerPercentage = 0;//isAttackedLowOpponent * 0.05f
         my_opponentStaminaLessRecovertPerncetage = 0;//isAttackedInMiddleOpponent * 0.1f
-            
 
 
-        myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString()+" %"; my_opponentAttackMadeWeakerPerntageTxt.text = (my_OpponetSpeedMakeSlowerPercentage * 100).ToString() + " %"; my_opponentStaminaLessRecovertPerncetageTxt.text = (my_opponentStaminaLessRecovertPerncetage * 100).ToString() + " %";myOpponentAttackSpeedSlowTxt.text = (my_opponentAttackMadeWeakerPerntage * 100).ToString() + " %";//
-        //photonView.RPC("UpdateOpponentEffects_RPC",RpcTarget.Others,myExtraDamagePercentage,my_opponentAttackMadeWeakerPerntage,my_opponentStaminaLessRecovertPerncetage,my_OpponetSpeedMakeSlowerPercentage,my_OpponetSpeedMakeSlowerPercentage > 0);
 
-       // UpdateSpeed();
+        myExtraDamagePercentageTxt.text = (myExtraDamagePercentage * 100).ToString() + " %"; my_opponentAttackMadeWeakerPerntageTxt.text = (my_OpponetSpeedMakeSlowerPercentage * 100).ToString() + " %"; my_opponentStaminaLessRecovertPerncetageTxt.text = (my_opponentStaminaLessRecovertPerncetage * 100).ToString() + " %"; myOpponentAttackSpeedSlowTxt.text = (my_opponentAttackMadeWeakerPerntage * 100).ToString() + " %";//
+                                                                                                                                                                                                                                                                                                                                                                                                                                   //photonView.RPC("UpdateOpponentEffects_RPC",RpcTarget.Others,myExtraDamagePercentage,my_opponentAttackMadeWeakerPerntage,my_opponentStaminaLessRecovertPerncetage,my_OpponetSpeedMakeSlowerPercentage,my_OpponetSpeedMakeSlowerPercentage > 0);
 
-       myChar = myObj.character;
-       opponentChar = opponentObj.character;
+        // UpdateSpeed();
 
-        if(myObj.playerType == PlayerType.Black)
+        myChar = myObj.character;
+        opponentChar = opponentObj.character;
+
+        if (myObj.playerType == PlayerType.Black)
         {
             p1Image.sprite = myChar.ChracterOppSp;
             p2Image.sprite = opponentChar.ChracterSp;
@@ -4559,42 +4696,45 @@ public class PVPManager : MonoBehaviour
             p2Image.sprite = opponentChar.ChracterOppSp;
         }
 
-        if(isLocalPVPTurn){
+        if (isLocalPVPTurn)
+        {
             Debug.Log(" == set mode panel here == ");
             //Game.Get().loadingScreen.SetActive(true);
-            StartCoroutine(Game.Get().SetLoadingScreenOnOff(false,1f));
-            
+            StartCoroutine(Game.Get().SetLoadingScreenOnOff(false, 1f));
+
             //SpellManager.instance.RemoveOldSpellData();
-           
-        }else{
+
+        }
+        else
+        {
             // ModePanel.SetActive(false);
-           // Game.Get().loadingScreen.SetActive(true);
-            StartCoroutine(Game.Get().SetLoadingScreenOnOff(false,1f));
+            // Game.Get().loadingScreen.SetActive(true);
+            StartCoroutine(Game.Get().SetLoadingScreenOnOff(false, 1f));
             //SpellManager.instance.RemoveOldSpellData();
-              //  SpellManager.instance.GenerateCardsForPlayer();
+            //  SpellManager.instance.GenerateCardsForPlayer();
             waitPanel.SetActive(true);
         }
         SetModePanel();
-       
+
         UpdateHMTxt();
 
         ShowWeaknessFactor();
-        
+
         AddMana();
 
         SpellManager.instance.spellCardsDeck = new List<SpellCard>();
-        
+
         foreach (var item in myObj.cards)
         {
             SpellManager.instance.spellCardsDeck.Add(item);
         }
-        Debug.LogError(SpellManager.instance.spellCardsDeck.Count+ " cards added");
+        //   Debug.LogError(SpellManager.instance.spellCardsDeck.Count + " cards added");
 
         for (int i = 0; i < startNumCards; i++)
         {
             SpellManager.instance.DrawCard();
         }
-        
+
         // StartTimer();
         // EndTurnBtn.gameObject.SetActive(true);
 
@@ -4604,20 +4744,21 @@ public class PVPManager : MonoBehaviour
 
 
 
-    public void ShowWeaknessFactor(){
+    public void ShowWeaknessFactor()
+    {
         p1Weakness.SetActive(false);
         p2Weakness.SetActive(false);
-        CharacterType myCharWeakAgainst = CharacterType.Earth, opponent = CharacterType.Water; 
-        CharacterType OppCharWeakAgainst = CharacterType.Earth, Me = CharacterType.Water; 
-        
-        if(Game.Get().IsDefender) 
+        CharacterType myCharWeakAgainst = CharacterType.Earth, opponent = CharacterType.Water;
+        CharacterType OppCharWeakAgainst = CharacterType.Earth, Me = CharacterType.Water;
+
+        if (Game.Get().IsDefender)
         {
             myCharWeakAgainst = p2Char.weakAgainst;
             opponent = p1Char.type;
             OppCharWeakAgainst = p1Char.weakAgainst;
             Me = p2Char.type;
         }
-        else 
+        else
         {
             myCharWeakAgainst = p1Char.weakAgainst;
             opponent = p2Char.type;
@@ -4625,7 +4766,8 @@ public class PVPManager : MonoBehaviour
             Me = p1Char.type;
         }
 
-        if(myCharWeakAgainst == opponent){
+        if (myCharWeakAgainst == opponent)
+        {
             p1Weakness.SetActive(true);
             p1Weakness.GetComponent<Image>().color = Color.red;
             p1Weakness.GetComponentInChildren<TextMeshProUGUI>().text = "-20";
@@ -4635,7 +4777,8 @@ public class PVPManager : MonoBehaviour
             p2Weakness.GetComponentInChildren<TextMeshProUGUI>().text = "+20";
         }
 
-        if(OppCharWeakAgainst == Me){
+        if (OppCharWeakAgainst == Me)
+        {
             p1Weakness.SetActive(true);
             p1Weakness.GetComponent<Image>().color = Color.green;
             p1Weakness.GetComponentInChildren<TextMeshProUGUI>().text = "+20";
@@ -4649,21 +4792,23 @@ public class PVPManager : MonoBehaviour
 
     }
 
-    public void DealDamageToOpponent(int c){
-        photonView.RPC("DealDamage",RpcTarget.Others,c);
+    public void DealDamageToOpponent(int c)
+    {
+        photonView.RPC("DealDamage", RpcTarget.Others, c);
         PhotonNetwork.SendAllOutgoingCommands();
         P2RemainingHandHealth -= c;
         P2StartHealth -= c;
         ShowDealtDamage(c);
-        if(P2RemainingHandHealth > P1StartHealth) P2RemainingHandHealth = P2StartHealth;
-        if(P2RemainingHandHealth < 0) P2RemainingHandHealth = 0;
+        if (P2RemainingHandHealth > P1StartHealth) P2RemainingHandHealth = P2StartHealth;
+        if (P2RemainingHandHealth < 0) P2RemainingHandHealth = 0;
         P2HealthBar.value = P2RemainingHandHealth;
         //photonView.RPC("SetOpponentRemainingHandHealth_RPCPlus",RpcTarget.Others,c);
         PhotonNetwork.SendAllOutgoingCommands();
         //Update Values in loser
         //P2StartHealth = (int)P2HealthBar.value;
         UpdateHMTxt();
-        if(PVPManager.Get().P2RemainingHandHealth <= 0){
+        if (PVPManager.Get().P2RemainingHandHealth <= 0)
+        {
             PVPManager.manager.isAllIn = true;
             PVPManager.manager.IsAnyAllIn = true;
             PVPManager.manager.SyncAllIn(true);
@@ -4675,60 +4820,67 @@ public class PVPManager : MonoBehaviour
             //// DemoManager.instance._pokerButtons.SetActive(false);
             //// StartTimer();
         }
-        //StartCoroutine(CheckWinNewWithoutReset(0.1f));
+        if (Game.Get().turn <= 1)
+            StartCoroutine(CheckWinNewWithoutReset(0.1f));
     }
 
-    public void ShowDealtDamage(int c, bool isLocal = true){
-        GameObject o = Instantiate(DmgPref,isLocal ? p2Image.transform : p1Image.transform);
-        o.GetComponent<DamageIndicator>().DmgText.text = "-"+c;
+    public void ShowDealtDamage(int c, bool isLocal = true)
+    {
+        GameObject o = Instantiate(DmgPref, isLocal ? p2Image.transform : p1Image.transform);
+        o.GetComponent<DamageIndicator>().DmgText.text = "-" + c;
         Vector3 startPos = Vector3.zero;
-        Vector3 midPos1 = new Vector3(0.5f, 30f/4f,0f);
-        Vector3 midPos2 = new Vector3(0.5f, (30f/4f) * 3f,0f);
-        Vector3 endPos = new Vector3(0f,30f,0f);
-        o.LeanMoveLocal(new LTBezierPath(new Vector3[]{startPos,midPos1,midPos2,endPos}),0.5f).setOnComplete(()=>{
+        Vector3 midPos1 = new Vector3(0.5f, 30f / 4f, 0f);
+        Vector3 midPos2 = new Vector3(0.5f, (30f / 4f) * 3f, 0f);
+        Vector3 endPos = new Vector3(0f, 30f, 0f);
+        o.LeanMoveLocal(new LTBezierPath(new Vector3[] { startPos, midPos1, midPos2, endPos }), 0.5f).setOnComplete(() =>
+        {
             Destroy(o);
         });
-        
+
     }
 
     [PunRPC]
-    public void DealDamage(int c){
+    public void DealDamage(int c)
+    {
         P1RemainingHandHealth -= c;
         P1StartHealth -= c;
-        ShowDealtDamage(c,false);
-        if(P1RemainingHandHealth > P1StartHealth) P1RemainingHandHealth = P1StartHealth;
-        if(P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
+        ShowDealtDamage(c, false);
+        if (P1RemainingHandHealth > P1StartHealth) P1RemainingHandHealth = P1StartHealth;
+        if (P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
         P1HealthBar.value = P1RemainingHandHealth;
         //photonView.RPC("SetOpponentRemainingHandHealth_RPCPlus",RpcTarget.Others,c);
         PhotonNetwork.SendAllOutgoingCommands();
         //Update Values in loser
         //P1StartHealth = (int)P1HealthBar.value;
         UpdateHMTxt();
-        
+
         //StartCoroutine(CheckWinNewWithoutReset(0.1f));
     }
 
-    public void UpdateSpeed(){
-        P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
-        P2SpeedTxt.text = MathF.Round(p2Speed,2).ToString();
+    public void UpdateSpeed()
+    {
+        P1SpeedTxt.text = MathF.Round(p1Speed, 2).ToString();
+        P2SpeedTxt.text = MathF.Round(p2Speed, 2).ToString();
     }
 
     [PunRPC]
-    public void SwitchPVPTurn(){
+    public void SwitchPVPTurn()
+    {
         isLocalPVPTurn = !isLocalPVPTurn;
         //IsPetTurn = isLocalPVPTurn;
         //SpellManager.PetAlreadyAttacked = false;
     }
 
     [PunRPC]
-    public void SetPVPTurn(bool b){
-        isLocalPVPTurn = b; 
+    public void SetPVPTurn(bool b)
+    {
+        isLocalPVPTurn = b;
     }
     public void RestartAfterFold()
     {
-        photonView.RPC("ResetPVPUIData",RpcTarget.All,false);
+        photonView.RPC("ResetPVPUIData", RpcTarget.All, false);
         Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
-        photonView.RPC("RPC_ResetTurn",RpcTarget.All);
+        photonView.RPC("RPC_ResetTurn", RpcTarget.All);
 
         Photon.Pun.PhotonNetwork.SendAllOutgoingCommands();
         if (PhotonNetwork.IsMasterClient)
@@ -4740,25 +4892,25 @@ public class PVPManager : MonoBehaviour
 
         //Game.Get().NextTurn();
 
-        Invoke("SetModePanel",3f);
+        Invoke("SetModePanel", 3f);
     }
 
     public void UpdateHealthTextP1()
     {
-        P1HealthTxt.text = ((int) P1HealthBar.value+"/"+P1HealthBar.maxValue).ToString();
+        P1HealthTxt.text = ((int)P1HealthBar.value + "/" + P1HealthBar.maxValue).ToString();
     }
     public void UpdateStaminaTextP1()
     {
         //Debug.LogError("*1Stamina Changed From Here " + P1StaBar.value);
-       // P1StaTxt.text = P1StaBar.value + "/" + P1StaBar.maxValue;
+        // P1StaTxt.text = P1StaBar.value + "/" + P1StaBar.maxValue;
     }
     public void UpdateRageTextP1()
     {
-        P1RageTxt.text = "Rage"+((int)P1RageBar.value).ToString();
+        P1RageTxt.text = "Rage" + ((int)P1RageBar.value).ToString();
     }
     public void UpdateHealthTextP2()
     {
-        P2HealthTxt.text =((int)  P2HealthBar.value + "/" + P2HealthBar.maxValue);
+        P2HealthTxt.text = ((int)P2HealthBar.value + "/" + P2HealthBar.maxValue);
     }
     public void UpdateStaminaTextP2()
     {
@@ -4768,32 +4920,32 @@ public class PVPManager : MonoBehaviour
     }
     public void UpdateRageTextP2()
     {
-        P2RageTxt.text = "Rage"+(( int) P2RageBar.value).ToString();//+ "/" + P1HealthBar.maxValue;
+        P2RageTxt.text = "Rage" + ((int)P2RageBar.value).ToString();//+ "/" + P1HealthBar.maxValue;
         UpdateHMTxt();
     }
     public void GenerateOpponentPlayerCards()
     {
         //Debug.LogError(deckFullList.Length);
 
-        for(int j = 0 ; j < opponentCardValue.Length ; j++)
+        for (int j = 0; j < opponentCardValue.Length; j++)
         {
-            for(int i = 0 ; i < deckFullList.Length ; i++)
+            for (int i = 0; i < deckFullList.Length; i++)
             {
-                if((int)deckFullList[i].cardValue == opponentCardValue[j] && (int)deckFullList[i].cardColor == opponentCardColor[j])
+                if ((int)deckFullList[i].cardValue == opponentCardValue[j] && (int)deckFullList[i].cardColor == opponentCardColor[j])
                 {
                     //Debug.LogError("MATCH");
                     opponentCardSprite.Add(deckFullList[i].cardSprite);
-                    var cardObj = DemoManager.instance.InstantiateCardOpponent(deckFullList[i],OpponentPlayerCardPositions[j].transform.position,OpponentPlayerCardPositions[j].transform,i);
+                    var cardObj = DemoManager.instance.InstantiateCardOpponent(deckFullList[i], OpponentPlayerCardPositions[j].transform.position, OpponentPlayerCardPositions[j].transform, i);
 
                     //set this card to player poisition
                     cardObj.GetComponent<RectTransform>().parent = OpponentPlayerCardPositions[j].transform;
-                    cardObj.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(30 * j,0,0);
-                    cardObj.GetComponent<RectTransform>().anchorMax = new Vector2(0,0.5f);
-                    cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0,0.5f);
-                    cardObj.GetComponent<RectTransform>().pivot = new Vector2(0,0.5f);
+                    cardObj.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(30 * j, 0, 0);
+                    cardObj.GetComponent<RectTransform>().anchorMax = new Vector2(0, 0.5f);
+                    cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.5f);
+                    cardObj.GetComponent<RectTransform>().pivot = new Vector2(0, 0.5f);
 
-                    cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0,0,0);
-                   // cardObj.gameObject.SetActive(false);
+                    cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+                    // cardObj.gameObject.SetActive(false);
 
                 }
             }
@@ -4803,7 +4955,7 @@ public class PVPManager : MonoBehaviour
     public void UpdateAttackLocation(AttackLocation location)
     {
         playerAttackLocation = location;
-        photonView.RPC("UpdateOpponentAttackLocation_RPC",RpcTarget.Others,location);
+        photonView.RPC("UpdateOpponentAttackLocation_RPC", RpcTarget.Others, location);
     }
     [PunRPC]
     public void UpdateOpponentAttackLocation_RPC(AttackLocation location)
@@ -4813,7 +4965,7 @@ public class PVPManager : MonoBehaviour
     public void UpdateDefenceLocation(AttackLocation location)
     {
         playerDefenceLocation = location;
-        photonView.RPC("UpdateOpponentDefenceLocation_RPC",RpcTarget.Others,location);
+        photonView.RPC("UpdateOpponentDefenceLocation_RPC", RpcTarget.Others, location);
     }
     [PunRPC]
     public void UpdateOpponentDefenceLocation_RPC(AttackLocation location)
@@ -4821,9 +4973,9 @@ public class PVPManager : MonoBehaviour
         opponentDefendLocation = location;
     }
     public AttackLocation GetAttackLocation(int val)
-    { 
+    {
         AttackLocation location = AttackLocation.None;
-        switch(val)
+        switch (val)
         {
             case -1:
                 location = AttackLocation.None;
@@ -4850,50 +5002,50 @@ public class PVPManager : MonoBehaviour
     }
     public void ReloadScene()
     {
-        photonView.RPC("ReloadScene_RPC",RpcTarget.All);
+        photonView.RPC("ReloadScene_RPC", RpcTarget.All);
     }
     [PunRPC]
     public void ReloadScene_RPC()
     {
-        photonView.RPC("Rset_BOOL_RPC",RpcTarget.All,true);
+        photonView.RPC("Rset_BOOL_RPC", RpcTarget.All, true);
         PhotonNetwork.SendAllOutgoingCommands();
-        if(PhotonNetwork.IsMasterClient)
-        ResetData();
+        if (PhotonNetwork.IsMasterClient)
+            ResetData();
     }
     public Image myPieceImg, oppPiece;
 
-    public void SetChessSpriteForPVP() 
+    public void SetChessSpriteForPVP()
     {
 
         string player = "";
-        if( PhotonNetwork.LocalPlayer== PhotonNetwork.MasterClient) //if(PhotonNetwork.PlayerList[0] == PhotonNetwork.LocalPlayer) 
+        if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient) //if(PhotonNetwork.PlayerList[0] == PhotonNetwork.LocalPlayer) 
         {
             player = "white";
-            
+
         }
-        else 
+        else
         {
             player = "black";
         }
 
-       
-        Debug.Log("METHOD CALLED ***** "+player);
-        PlayerType mytype= PlayerType.Black;//= PlayerType.Black = player ? "black" : "white";
+
+        Debug.Log("METHOD CALLED ***** " + player);
+        PlayerType mytype = PlayerType.Black;//= PlayerType.Black = player ? "black" : "white";
         PlayerType oppType = PlayerType.White;
-        if(player == "black") 
+        if (player == "black")
         {
             mytype = PlayerType.Black;
             oppType = PlayerType.White;
         }
-        else if(player == "white")
+        else if (player == "white")
         {
             mytype = PlayerType.White;
             oppType = PlayerType.Black;
         }
-        Debug.Log(mytype + " ------ " + oppType + " ==MY PIECE "+myPiece + " -OPP PIECE "+opponentpiece);
+        Debug.Log(mytype + " ------ " + oppType + " ==MY PIECE " + myPiece + " -OPP PIECE " + opponentpiece);
         PlayerType playerType = mytype;
 
-        switch(myPiece)
+        switch (myPiece)
         {
             case PieceType.Queen: myPieceImg.sprite = playerType == PlayerType.Black ? black_queen : white_queen; break;
             case PieceType.Knight: myPieceImg.sprite = playerType == PlayerType.Black ? black_knight : white_knight; break;
@@ -4902,10 +5054,10 @@ public class PVPManager : MonoBehaviour
             case PieceType.Rook: myPieceImg.sprite = playerType == PlayerType.Black ? black_rook : white_rook; break;
             case PieceType.Pawn: myPieceImg.sprite = playerType == PlayerType.Black ? black_pawn : white_pawn; break;
         }
-       
-        switch(opponentpiece)
+
+        switch (opponentpiece)
         {
-           
+
             case PieceType.Queen: oppPiece.sprite = oppType == PlayerType.Black ? black_queen : white_queen; break;
             case PieceType.Knight: oppPiece.sprite = oppType == PlayerType.Black ? black_knight : white_knight; break;
             case PieceType.Bishop: oppPiece.sprite = oppType == PlayerType.Black ? black_bishop : white_bishop; break;

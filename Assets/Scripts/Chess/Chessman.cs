@@ -5,7 +5,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public enum PieceType{
+public enum PieceType
+{
     Queen,
     King,
     Rook,
@@ -14,7 +15,8 @@ public enum PieceType{
     Pawn
 }
 
-public enum PlayerType{
+public enum PlayerType
+{
     Black,
     White,
     None
@@ -28,10 +30,10 @@ public interface IHealthBar
 
 public interface ISaveHighLowLeftRightMedle
 {
-    public void SaveHighLowLeftRightMedle(float high,float low,float left, float right,float medle);
+    public void SaveHighLowLeftRightMedle(float high, float low, float left, float right, float medle);
 }
 
-public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,ISaveHighLowLeftRightMedle
+public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar, ISaveHighLowLeftRightMedle
 {
     public GameObject controller;
     public GameObject movePlate;
@@ -52,13 +54,14 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
     public CharacterData character;
     public float high, low, left, right, medle;
 
-    public class CharacterRuntimeData{
-        public int 
+    public class CharacterRuntimeData
+    {
+        public int
         health;
         public float stamina;
         public float speed;
 
-        
+
     }
     public CharacterRuntimeData pData;
 
@@ -71,17 +74,17 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
     //public bool isFristMovePawn=true;
     public PieceType myPiece, opponentpiece;
 
-    public bool AlreadyPlayedPvP =false;
+    public bool AlreadyPlayedPvP = false;
 
     public List<SpellCard> cards;
 
     private void Start()
     {
 
-        
+
         photonView = GetComponent<PhotonView>();
         //Debug.Log($"<color=yellow> {name} health {character.health} </color>  high {high}" +
-            //$"low {low} left {left} right {right} medle {medle}");
+        //$"low {low} left {left} right {right} medle {medle}");
         //localScale = healthBar.transform.localScale;
         healthBar.GetComponent<Image>().fillAmount = 1;
         AlreadyPlayedPvP = false;
@@ -92,8 +95,8 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         {
             cards.Add(GameData.Get().GetPet(System.Convert.ToInt32(item)));
         }
-        Debug.LogError(cards.Count+ " cards added");
-        
+        // Debug.LogError(cards.Count+ " cards added");
+
         //SaveHighLowLeftRightMedle(-1, -1, -1, -1, -1);
     }
 
@@ -102,12 +105,12 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         UpdateHealth(pData.health);
     }
 
- 
+
     public void UpdateHealth(float _health)
     {
         //Debug.Log($"<color=yellow> UPDATE ->  {name} health {character.health} _health is{_health} </color>");
         //float x = _health / 100;
-        
+
         //localScale.x = x;
 
         //Debug.Log($" x is {x} and localscale is {localScale.x}  xcal is {_health/100} with brakets {(_health/100)}  {70/100}" );
@@ -133,7 +136,8 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         //  $"low {low} left {left} right {right} medle {medle}");
     }
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info){
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
 
         Debug.Log("OnPhotonInstantiate");
         object[] data = info.photonView.InstantiationData;
@@ -153,7 +157,8 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         PieceIndex = (int)data[5];
     }
 
-    public void OnInstantiate(object[] data){
+    public void OnInstantiate(object[] data)
+    {
 
         Debug.Log("OnInstantiate");
 
@@ -171,7 +176,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         Activate();
         pieces.Add(this);
         PieceIndex = (int)data[5];
-        
+
     }
 
 
@@ -189,22 +194,24 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
         player = playerType == PlayerType.Black ? "black" : "white";
 
-        switch(type)
+        switch (type)
         {
             case PieceType.Queen: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_queen : white_queen; break;
-            case PieceType.Knight: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_knight : white_knight;  break;
-            case PieceType.Bishop: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_bishop : white_bishop;  break;
-            case PieceType.King: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_king : white_king;  break;
-            case PieceType.Rook: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_rook : white_rook;  break;
-            case PieceType.Pawn: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_pawn : white_pawn;  break;
+            case PieceType.Knight: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_knight : white_knight; break;
+            case PieceType.Bishop: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_bishop : white_bishop; break;
+            case PieceType.King: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_king : white_king; break;
+            case PieceType.Rook: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_rook : white_rook; break;
+            case PieceType.Pawn: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_pawn : white_pawn; break;
         }
     }
 
-    public Sprite GetSprite(){
+    public Sprite GetSprite()
+    {
         return this.GetComponent<SpriteRenderer>().sprite;
     }
 
-    public void Init(){
+    public void Init()
+    {
 
     }
 
@@ -248,9 +255,9 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
         if (!Game.Get().IsGameOver() && Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn)
         {
-            photonView.RPC("DestroyMovePlatesRPC",RpcTarget.AllViaServer);
-            photonView.RPC("InitiateMovePlatesRPC",RpcTarget.AllViaServer,type);
-            if(PVPManager.manager.moveChoiceConfirmation.gameObject.activeSelf) 
+            photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
+            photonView.RPC("InitiateMovePlatesRPC", RpcTarget.AllViaServer, type);
+            if (PVPManager.manager.moveChoiceConfirmation.gameObject.activeSelf)
             {
                 PVPManager.manager.moveChoiceConfirmation.gameObject.SetActive(false);
                 PVPManager.manager.selectedMove = null;
@@ -260,78 +267,78 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
     public void DestroyMovePlates()
     {
-         photonView.RPC("DestroyMovePlatesRPC",RpcTarget.AllViaServer);
-        
+        photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
+
     }
     [PunRPC]
-    public void SetPieceType(PieceType type) 
+    public void SetPieceType(PieceType type)
     {
-      PVPManager.manager.opponentpiece = type;
+        PVPManager.manager.opponentpiece = type;
     }
     bool isPlateInstantiated = false;
     public void InitiateMovePlates(PieceType type)
     {
         Debug.Log("InitiateMovePlates");
-       
-        switch(type)
+
+        switch (type)
         {
             case PieceType.Queen:
-                LineMovePlate(1,0);
-                LineMovePlate(0,1);
-                LineMovePlate(1,1);
-                LineMovePlate(-1,0);
-                LineMovePlate(0,-1);
-                LineMovePlate(-1,-1);
-                LineMovePlate(-1,1);
-                LineMovePlate(1,-1);
+                LineMovePlate(1, 0);
+                LineMovePlate(0, 1);
+                LineMovePlate(1, 1);
+                LineMovePlate(-1, 0);
+                LineMovePlate(0, -1);
+                LineMovePlate(-1, -1);
+                LineMovePlate(-1, 1);
+                LineMovePlate(1, -1);
 
                 break;
             case PieceType.Knight:
                 LMovePlate();
                 break;
             case PieceType.Bishop:
-                LineMovePlate(1,1);
-                LineMovePlate(1,-1);
-                LineMovePlate(-1,1);
-                LineMovePlate(-1,-1);
+                LineMovePlate(1, 1);
+                LineMovePlate(1, -1);
+                LineMovePlate(-1, 1);
+                LineMovePlate(-1, -1);
                 break;
             case PieceType.King:
                 SurroundMovePlate();
                 break;
             case PieceType.Rook:
-                LineMovePlate(1,0);
-                LineMovePlate(0,1);
-                LineMovePlate(-1,0);
-                LineMovePlate(0,-1);
+                LineMovePlate(1, 0);
+                LineMovePlate(0, 1);
+                LineMovePlate(-1, 0);
+                LineMovePlate(0, -1);
                 break;
             case PieceType.Pawn:
-                Vector2 piecePosition = new Vector2(xBoard,yBoard);
+                Vector2 piecePosition = new Vector2(xBoard, yBoard);
                 Game sc = controller.GetComponent<Game>();
-                if(playerType == PlayerType.Black)
+                if (playerType == PlayerType.Black)
                 {
 
-                    if(GameManager.instace.isFristMovePawn)
+                    if (GameManager.instace.isFristMovePawn)
                     {
-                        Debug.LogError("*****Black Two by Two X :" + xBoard + " Y :" + yBoard);
-                        Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
-                        if((sc.GetPosition(xBoard,yBoard-2) == null || sc.GetPosition(xBoard,yBoard-2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard,yBoard-1) == null)
-                            PawnMovePlateBlack(xBoard,yBoard - 2,piecePosition);
-                        if(sc.GetPosition(xBoard,yBoard-1) == null || sc.GetPosition(xBoard,yBoard-1).GetComponent<Chessman>().player != player)
-                            PawnMovePlateBlack(xBoard,yBoard - 1,piecePosition);
-                        if((sc.GetPosition(xBoard-2,yBoard) == null || sc.GetPosition(xBoard-2,yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard-1,yBoard) == null)
-                            PawnMovePlateBlack(xBoard - 2,yBoard,piecePosition);
-                        if(sc.GetPosition(xBoard-1,yBoard) == null || sc.GetPosition(xBoard-1,yBoard).GetComponent<Chessman>().player != player)
-                            PawnMovePlateBlack(xBoard - 1,yBoard,piecePosition);
+                        // Debug.LogError("*****Black Two by Two X :" + xBoard + " Y :" + yBoard);
+                        //   Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
+                        if ((sc.GetPosition(xBoard, yBoard - 2) == null || sc.GetPosition(xBoard, yBoard - 2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard, yBoard - 1) == null)
+                            PawnMovePlateBlack(xBoard, yBoard - 2, piecePosition);
+                        if (sc.GetPosition(xBoard, yBoard - 1) == null || sc.GetPosition(xBoard, yBoard - 1).GetComponent<Chessman>().player != player)
+                            PawnMovePlateBlack(xBoard, yBoard - 1, piecePosition);
+                        if ((sc.GetPosition(xBoard - 2, yBoard) == null || sc.GetPosition(xBoard - 2, yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard - 1, yBoard) == null)
+                            PawnMovePlateBlack(xBoard - 2, yBoard, piecePosition);
+                        if (sc.GetPosition(xBoard - 1, yBoard) == null || sc.GetPosition(xBoard - 1, yBoard).GetComponent<Chessman>().player != player)
+                            PawnMovePlateBlack(xBoard - 1, yBoard, piecePosition);
                     }
                     else
                     {
 
-                        Debug.LogError("*****Black One by One X :" + xBoard + " Y :" + yBoard);
-                        Debug.LogError("*****Black One to One");
-                        if(sc.GetPosition(xBoard,yBoard-1) == null || sc.GetPosition(xBoard,yBoard-1).GetComponent<Chessman>().player != player)
-                            PawnMovePlateBlack(xBoard,yBoard - 1,piecePosition,true);
-                        if(sc.GetPosition(xBoard-1,yBoard) == null || sc.GetPosition(xBoard-1,yBoard).GetComponent<Chessman>().player != player)
-                            PawnMovePlateBlack(xBoard - 1,yBoard,piecePosition);
+                        //     Debug.LogError("*****Black One by One X :" + xBoard + " Y :" + yBoard);
+                        //       Debug.LogError("*****Black One to One");
+                        if (sc.GetPosition(xBoard, yBoard - 1) == null || sc.GetPosition(xBoard, yBoard - 1).GetComponent<Chessman>().player != player)
+                            PawnMovePlateBlack(xBoard, yBoard - 1, piecePosition, true);
+                        if (sc.GetPosition(xBoard - 1, yBoard) == null || sc.GetPosition(xBoard - 1, yBoard).GetComponent<Chessman>().player != player)
+                            PawnMovePlateBlack(xBoard - 1, yBoard, piecePosition);
                     }
 
                 }
@@ -339,36 +346,36 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
                 {
 
 
-                    if(GameManager.instace.isFristMovePawn)
+                    if (GameManager.instace.isFristMovePawn)
                     {
 
-                        Debug.LogError("*****White Two by Two X :" + xBoard + " Y :" + yBoard);
-                        Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
-                        if((sc.GetPosition(xBoard,yBoard+2) == null || sc.GetPosition(xBoard,yBoard+2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard,yBoard+1) == null)
-                            PawnMovePlate(xBoard,yBoard + 2,piecePosition);
-                        if(sc.GetPosition(xBoard,yBoard+1) == null || sc.GetPosition(xBoard,yBoard+1).GetComponent<Chessman>().player != player)
-                            PawnMovePlate(xBoard,yBoard + 1,piecePosition);
-                        if((sc.GetPosition(xBoard+2,yBoard) == null || sc.GetPosition(xBoard+2,yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard+1,yBoard) == null)
-                            PawnMovePlate(xBoard + 2,yBoard,piecePosition);
-                        if(sc.GetPosition(xBoard+1,yBoard) == null || sc.GetPosition(xBoard+1,yBoard).GetComponent<Chessman>().player != player)
-                            PawnMovePlate(xBoard + 1,yBoard,piecePosition);
+                        //    Debug.LogError("*****White Two by Two X :" + xBoard + " Y :" + yBoard);
+                        //    Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
+                        if ((sc.GetPosition(xBoard, yBoard + 2) == null || sc.GetPosition(xBoard, yBoard + 2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard, yBoard + 1) == null)
+                            PawnMovePlate(xBoard, yBoard + 2, piecePosition);
+                        if (sc.GetPosition(xBoard, yBoard + 1) == null || sc.GetPosition(xBoard, yBoard + 1).GetComponent<Chessman>().player != player)
+                            PawnMovePlate(xBoard, yBoard + 1, piecePosition);
+                        if ((sc.GetPosition(xBoard + 2, yBoard) == null || sc.GetPosition(xBoard + 2, yBoard).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard + 1, yBoard) == null)
+                            PawnMovePlate(xBoard + 2, yBoard, piecePosition);
+                        if (sc.GetPosition(xBoard + 1, yBoard) == null || sc.GetPosition(xBoard + 1, yBoard).GetComponent<Chessman>().player != player)
+                            PawnMovePlate(xBoard + 1, yBoard, piecePosition);
                     }
                     else
                     {
 
-                        Debug.LogError("*****White One by One X :" + xBoard + " Y :" + yBoard);
-                        Debug.LogError("*****White One to One");
-                        if(sc.GetPosition(xBoard,yBoard+1) == null || sc.GetPosition(xBoard,yBoard+1).GetComponent<Chessman>().player != player)
-                            PawnMovePlate(xBoard,yBoard + 1,piecePosition,true);
-                        if(sc.GetPosition(xBoard+1,yBoard) == null || sc.GetPosition(xBoard+1,yBoard).GetComponent<Chessman>().player != player)
-                            PawnMovePlate(xBoard + 1,yBoard,piecePosition);
+                        //   Debug.LogError("*****White One by One X :" + xBoard + " Y :" + yBoard);
+                        //     Debug.LogError("*****White One to One");
+                        if (sc.GetPosition(xBoard, yBoard + 1) == null || sc.GetPosition(xBoard, yBoard + 1).GetComponent<Chessman>().player != player)
+                            PawnMovePlate(xBoard, yBoard + 1, piecePosition, true);
+                        if (sc.GetPosition(xBoard + 1, yBoard) == null || sc.GetPosition(xBoard + 1, yBoard).GetComponent<Chessman>().player != player)
+                            PawnMovePlate(xBoard + 1, yBoard, piecePosition);
                     }
                 }
 
                 break;
         }
 
-        if(isPlateInstantiated) 
+        if (isPlateInstantiated)
         {
             SetLastPieceInfo(type);
             isPlateInstantiated = false;
@@ -377,11 +384,11 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
     private void SetLastPieceInfo(PieceType type)
     {
-        if(PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
+        if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer)
         {
-           // Debug.Log("LAST PIECE "+)
+            // Debug.Log("LAST PIECE "+)
             PVPManager.manager.tempPiece = type;
-           // photonView.RPC("SetPieceType",RpcTarget.Others,type);
+            // photonView.RPC("SetPieceType",RpcTarget.Others,type);
         }
     }
 
@@ -394,7 +401,7 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         int x = xBoard + xIncrement;
         int y = yBoard + yIncrement;
 
-        while(sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
+        while (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
         {
             MovePlateSpawn(x, y);
             x += xIncrement;
@@ -402,9 +409,9 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
             isPlateInstantiated = true;
         }
 
-        if(sc.PositionOnBoard(x,y) && sc.GetPosition(x, y).GetComponent<Chessman>().player != player)
+        if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y).GetComponent<Chessman>().player != player)
         {
-            PieceType pieceType = sc.GetPosition(x,y).GetComponent<Chessman>().type;
+            PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
             PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
             MovePlateAttackSpawn(x, y);
             isPlateInstantiated = true;
@@ -444,18 +451,18 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         Debug.Log($"PointMovePlate x is {x} y is {y}");
 
         Game sc = controller.GetComponent<Game>();
-        if(sc.PositionOnBoard(x, y))
+        if (sc.PositionOnBoard(x, y))
         {
             GameObject cp = sc.GetPosition(x, y);
 
-            if(cp == null)
+            if (cp == null)
             {
                 MovePlateSpawn(x, y);
                 isPlateInstantiated = true;
             }
-            else if(cp.GetComponent<Chessman>().player != player)
+            else if (cp.GetComponent<Chessman>().player != player)
             {
-                PieceType pieceType = sc.GetPosition(x,y).GetComponent<Chessman>().type;
+                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
                 PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
                 MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
@@ -463,17 +470,17 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         }
     }
 
-    public void PawnMovePlate(int x, int y,Vector2 pieceVector,bool isAttackSibling=false)
+    public void PawnMovePlate(int x, int y, Vector2 pieceVector, bool isAttackSibling = false)
     {
         //Debug.Log($"PawnMovePlate x {x} and y {y}");
 
         Game sc = controller.GetComponent<Game>();
-        if(sc.PositionOnBoard(x, y))
+        if (sc.PositionOnBoard(x, y))
         {
             //OLD Working
-            if(sc.GetPosition(x,y) == null)
+            if (sc.GetPosition(x, y) == null)
             {
-                MovePlateSpawn(x,y);
+                MovePlateSpawn(x, y);
                 isPlateInstantiated = true;
                 Debug.Log("Simple Move Player Generate from here X " + x + " Y " + y);
             }
@@ -486,17 +493,17 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
             //    }
             //    Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} { y}   </color>");
             //}
-            if(sc.PositionOnBoard(x,y) && sc.GetPosition(x,y) != null &&
-               sc.GetPosition(x,y).GetComponent<Chessman>().player != player)//&& isAttackSibling )
+            if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) != null &&
+               sc.GetPosition(x, y).GetComponent<Chessman>().player != player)//&& isAttackSibling )
             {
                 //if((x) == (pieceVector.x) && y == (pieceVector.y))
                 // {
-                PieceType pieceType = sc.GetPosition(x,y).GetComponent<Chessman>().type;
+                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
                 PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
-                MovePlateAttackSpawn(x,y);
+                MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
                 // }
-                Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} { y}   </color>");
+                Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} {y}   </color>");
             }
 
             //New
@@ -523,17 +530,17 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
             //}
         }
     }
-    public void PawnMovePlateBlack(int x,int y,Vector2 pieceVector,bool isAttackSibling = false)
+    public void PawnMovePlateBlack(int x, int y, Vector2 pieceVector, bool isAttackSibling = false)
     {
         //Debug.Log($"PawnMovePlate x {x} and y {y}");
 
         Game sc = controller.GetComponent<Game>();
-        if(sc.PositionOnBoard(x,y))
+        if (sc.PositionOnBoard(x, y))
         {
             //OLD Working
-            if(sc.GetPosition(x,y) == null)
+            if (sc.GetPosition(x, y) == null)
             {
-                MovePlateSpawn(x,y);
+                MovePlateSpawn(x, y);
                 isPlateInstantiated = true;
                 Debug.Log("Simple Move Player Generate from here X " + x + " Y " + y);
             }
@@ -547,17 +554,17 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
             //    }
 
             //}
-            if(sc.PositionOnBoard(x,y) && sc.GetPosition(x,y) != null &&
-               sc.GetPosition(x,y).GetComponent<Chessman>().player != player) //&& !isAttackSibling )
+            if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) != null &&
+               sc.GetPosition(x, y).GetComponent<Chessman>().player != player) //&& !isAttackSibling )
             {
                 //if(x == (pieceVector.x) && y == (pieceVector.y))
                 //{
-                PieceType pieceType = sc.GetPosition(x,y).GetComponent<Chessman>().type;
+                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
                 PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
-                MovePlateAttackSpawn(x,y);
+                MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
-                Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} { y}   </color>");
-               // }
+                Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} {y}   </color>");
+                // }
 
             }
 
@@ -599,9 +606,9 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         x += -2.3f;
         y += -2.3f;
 
-        object[] data = new object[]{playerType,type,matrixX,matrixY,false,PieceIndex};
-        GameObject mp = PhotonNetwork.Instantiate("movePlate", new Vector3(x, y, -3.0f), Quaternion.identity,0,data);
-      
+        object[] data = new object[] { playerType, type, matrixX, matrixY, false, PieceIndex };
+        GameObject mp = PhotonNetwork.Instantiate("movePlate", new Vector3(x, y, -3.0f), Quaternion.identity, 0, data);
+
         // MovePlate mpScript = mp.GetComponent<MovePlate>();
         // mpScript.SetReference(this);
         // mpScript.SetCoords(matrixX, matrixY);
@@ -620,8 +627,8 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         x += -2.3f;
         y += -2.3f;
 
-        object[] data = new object[]{playerType,type,matrixX,matrixY,true,PieceIndex};
-        GameObject mp = PhotonNetwork.Instantiate("movePlate", new Vector3(x, y, -3.0f), Quaternion.identity,0,data);
+        object[] data = new object[] { playerType, type, matrixX, matrixY, true, PieceIndex };
+        GameObject mp = PhotonNetwork.Instantiate("movePlate", new Vector3(x, y, -3.0f), Quaternion.identity, 0, data);
 
         // MovePlate mpScript = mp.GetComponent<MovePlate>();
         // mpScript.attack = true;
@@ -629,29 +636,32 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
         // mpScript.SetCoords(matrixX, matrixY);
     }
 
-    public static Chessman GetPiece(PlayerType ptype,PieceType type,int ind){
+    public static Chessman GetPiece(PlayerType ptype, PieceType type, int ind)
+    {
         foreach (Chessman item in pieces)
         {
-            if(item.playerType == ptype && item.type == type && item.PieceIndex == ind)
+            if (item.playerType == ptype && item.type == type && item.PieceIndex == ind)
                 return item;
         }
         return null;
     }
 
-    public static Chessman GetPiece(int ind){
+    public static Chessman GetPiece(int ind)
+    {
         foreach (Chessman item in pieces)
         {
-            if(item.PieceIndex == ind)
+            if (item.PieceIndex == ind)
                 return item;
         }
         return null;
     }
 
-    public static List<Chessman> GetPiecesOfPlayer(PlayerType ptype){
+    public static List<Chessman> GetPiecesOfPlayer(PlayerType ptype)
+    {
         List<Chessman> res = new List<Chessman>();
         foreach (Chessman item in pieces)
         {
-            if(item.playerType == ptype)
+            if (item.playerType == ptype)
                 res.Add(item);
         }
         return res;
@@ -659,20 +669,22 @@ public class Chessman : MonoBehaviour,IPunInstantiateMagicCallback,IHealthBar,IS
 
     #region Pun calls
     [PunRPC]
-    public void InitiateMovePlatesRPC(PieceType type){
+    public void InitiateMovePlatesRPC(PieceType type)
+    {
         InitiateMovePlates(type);
     }
 
     [PunRPC]
-    public void DestroyMovePlatesRPC(){
+    public void DestroyMovePlatesRPC()
+    {
         GameObject[] movePlates = GameObject.FindGameObjectsWithTag("MovePlate");
-        for(int i =0; i < movePlates.Length; i++)
+        for (int i = 0; i < movePlates.Length; i++)
         {
             Destroy(movePlates[i]);
         }
     }
 
-   
+
 
 
 

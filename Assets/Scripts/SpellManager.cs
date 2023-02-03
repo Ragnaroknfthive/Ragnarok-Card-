@@ -7,18 +7,18 @@ using System.Linq;
 
 public class SpellManager : MonoBehaviourPunCallbacks
 {
-    public Transform spellCardsPlayer, spellCardsOpponent,spellCardBattleObj,opponentSpellBattleObject;
-    public GameObject spellCardPrefab,spellBettleCardPrefeb;
-    private GameObject 
+    public Transform spellCardsPlayer, spellCardsOpponent, spellCardBattleObj, opponentSpellBattleObject;
+    public GameObject spellCardPrefab, spellBettleCardPrefeb;
+    private GameObject
     tempSpellCardObj;
     public List<SpellCard> spellCardsDeck;
-    public List<SpellCardDisplay> opponentCards=new List<SpellCardDisplay>();
+    public List<SpellCardDisplay> opponentCards = new List<SpellCardDisplay>();
     public List<SpellCardDisplay> playerCards = new List<SpellCardDisplay>();
     public List<BattleCardDisplay> opponentBattleCards = new List<BattleCardDisplay>();
     public List<BattleCardDisplay> playerBattleCards = new List<BattleCardDisplay>();
 
-    public Transform showCaseParent,showCaseRef;
-    
+    public Transform showCaseParent, showCaseRef;
+
     public static SpellManager instance;
     public PhotonView photonView;
 
@@ -30,9 +30,10 @@ public class SpellManager : MonoBehaviourPunCallbacks
     public GameObject MyMainDeck, OppoMainDeck;
 
     public List<int> spawned_ids = new List<int>();
+    public GameObject DestroyCardEff, DestroyCardEffOppo;
     private void Awake()
     {
-        if(instance == null) 
+        if (instance == null)
         {
             instance = this;
         }
@@ -43,22 +44,24 @@ public class SpellManager : MonoBehaviourPunCallbacks
     {
         photonView = GetComponent<PhotonView>();
 
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public IEnumerator StartPetAttack(){
+    public IEnumerator StartPetAttack()
+    {
 
-        playerBattleCards = playerBattleCards.OrderBy((item)=>item.card.speed).ToList();
-        opponentBattleCards = opponentBattleCards.OrderBy((item)=>item.card.speed).ToList();
+        playerBattleCards = playerBattleCards.OrderBy((item) => item.card.speed).ToList();
+        opponentBattleCards = opponentBattleCards.OrderBy((item) => item.card.speed).ToList();
         //Debug.LogError(playerBattleCards.Count + " - "+ opponentBattleCards.Count);
-    
-        if(opponentBattleCards.Count > 0){
+
+        if (opponentBattleCards.Count > 0)
+        {
             int id = 0;
             int max_len = Mathf.Max(playerBattleCards.Count, opponentBattleCards.Count);
             //Debug.LogError(max_len);
@@ -66,28 +69,35 @@ public class SpellManager : MonoBehaviourPunCallbacks
             foreach (var item in playerBattleCards)
             {
                 BattleCardDisplay oppo = null;
-                while(id < opponentBattleCards.Count){
+                while (id < opponentBattleCards.Count)
+                {
                     oppo = opponentBattleCards[id];
-                    if(oppo != null){
+                    if (oppo != null)
+                    {
                         break;
-                    }else{
+                    }
+                    else
+                    {
                         id++;
                     }
                 }
-                    
-                if(oppo != null){
+
+                if (oppo != null)
+                {
                     item.Attack(oppo.id);
-                    yield return new WaitWhile(()=>IsPetAttacking);
-                    yield return new WaitForSeconds(0.5f);
-                }else{
-                    item.Attack(-1,true);
-                    yield return new WaitWhile(()=>IsPetAttacking);
+                    yield return new WaitWhile(() => IsPetAttacking);
                     yield return new WaitForSeconds(0.5f);
                 }
-                yield return new WaitWhile(()=>IsPetAttacking);
+                else
+                {
+                    item.Attack(-1, true);
+                    yield return new WaitWhile(() => IsPetAttacking);
+                    yield return new WaitForSeconds(0.5f);
+                }
+                yield return new WaitWhile(() => IsPetAttacking);
                 yield return new WaitForSeconds(0.5f);
             }
-
+            #region  old code
             // for (int i = max_len - 1; i >= 0 ; i--)
             // {   
             //     BattleCardDisplay item = null;
@@ -156,49 +166,57 @@ public class SpellManager : MonoBehaviourPunCallbacks
             //     //                 yield return new WaitForSeconds(0.5f);
             //     //             }
             //     //         }
-                        
+
             //     //     }
             //     // }
 
             // }
-        }else if(playerBattleCards.Count > 0){
-            for (int i = playerBattleCards.Count - 1; i >= 0 ; i--)
-            {   
+            #endregion
+        }
+        else if (playerBattleCards.Count > 0)
+        {
+            for (int i = playerBattleCards.Count - 1; i >= 0; i--)
+            {
                 BattleCardDisplay item = null;
-                
-                if(i < playerBattleCards.Count)
+
+                if (i < playerBattleCards.Count)
                     item = playerBattleCards[i];
 
-                if(item != null){
-                    item.Attack(-1,true);
-                    yield return new WaitWhile(()=>IsPetAttacking);
+                if (item != null)
+                {
+                    item.Attack(-1, true);
+                    yield return new WaitWhile(() => IsPetAttacking);
                     yield return new WaitForSeconds(0.5f);
                 }
             }
         }
-        
+
     }
 
-    public void PetAttack(){
-        if(PVPManager.Get().IsPetTurn && !PetAlreadyAttacked){
+    public void PetAttack()
+    {
+        if (PVPManager.Get().IsPetTurn && !PetAlreadyAttacked)
+        {
             StartCoroutine(StartPetAttack());
             PetAlreadyAttacked = true;
         }
     }
 
-    
 
-    
 
-    public void ExecuteAttack(int i,bool IsPlayer,int cardId,int attacker){
-        photonView.RPC("ExecuteAttackRPC",RpcTarget.Others,i,IsPlayer,cardId,attacker);
+
+
+    public void ExecuteAttack(int i, bool IsPlayer, int cardId, int attacker)
+    {
+        photonView.RPC("ExecuteAttackRPC", RpcTarget.Others, i, IsPlayer, cardId, attacker);
     }
 
     [PunRPC]
-    public void ExecuteAttackRPC(int i, bool isplayer,int cardId,int attacker){
-        SpellCard card = spellCardsDeck.Find(x => x.cardId == cardId);
+    public void ExecuteAttackRPC(int i, bool isplayer, int cardId, int attacker)
+    {
+        SpellCard card = GameData.Get().GetPet(cardId);
         SpellManager.IsPetAttacking = true;
-        GameObject o = Instantiate(card.SpellProjectilePref,opponentBattleCards.Find(x => x.id == attacker).gameObject.transform.position,Quaternion.identity);
+        GameObject o = Instantiate(card.SpellProjectilePref, opponentBattleCards.Find(x => x.id == attacker).gameObject.transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
         proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : playerBattleCards.Find(x => x.id == i).gameObject;
         proj.damage = card.Attack;
@@ -208,66 +226,68 @@ public class SpellManager : MonoBehaviourPunCallbacks
         SpellManager.IsPetAttacking = false;
     }
 
-    public void DestroyOb(int i){
-        photonView.RPC("OnDestroyRPC",RpcTarget.Others,i);
+    public void DestroyOb(int i)
+    {
+        photonView.RPC("OnDestroyRPC", RpcTarget.Others, i);
     }
 
     [PunRPC]
-    public void OnDestroyRPC(int cardId){
-        BattleCardDisplay battleCard = opponentBattleCards.Find(x=>x.card.cardId == cardId);
+    public void OnDestroyRPC(int cardId)
+    {
+        BattleCardDisplay battleCard = opponentBattleCards.Find(x => x.card.cardId == cardId);
         SpellManager.instance.opponentBattleCards.Remove(battleCard);
     }
 
 
-    
+
 
     public int offset_card = 50;//50
-    public GameObject InstantiateSpellCard(SpellCard sO,Vector3 pos,Transform parent)
+    public GameObject InstantiateSpellCard(SpellCard sO, Vector3 pos, Transform parent)
     {
-        tempSpellCardObj = Instantiate(spellCardPrefab,pos,Quaternion.identity,parent);
+        tempSpellCardObj = Instantiate(spellCardPrefab, pos, Quaternion.identity, parent);
         tempSpellCardObj.GetComponent<SpellCardDisplay>().card = sO;
-        
+
         return tempSpellCardObj;
     }
 
-    public GameObject InstantiateSpellBattleCard(SpellCard sO,Vector3 pos,Transform parent,int num_card)
+    public GameObject InstantiateSpellBattleCard(SpellCard sO, Vector3 pos, Transform parent, int num_card)
     {
-        tempSpellCardObj = Instantiate(spellBettleCardPrefeb,pos,Quaternion.identity,parent);
+        tempSpellCardObj = Instantiate(spellBettleCardPrefeb, pos, Quaternion.identity, parent);
         tempSpellCardObj.GetComponent<BattleCardDisplay>().card = sO;
         tempSpellCardObj.transform.localScale = Vector3.one;
 
         return tempSpellCardObj;
     }
-    public void RemoveOldSpellData() 
+    public void RemoveOldSpellData()
     {
-        
-        for(int i = 0 ; i < playerBattleCards.Count ; i++)
+
+        for (int i = 0; i < playerBattleCards.Count; i++)
         {
-            if(playerBattleCards[i])
-            Destroy(playerBattleCards[i].gameObject);
+            if (playerBattleCards[i])
+                Destroy(playerBattleCards[i].gameObject);
             // playerBattleCards.RemoveAt(i);
-           
+
         }
-        for(int i = 0 ; i < playerCards.Count ; i++)
+        for (int i = 0; i < playerCards.Count; i++)
         {
-            if(playerCards[i])
+            if (playerCards[i])
                 Destroy(playerCards[i].gameObject);
             // playerCards.RemoveAt(i);
-           
+
         }
-        for(int i = 0 ; i < opponentCards.Count ; i++)
+        for (int i = 0; i < opponentCards.Count; i++)
         {
-            if(opponentCards[i])
+            if (opponentCards[i])
                 Destroy(opponentCards[i].gameObject);
-          //  opponentCards.RemoveAt(i);
-            
+            //  opponentCards.RemoveAt(i);
+
         }
-        for(int i = 0 ; i < opponentBattleCards.Count ; i++)
+        for (int i = 0; i < opponentBattleCards.Count; i++)
         {
-            if(opponentBattleCards[i])
+            if (opponentBattleCards[i])
                 Destroy(opponentBattleCards[i].gameObject);
-           // opponentBattleCards.RemoveAt(i);
-            
+            // opponentBattleCards.RemoveAt(i);
+
         }
         playerBattleCards.Clear();
         playerCards.Clear();
@@ -275,24 +295,93 @@ public class SpellManager : MonoBehaviourPunCallbacks
         opponentCards.Clear();
     }
 
-    public void DrawCard(){
-        Debug.LogError("cards holding now : "+spellCardsPlayer.transform.childCount);
-        if(spellCardsPlayer.childCount == 9)
+    public void DrawCard()
+    {
+        //Debug.LogError("cards holding now : " + spellCardsPlayer.transform.childCount);
+        if (spawned_ids.Count == spellCardsDeck.Count)
+        {
+            MyMainDeck.SetActive(false);
+            photonView.RPC("SetDeckIm", RpcTarget.Others, false);
             return;
-        int i = Random.Range(0,spellCardsDeck.Count);
-        while(spawned_ids.Contains(i)){
-            i = Random.Range(0,spellCardsDeck.Count);
+        }
+        else
+        {
+            MyMainDeck.SetActive(true);
+            photonView.RPC("SetDeckIm", RpcTarget.Others, false);
+        }
+
+        int i = Random.Range(0, spellCardsDeck.Count);
+        while (spawned_ids.Contains(i))
+        {
+            i = Random.Range(0, spellCardsDeck.Count);
         }
         spawned_ids.Add(i);
-        GenerateCardsForPlayer(i);
+        if (spellCardsPlayer.childCount == 9)
+            DestroyCard(i);
+        else
+            GenerateCardsForPlayer(i);
+    }
+
+    [PunRPC]
+    public void SetDeckIm(bool b)
+    {
+        OppoMainDeck.SetActive(b);
     }
 
 
-    public void GenerateCardsForPlayer(int i) 
+
+    public void DestroyCard(int i)
     {
-        
-        GameObject obj = InstantiateSpellCard(spellCardsDeck[i],Vector3.one,MyMainDeck.transform);
-        //obj.transform.localPosition = Vector3.zero;
+        GameObject obj = InstantiateSpellCard(spellCardsDeck[i], Vector3.one, MyMainDeck.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;
+        obj.GetComponent<SpellCardDisplay>().index = i;
+        obj.GetComponent<SpellCardDisplay>().set(true);
+        obj.transform.localScale = Vector3.one * 0.7f;
+        obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
+
+        LeanTween.move(obj, spellCardsPlayer.position, 0.3f).setOnComplete(() =>
+        {
+            PVPManager.manager.myObj.cards.Remove(spellCardsDeck[i]);
+            Instantiate(DestroyCardEff, spellCardsPlayer.position, Quaternion.identity);
+            Destroy(obj.gameObject);
+            // obj.transform.SetParent(spellCardsPlayer);
+            // obj.transform.position = Vector3.zero;
+        });
+        photonView.RPC("DestroyCardRPC", RpcTarget.Others, i);
+    }
+
+    [PunRPC]
+    public void DestroyCardRPC(int i)
+    {
+        GameObject obj = InstantiateSpellCard(GameData.Get().GetPet(i), Vector3.one, OppoMainDeck.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomeOppoent;
+        obj.GetComponent<SpellCardDisplay>().index = i;
+        obj.GetComponent<SpellCardDisplay>().set(false);
+        obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
+        //obj.transform.Rotate(Vector3.forward * 90);
+        if (PhotonNetwork.IsMasterClient)
+        { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+        else { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+        obj.GetComponent<SpellCardDisplay>().BackSide.gameObject.SetActive(true);
+        obj.transform.localScale = Vector3.one * 0.7f;
+
+        LeanTween.move(obj, spellCardsOpponent.position, 0.3f).setOnComplete(() =>
+        {
+            // obj.transform.SetParent(spellCardsOpponent);
+            // obj.transform.position = Vector3.zero;
+            Instantiate(DestroyCardEffOppo, spellCardsOpponent.position, Quaternion.identity);
+            Destroy(obj.gameObject);
+        });
+    }
+
+
+    public void GenerateCardsForPlayer(int i)
+    {
+
+        GameObject obj = InstantiateSpellCard(spellCardsDeck[i], Vector3.one, MyMainDeck.transform);
+        obj.transform.localPosition = Vector3.zero;
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;
         obj.GetComponent<SpellCardDisplay>().index = i;
         obj.GetComponent<SpellCardDisplay>().set(true);
@@ -300,75 +389,80 @@ public class SpellManager : MonoBehaviourPunCallbacks
         obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
         //obj.transform.Rotate(Vector3.forward * 270);
         // obj.transform.eulerAngles = new Vector3(0,0,0);
-        if(PhotonNetwork.IsMasterClient==false)
-            LeanTween.rotate(obj,new Vector3(0,0,-180),0);
+        if (PhotonNetwork.IsMasterClient == false)
+            LeanTween.rotate(obj, new Vector3(0, 0, -180), 0);
         playerCards.Add(obj.GetComponent<SpellCardDisplay>());
-        
-        LeanTween.move(obj,spellCardsPlayer.position,0.3f).setOnComplete(()=>{
+
+        LeanTween.move(obj, spellCardsPlayer.position, 0.3f).setOnComplete(() =>
+        {
             obj.transform.SetParent(spellCardsPlayer);
             obj.transform.position = Vector3.zero;
         });
-        
+
         //Debug.Log("RPC CALLED ");
-        photonView.RPC("GenerateCardsForOppnent",RpcTarget.Others,i);
+        photonView.RPC("GenerateCardsForOppnent", RpcTarget.Others, spellCardsDeck[i].cardId);
         PhotonNetwork.SendAllOutgoingCommands();
     }
 
-    public void CastSpell(int i){
-        SpellCard card = spellCardsDeck[i];
-        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p1Image.gameObject.transform.position,Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p2Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = true;
-        proj.lifetime = 2f;
-        photonView.RPC("CastSpellRPC",RpcTarget.Others,i);
-    }
-
-    public void CastSpell(SpellCard card){
-        
-        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p1Image.gameObject.transform.position,Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p2Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = true;
-        proj.lifetime = 2f;
-        photonView.RPC("CastSpellWithCard",RpcTarget.Others);
-    }
-
-    [PunRPC]
-    public void CastSpellWithCard(){
-        SpellCard card = PVPManager.manager.p2Char.SpecialAttack;
-        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p2Image.gameObject.transform.position,Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p1Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = false;
-        proj.lifetime = 2f;
-    }
-
-    [PunRPC]
-    public void CastSpellRPC(int i){
-        SpellCard card = spellCardsDeck[i];
-        GameObject o = Instantiate(card.SpellProjectilePref,PVPManager.Get().p2Image.gameObject.transform.position,Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p1Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = false;
-        proj.lifetime = 2f;
-        Destroy(opponentCards.Find((item)=>item.index == i).gameObject);
-    }
-
-
-    
-
-    public void MoveOpponentCardToBattleArea(int cardId, int battleId) 
+    public void CastSpell(int i)
     {
-        photonView.RPC("ChangeOpponentCardPostionToCenter_RPC",RpcTarget.Others,cardId,battleId);
+        SpellCard card = spellCardsDeck[i];
+        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p1Image.gameObject.transform.position, Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p2Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = true;
+        proj.lifetime = 2f;
+        photonView.RPC("CastSpellRPC", RpcTarget.Others, spellCardsDeck[i].cardId);
+    }
+
+    public void CastSpell(SpellCard card)
+    {
+
+        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p1Image.gameObject.transform.position, Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p2Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = true;
+        proj.lifetime = 2f;
+        photonView.RPC("CastSpellWithCard", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void CastSpellWithCard()
+    {
+        SpellCard card = PVPManager.manager.p2Char.SpecialAttack;
+        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p2Image.gameObject.transform.position, Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p1Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = false;
+        proj.lifetime = 2f;
+    }
+
+    [PunRPC]
+    public void CastSpellRPC(int i)
+    {
+        SpellCard card = GameData.Get().GetPet(i);
+        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p2Image.gameObject.transform.position, Quaternion.identity);
+        Projectile proj = o.GetComponent<Projectile>();
+        proj.target = PVPManager.Get().p1Image.gameObject;
+        proj.damage = card.Attack;
+        proj.istargetPlayer = true;
+        proj.DealDamage = false;
+        proj.lifetime = 2f;
+        Destroy(opponentCards.Find((item) => item.index == i).gameObject);
+    }
+
+
+
+
+    public void MoveOpponentCardToBattleArea(int cardId, int battleId)
+    {
+        photonView.RPC("ChangeOpponentCardPostionToCenter_RPC", RpcTarget.Others, cardId, battleId);
         PhotonNetwork.SendAllOutgoingCommands();
     }
 
@@ -378,37 +472,37 @@ public class SpellManager : MonoBehaviourPunCallbacks
         // if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         SpellManager.instance.opponentCards.Find(x => x.card.cardId == cardId).ChangeOpponentCardPostionToCenter(battleId);
-        
+
     }
 
     [PunRPC]
     public void GenerateCardsForOppnent(int i)
     {
-        GameObject obj = InstantiateSpellCard(spellCardsDeck[i],Vector3.one,OppoMainDeck.transform);
+        GameObject obj = InstantiateSpellCard(GameData.Get().GetPet(i), Vector3.one, OppoMainDeck.transform);
         obj.transform.localPosition = Vector3.zero;
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomeOppoent;
         obj.GetComponent<SpellCardDisplay>().index = i;
         obj.GetComponent<SpellCardDisplay>().set(false);
-        spawned_ids.Add(i);
         obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
         //obj.transform.Rotate(Vector3.forward * 90);
-        if(PhotonNetwork.IsMasterClient)
-        { LeanTween.rotate(obj,new Vector3(0,0,180),0); }
-        else { LeanTween.rotate(obj,new Vector3(0,0,180),0); }
-        
+        if (PhotonNetwork.IsMasterClient)
+        { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+        else { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+
         obj.GetComponent<SpellCardDisplay>().BackSide.gameObject.SetActive(true);
         obj.transform.localScale = Vector3.one * 0.7f;
         opponentCards.Add(obj.GetComponent<SpellCardDisplay>());
 
-        LeanTween.move(obj,spellCardsOpponent.position,0.3f).setOnComplete(()=>{
+        LeanTween.move(obj, spellCardsOpponent.position, 0.3f).setOnComplete(() =>
+        {
             obj.transform.SetParent(spellCardsOpponent);
             obj.transform.position = Vector3.zero;
         });
-        Debug.LogError("CALLED RPC");
-        
+        // Debug.LogError("CALLED RPC");
+
     }
 
-    public void MouseOverOpponentCard(int cardId,bool isEnter=true)
+    public void MouseOverOpponentCard(int cardId, bool isEnter = true)
     {
 
         //photonView.RPC("MouseEnter_RPC",RpcTarget.Others,cardId,isEnter);
@@ -416,12 +510,12 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
 
     [Photon.Pun.PunRPC]
-    public void MouseEnter_RPC(int cardId,bool isEnter)
+    public void MouseEnter_RPC(int cardId, bool isEnter)
     {
         // if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
-        if(isEnter)
+        if (isEnter)
         { SpellManager.instance.opponentCards.Find(x => x.card.cardId == cardId).ShowCaseCard(); }
-        else 
+        else
         {
             SpellManager.instance.opponentCards.Find(x => x.card.cardId == cardId).ResizeShowCaseCard();
         }

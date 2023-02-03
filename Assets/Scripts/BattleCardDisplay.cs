@@ -29,7 +29,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     //     cardPosition = SpellCardPosition.perBattleOpponent;
     //     if(!PhotonNetwork.LocalPlayer.IsMasterClient)
     //         LeanTween.rotate(gameObject,new Vector3(0,0,-180),0);
-        
+
     // }
 
     // Start is called before the first frame update
@@ -40,7 +40,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
-        
+
     }
 
     void Start()
@@ -51,61 +51,63 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     public void UpdateCardData()
     {
         Hp = card.Health;
-        UpdateText(staminaTxt,card.stamina.ToString());
-        UpdateText(cardNameTxt,card.cardName.ToString());
-        UpdateText(attackTxt,card.Attack.ToString());
-        UpdateText(healthTxt,card.Health.ToString());
-        UpdateText(DescriptionTxt,card.discription.ToString());
+        UpdateText(staminaTxt, card.stamina.ToString());
+        UpdateText(cardNameTxt, card.cardName.ToString());
+        UpdateText(attackTxt, card.Attack.ToString());
+        UpdateText(healthTxt, card.Health.ToString());
+        UpdateText(DescriptionTxt, card.discription.ToString());
 
-        if(cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer){
-            if(PVPManager.manager.myObj.playerType == PlayerType.Black)
-                UpdateImage(cardImage,card.OppocardSprite);
+        if (cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)
+        {
+            if (PVPManager.manager.myObj.playerType == PlayerType.Black)
+                UpdateImage(cardImage, card.OppocardSprite);
             else
-                UpdateImage(cardImage,card.MycardSprite);
+                UpdateImage(cardImage, card.MycardSprite);
         }
-        else if(cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent){
-            if(PVPManager.manager.opponentObj.playerType == PlayerType.Black)
-                UpdateImage(cardImage,card.OppocardSprite);
+        else if (cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)
+        {
+            if (PVPManager.manager.opponentObj.playerType == PlayerType.Black)
+                UpdateImage(cardImage, card.OppocardSprite);
             else
-                UpdateImage(cardImage,card.MycardSprite);
+                UpdateImage(cardImage, card.MycardSprite);
         }
-            
+
     }
-    void UpdateText(TMPro.TextMeshProUGUI txt,string val)
+    void UpdateText(TMPro.TextMeshProUGUI txt, string val)
     {
         txt.text = val;
     }
-    void UpdateImage(Image img,Sprite val)
+    void UpdateImage(Image img, Sprite val)
     {
         img.sprite = val;
     }
     private void OnMouseEnter()
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;
         //if(!SpellManager.instance.isShowCasing)
         //{
         //SpellManager.instance.isShowCasing = true;
         // LeanTween.move(gameObject,SpellManager.instance.showCaseRef,0);
         MainBGOutline.enabled = true;
-       // LeanTween.scale(this.gameObject,Vector3.one * 1.5f,0.25f);//.setOnComplete(ChangeParentShowCase);
+        // LeanTween.scale(this.gameObject,Vector3.one * 1.5f,0.25f);//.setOnComplete(ChangeParentShowCase);
         //}
     }
     private void OnMouseExit()
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent|| PVPManager.manager.isResultScreenOn) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;
         // ChangeParentHome();
         MainBGOutline.enabled = false;
-       // LeanTween.scale(this.gameObject,Vector3.one,0.25f);//.setOnComplete(ChangeParentHome);
+        // LeanTween.scale(this.gameObject,Vector3.one,0.25f);//.setOnComplete(ChangeParentHome);
 
     }
-    
-    public void Attack(int i,bool isplayer = false)
+
+    public void Attack(int i, bool isplayer = false)
     {
         SpellManager.IsPetAttacking = true;
         //if(PVPManager.manager.isResultScreenOn) return;
-        Debug.LogError("ATTACK ");
+        //Debug.LogError("ATTACK ");
 
-        GameObject o = Instantiate(card.SpellProjectilePref,transform.position,Quaternion.identity);
+        GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
         proj.target = isplayer ? (PVPManager.Get().p2Image.gameObject) : SpellManager.instance.opponentBattleCards.Find(x => x.id == i).gameObject;
         proj.damage = card.Attack;
@@ -116,25 +118,26 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         //     Debug.LogError("Attacking : "+ob.name);
         //     ob.GetComponent<PVPManager>().DealDamageToOpponent(card.Attack);
         // }
-            
+
         // if(ob.GetComponent<BattleCardDisplay>() != null)
         // {
         //     Debug.LogError("Attacking : "+ob.GetComponent<BattleCardDisplay>().card.cardId);
         //     ob.GetComponent<BattleCardDisplay>().DealDamage(card.Attack);
         // }
         SpellManager.IsPetAttacking = false;
-        SpellManager.instance.ExecuteAttack(i,isplayer,card.cardId,id);
+        SpellManager.instance.ExecuteAttack(i, isplayer, card.cardId, id);
 
         // photonView.RPC("PetAttackRPC",RpcTarget.Others,i,isplayer);
         // PhotonNetwork.SendAllOutgoingCommands();
-       // ChangeCardPostionToCenter();
-       // this is comment
+        // ChangeCardPostionToCenter();
+        // this is comment
     }
 
     [PunRPC]
-    public void AttackRPC(int i, bool isplayer){
+    public void AttackRPC(int i, bool isplayer)
+    {
         SpellManager.IsPetAttacking = true;
-        GameObject o = Instantiate(card.SpellProjectilePref,transform.position,Quaternion.identity);
+        GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
         proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : SpellManager.instance.opponentBattleCards[i].gameObject;
         proj.damage = card.Attack;
@@ -142,40 +145,44 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         SpellManager.IsPetAttacking = false;
     }
 
-    
 
-    public void DealDamage(int c){
+
+    public void DealDamage(int c)
+    {
 
         Hp -= c;
         ShowDamage(c);
-        if(Hp <= 0)
+        if (Hp <= 0)
             Kill();
     }
 
-    public void ShowDamage(int c){
-        GameObject o = Instantiate(DmgPref,transform);
-        o.GetComponent<DamageIndicator>().DmgText.text = "-"+c;
+    public void ShowDamage(int c)
+    {
+        GameObject o = Instantiate(DmgPref, transform);
+        o.GetComponent<DamageIndicator>().DmgText.text = "-" + c;
         Vector3 startPos = Vector3.zero;
-        Vector3 midPos1 = new Vector3(0.5f, 30f/4f,0f);
-        Vector3 midPos2 = new Vector3(0.5f, (30f/4f) * 3f,0f);
-        Vector3 endPos = new Vector3(0f,30f,0f);
-        o.LeanMoveLocal(new LTBezierPath(new Vector3[]{startPos,midPos1,midPos2,endPos}),0.5f).setOnComplete(()=>{
+        Vector3 midPos1 = new Vector3(0.5f, 30f / 4f, 0f);
+        Vector3 midPos2 = new Vector3(0.5f, (30f / 4f) * 3f, 0f);
+        Vector3 endPos = new Vector3(0f, 30f, 0f);
+        o.LeanMoveLocal(new LTBezierPath(new Vector3[] { startPos, midPos1, midPos2, endPos }), 0.5f).setOnComplete(() =>
+        {
             Destroy(o);
         });
     }
-    
+
     void OnDestroy()
     {
         SpellManager.instance.playerBattleCards.Remove(this);
         SpellManager.instance.DestroyOb(card.cardId);
     }
 
-    
 
-    public void Kill(){
+
+    public void Kill()
+    {
         PVPManager.manager.myObj.cards.Remove(card);
-        Destroy(gameObject,0.7f);
-     }
+        Destroy(gameObject, 0.7f);
+    }
 
     public void ChangeCardPostionToCenter()
     {
@@ -184,36 +191,36 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     }
     public void ChangeParent()
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardBattleObj);
     }
     public void ChangeParentShowCase()
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         this.gameObject.transform.SetParent(SpellManager.instance.showCaseParent);
     }
     public void ChangeParentHome()
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardsPlayer);
-        if(SpellManager.instance.isShowCasing)
+        if (SpellManager.instance.isShowCasing)
         {
             SpellManager.instance.isShowCasing = false;
         }
     }
     public void ChangeParent(Transform parent_)
     {
-        if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         this.gameObject.transform.SetParent(parent_);
     }
     public void OnDrag(PointerEventData eventData)
     {
-       
-          this.transform.GetComponent<RectTransform>().position =new Vector3( eventData.position.x,eventData.position.y);
+
+        this.transform.GetComponent<RectTransform>().position = new Vector3(eventData.position.x, eventData.position.y);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
