@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: us
     Server: 
     Port: 0
     ProxyServer: 
@@ -29,118 +29,101 @@ MonoBehaviour:
     EnableLobbyStatistics: 0
     NetworkLogging: 1
   DevRegion: 
-  PunLogging: 1
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AddStaminaRPC
+  - AttackRPC
+  - CastSpellRPC
+  - CastSpellWithCard
+  - ChangeOpponentCardPostionToCenter_RPC
+  - CheckWin
   - ClickRpc
+  - CreateObj
+  - DealDamage
+  - DeductRageRPC
+  - DeductSpeedRPC
+  - DeductStaminaRPC
+  - DestroyCardRPC
+  - DestroyMovePlatesRPC
+  - DestroyPiece
   - DestroyRpc
   - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - SetPVPModeRPC
-  - SwitchCurrentPlayer
-  - InitiateMovePlatesRPC
-  - DestroyMovePlatesRPC
-  - OnClickRPC
-  - SetDataRPC
-  - SetPVPTurn
-  - SwitchPVPTurn
-  - SyncPlayerChoice
-  - ShowplayerChoces
-  - ShowplayerChoices
-  - Resolve
-  - CheckWin
-  - HandleWin
-  - SyncPlayerChoiceNew
-  - SyncPlayerData
-  - HandleWinRPC
-  - WinMatch
-  - RestartRPC
-  - RematchRejected
-  - ShowRematch
-  - CreateObj
-  - SetPosRPC
-  - Button_DrawFLop
-  - RPC_Button_DrawFLop
-  - RPC_setSameStackToOtherPlayer
-  - RPC_Generate2Cards
-  - RPC_foldbuttonEffect
-  - RPC_otherplayerTurnPoker
-  - RPC_SetLastAttackerColor
-  - RPC_SetOthersAsDefenders
-  - RPC_UpdateTurn
-  - RPC_SetOthersPlayerStrength
-  - UpdateBatAmount
-  - RPC_ResetTurn
-  - ResetPVPUIData
-  - UpdateRangePoints
-  - ResultRPC
-  - RPC_SetOpponentAttackChoice
-  - UpdateOpponentRangePoints
-  - UpdateLastAction_RPC
-  - SetOpponentCard_RPC
-  - SetALLButtonsOff_RPC
   - DisplayOpponentCard_RPC
-  - UpdateRagePoints_RPC
-  - UpdateOpponentAttackLocation_RPC
-  - UpdateOpponentDefenceLocation_RPC
-  - SetOpponentRemainingHandHealth_RPC
-  - ReloadScene_RPC
-  - Rset_BOOL_RPC
-  - UpdateLastBatAmount
-  - CheckWinNew
-  - SuffleCards
-  - GetSuffledIndex
-  - SetSuffledCard
-  - StartWithDealy_RPC
-  - GetSuffledIndexSedondTime
-  - SecondTimeShuffle
-  - SetSuffledCardSedondTime
-  - StartWithDealySedondTime_RPC
-  - GenerateDeck
-  - GenerateCardsForOppnent
-  - ChangeOpponentCardPostionToCenter
-  - ChangeOpponentCardPostionToCenter_RPC
-  - GenerateBattleCardsForOppnent
-  - MouseEnter_RPC
-  - SetLoadingScreenOff_RPC
-  - SetAutoTurnOnOff_RPC
-  - UpdateAttackForText
-  - UpdatePotAmountForText
-  - SetPieceType
-  - SetOpponentAttackPiecePieceType
-  - UpdatePotAmountForAllInText
-  - setOpponentHandCardValues
-  - ShowExtraDamageMessage_RPC
-  - UpdateSpeedPoints
-  - SetOpponentAttackedSide
-  - SetOpponentAttackedSide_RPC
-  - SetOpponentAttackWeakPercentage_RPC
-  - SetOpponentRemainingHandHealth_RPCPlus
-  - UpdateOpponentEffects_RPC
-  - UpdateOpponentStamina
-  - UpdateHp
-  - PetAttackRPC
-  - DealDamage
-  - DestroyPiece
-  - UpdateManaRPC
-  - CastSpellRPC
-  - AttackRPC
   - ExecuteAttackRPC
+  - Fire
+  - GenerateCardsForOppnent
+  - GenerateDeck
+  - GetSuffledIndex
+  - GetSuffledIndexSedondTime
+  - HandleWinRPC
+  - InitiateMovePlatesRPC
+  - MouseEnter_RPC
+  - OnClickRPC
   - OnDestroyRPC
   - PlayerWon
-  - DeductStamina
-  - DeductStaminaRPC
-  - DeductSpeedRPC
-  - CastSpellWithCard
-  - DeductRageRPC
-  - AddStaminaRPC
-  - SyncAllInRPC
-  - UpdateLastAtkAmt
-  - DestroyCardRPC
+  - ReloadScene_RPC
+  - RematchRejected
+  - ResetPVPUIData
+  - RespawnSpaceship
+  - RestartRPC
+  - RPC_foldbuttonEffect
+  - RPC_Generate2Cards
+  - RPC_otherplayerTurnPoker
+  - RPC_ResetTurn
+  - RPC_SetLastAttackerColor
+  - RPC_SetOpponentAttackChoice
+  - RPC_SetOthersAsDefenders
+  - RPC_SetOthersPlayerStrength
+  - RPC_setSameStackToOtherPlayer
+  - RPC_UpdateTurn
+  - Rset_BOOL_RPC
+  - SecondTimeShuffle
+  - SetALLButtonsOff_RPC
+  - SetAutoTurnOnOff_RPC
+  - SetDataRPC
   - SetDeckIm
+  - SetLoadingScreenOff_RPC
+  - SetOpponentAttackedSide_RPC
+  - SetOpponentAttackPiecePieceType
+  - SetOpponentAttackWeakPercentage_RPC
+  - SetOpponentCard_RPC
+  - setOpponentHandCardValues
+  - SetOpponentRemainingHandHealth_RPC
+  - SetOpponentRemainingHandHealth_RPCPlus
+  - SetPieceType
+  - SetPosRPC
+  - SetPVPModeRPC
+  - SetPVPTurn
+  - SetSuffledCard
+  - SetSuffledCardSedondTime
+  - ShowExtraDamageMessage_RPC
+  - ShowplayerChoices
+  - ShowRematch
+  - StartWithDealy_RPC
+  - StartWithDealySedondTime_RPC
+  - SwitchCurrentPlayer
+  - SwitchPVPTurn
+  - SyncAllInRPC
+  - SyncPlayerChoice
+  - UpdateAttackForText
+  - UpdateBatAmount
+  - UpdateLastAction_RPC
+  - UpdateLastAtkAmt
+  - UpdateLastBatAmount
+  - UpdateManaRPC
+  - UpdateOpponentAttackLocation_RPC
+  - UpdateOpponentDefenceLocation_RPC
+  - UpdateOpponentEffects_RPC
+  - UpdateOpponentRangePoints
+  - UpdateOpponentStamina
+  - UpdatePotAmountForAllInText
+  - UpdatePotAmountForText
+  - UpdateRagePoints_RPC
+  - UpdateSpeedPoints
+  - WinMatch
   DisableAutoOpenWizard: 1
   ShowSettings: 1
-  DevRegionSetOnce: 1
+  DevRegionSetOnce: 0

@@ -151,7 +151,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     {
 
         Hp -= c;
+        Hp = Mathf.Clamp(Hp, 0, card.Health);
         ShowDamage(c);
+        UpdateText(healthTxt, Hp.ToString());
         if (Hp <= 0)
             Kill();
     }

@@ -56,7 +56,7 @@ public class PokerButtonManager : MonoBehaviour
         if (PVPManager.manager.isResultScreenOn) return;
         //   Debug.Log("bet is attack open attack slider screen");
         DemoManager.instance._pokerButtons.SetActive(false);
-        if (Game.Get().turn < 1) //Game.Get().turn < 1
+        if (false) //Game.Get().turn < 1
         {
             //  Debug.LogError("Es ist not okay........................");
             PVPManager.Get().AttackChoices.SetActive(true);
@@ -91,6 +91,7 @@ public class PokerButtonManager : MonoBehaviour
             //}
 
             //==LocalBet
+
             if (PVPManager.manager.P1HealthBar.value >= PVPManager.manager.P2LastAttackValue)
             {
                 if (PVPManager.manager.P1HealthBar.value == PVPManager.manager.P2LastAttackValue || PVPManager.manager.P2RemainingHandHealth <= 0)
@@ -104,9 +105,16 @@ public class PokerButtonManager : MonoBehaviour
                 //PVPManager.manager.DeductStamina(MathF.Round(PVPManager.manager.P2LastAttackValue / 10f,1));
                 // Debug.LogError(Game.Get().lastAction);
                 if (Game.Get().lastAction == PlayerAction.counterAttack)
-                    PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue - PVPManager.manager.MyLastAttackAmount);
+                {
+
+                    PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.LastAtkAmt - PVPManager.manager.MyLastAttackAmount);
+                }
                 else
+                {
+
                     PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
+                }
+
                 //PVPManager.manager.UpdateBatText(0);
                 //   PVPManager.manager.UpdateBatText(PVPManager.manager.P2LastAttackValue);  2-6 to avoid doubel value addition in Bet
                 PVPManager.manager.UpdateBatText(0);
@@ -125,7 +133,7 @@ public class PokerButtonManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("***Ex:Not Enought Health");
+                Debug.LogError("***Ex:Not Enought Health" + PVPManager.manager.P1HealthBar.value + " - " + PVPManager.manager.P2LastAttackValue);
             }
         }
 
@@ -173,6 +181,7 @@ public class PokerButtonManager : MonoBehaviour
     { //Do not allow click if result is declared
         if (PVPManager.manager.isResultScreenOn) return;
         Debug.Log("bet is attack open attack slider screen");
+        Debug.LogError("Its checking");
         DemoManager.instance._pokerButtons.SetActive(false);
         if (Game.Get().turn <= 1)
         {
@@ -231,9 +240,11 @@ public class PokerButtonManager : MonoBehaviour
 
         PVPManager.manager.BetTextObj.text = "Brace Call";
         PVPManager.manager.StopTimer();
+        Debug.LogError("Attacks " + PVPManager.manager.P2LastAttackValue + " - " + PVPManager.manager.MyLastAttackAmount);
         if (PhotonNetwork.LocalPlayer.NickName == _player.NickName)
         {
-            PVPManager.manager.P2HealthBar.value = PVPManager.manager.P2StartHealth;// PVPManager.manager.P2LastAttackValue;
+            PVPManager.manager.P2StartHealth += PVPManager.manager.P2LastAttackValue;
+            PVPManager.manager.P2HealthBar.value = PVPManager.manager.P2StartHealth; ;// PVPManager.manager.P2LastAttackValue;
             PVPManager.manager.P2RemainingHandHealth = PVPManager.manager.P2StartHealth;//PVPManager.manager.P2LastAttackValue;
                                                                                         //  Debug.LogError(PVPManager.manager.P2RemainingHandHealth + " PLAYER HEALTH ");
                                                                                         //if(Game.Get().turn < 2)
@@ -301,6 +312,7 @@ public class PokerButtonManager : MonoBehaviour
             //{
             //    finalLose = maxlose;
             //}
+            PVPManager.manager.P1StartHealth += PVPManager.manager.MyLastAttackAmount;
             PVPManager.manager.P1RemainingHandHealth = PVPManager.manager.P1StartHealth;
             PVPManager.manager.P1HealthBar.value = PVPManager.manager.P1StartHealth;
             PVPManager.manager.P2HealthBar.value -= finalLose;

@@ -98,7 +98,7 @@ public class Game : MonoBehaviour
     void Start()
     {
         MyType = PhotonNetwork.LocalPlayer.IsMasterClient ? PlayerType.White : PlayerType.Black;
-        PhotonNetwork.AutomaticallySyncScene = true;
+        //PhotonNetwork.AutomaticallySyncScene = true;
         PlayerStrengths.Add(0);
         PlayerStrengths.Add(0);
         for (int i = 0; i < plates.GetLength(0); i++)

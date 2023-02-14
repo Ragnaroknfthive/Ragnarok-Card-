@@ -9,8 +9,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
 {
     public Transform spellCardsPlayer, spellCardsOpponent, spellCardBattleObj, opponentSpellBattleObject;
     public GameObject spellCardPrefab, spellBettleCardPrefeb;
-    private GameObject
-    tempSpellCardObj;
+    private GameObject tempSpellCardObj;
     public List<SpellCard> spellCardsDeck;
     public List<SpellCardDisplay> opponentCards = new List<SpellCardDisplay>();
     public List<SpellCardDisplay> playerCards = new List<SpellCardDisplay>();
@@ -53,6 +52,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     }
 
+    public void ResetData()
+    {
+        spawned_ids = new List<int>();
+        foreach (Transform item in spellCardsPlayer)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+
     public IEnumerator StartPetAttack()
     {
 
@@ -85,17 +93,20 @@ public class SpellManager : MonoBehaviourPunCallbacks
                 if (oppo != null)
                 {
                     item.Attack(oppo.id);
-                    yield return new WaitWhile(() => IsPetAttacking);
                     yield return new WaitForSeconds(0.5f);
+                    yield return new WaitWhile(() => IsPetAttacking);
+
                 }
                 else
                 {
                     item.Attack(-1, true);
-                    yield return new WaitWhile(() => IsPetAttacking);
                     yield return new WaitForSeconds(0.5f);
+                    yield return new WaitWhile(() => IsPetAttacking);
+
                 }
-                yield return new WaitWhile(() => IsPetAttacking);
                 yield return new WaitForSeconds(0.5f);
+                yield return new WaitWhile(() => IsPetAttacking);
+
             }
             #region  old code
             // for (int i = max_len - 1; i >= 0 ; i--)
@@ -185,8 +196,9 @@ public class SpellManager : MonoBehaviourPunCallbacks
                 if (item != null)
                 {
                     item.Attack(-1, true);
-                    yield return new WaitWhile(() => IsPetAttacking);
                     yield return new WaitForSeconds(0.5f);
+                    yield return new WaitWhile(() => IsPetAttacking);
+
                 }
             }
         }
@@ -223,7 +235,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = isplayer;
         proj.DealDamage = !isplayer;
         proj.lifetime = 2f;
-        SpellManager.IsPetAttacking = false;
+
     }
 
     public void DestroyOb(int i)

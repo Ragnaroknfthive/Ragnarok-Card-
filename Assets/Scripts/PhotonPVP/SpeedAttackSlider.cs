@@ -16,7 +16,7 @@ public class SpeedAttackSlider : MonoBehaviour
     float difference = 0;
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
         }
@@ -24,9 +24,9 @@ public class SpeedAttackSlider : MonoBehaviour
     void OnEnable()
     {
         _slider = PVPManager.Get().speedAttackSlider;
-        float speedPercentag =  PVPManager.manager.p1Speed * 10f;
+        float speedPercentag = PVPManager.manager.p1Speed * 10f;
 
-        _slider.maxValue = Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth);
+        _slider.maxValue = Mathf.Min(PVPManager.manager.P1RemainingHandHealth, PVPManager.manager.P2RemainingHandHealth);
         float perSpeedPoint = _slider.maxValue * 0.1f;
         float max = perSpeedPoint * PVPManager.manager.p1Speed;
 
@@ -75,21 +75,21 @@ public class SpeedAttackSlider : MonoBehaviour
         //}      
 
 
-        if(_slider.value <= (_slider.minValue + (difference * .33)))
+        if (_slider.value <= (_slider.minValue + (difference * .33)))
         {
             _attackText.text = "Light Attack ";
             _attackText.color = Color.green;
             _fillImage.color = Color.green;
             _sliderAttack = SliderAttack.LightAttack;
         }
-        else if(_slider.value >= (_slider.minValue + (difference * .34)) && _slider.value <= (_slider.minValue + (difference * .66)))
+        else if (_slider.value >= (_slider.minValue + (difference * .34)) && _slider.value <= (_slider.minValue + (difference * .66)))
         {
             _attackText.text = "Medium Attack";
             _attackText.color = Color.yellow;
             _fillImage.color = Color.yellow;
             _sliderAttack = SliderAttack.MediumAttack;
         }
-        else if(_slider.value >= (_slider.minValue + (difference * .67)))
+        else if (_slider.value >= (_slider.minValue + (difference * .67)))
         {
             _attackText.text = "Heavy Attack";
             _attackText.color = Color.red;
@@ -114,11 +114,11 @@ public class SpeedAttackSlider : MonoBehaviour
     }
     public void UpdateAttackValueText()
     {
-        _attackValueText.text = ((int)_slider.value).ToString();
+        _attackValueText.text = Mathf.RoundToInt(_slider.value).ToString();
 
-        if(_slider.value == _slider.maxValue)
+        if (_slider.value == _slider.maxValue)
         {
-           // _attackValueText.text = "All In";
+            // _attackValueText.text = "All In";
         }
     }
 }
