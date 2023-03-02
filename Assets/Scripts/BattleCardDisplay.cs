@@ -11,7 +11,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 {
     public SpellCard card;
     [SerializeField]
-    private TMPro.TextMeshProUGUI staminaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt;
+    private TMPro.TextMeshProUGUI staminaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
     public int Hp;
     public Image Bg, cardImage;
     public Outline MainBGOutline;
@@ -22,6 +22,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
     public int id;
 
+    public bool IsAttackedThisRound;
+
+    public bool IsDead;
 
     // public void OnInstantiate(object[] data){
 
@@ -56,6 +59,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         UpdateText(attackTxt, card.Attack.ToString());
         UpdateText(healthTxt, card.Health.ToString());
         UpdateText(DescriptionTxt, card.discription.ToString());
+        UpdateText(SpeedTxt, card.speed.ToString());
 
         if (cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)
         {
@@ -101,8 +105,14 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
     }
 
+    public void ResetAttack()
+    {
+        IsAttackedThisRound = false;
+    }
+
     public void Attack(int i, bool isplayer = false)
     {
+        IsAttackedThisRound = true;
         SpellManager.IsPetAttacking = true;
         //if(PVPManager.manager.isResultScreenOn) return;
         //Debug.LogError("ATTACK ");
@@ -124,7 +134,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         //     Debug.LogError("Attacking : "+ob.GetComponent<BattleCardDisplay>().card.cardId);
         //     ob.GetComponent<BattleCardDisplay>().DealDamage(card.Attack);
         // }
-        SpellManager.IsPetAttacking = false;
+        //SpellManager.IsPetAttacking = false;
         SpellManager.instance.ExecuteAttack(i, isplayer, card.cardId, id);
 
         // photonView.RPC("PetAttackRPC",RpcTarget.Others,i,isplayer);
@@ -136,7 +146,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     [PunRPC]
     public void AttackRPC(int i, bool isplayer)
     {
-        SpellManager.IsPetAttacking = true;
+        //SpellManager.IsPetAttacking = true;
         GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
         proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : SpellManager.instance.opponentBattleCards[i].gameObject;
@@ -182,6 +192,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
     public void Kill()
     {
+        IsDead = true;
         PVPManager.manager.myObj.cards.Remove(card);
         Destroy(gameObject, 0.7f);
     }

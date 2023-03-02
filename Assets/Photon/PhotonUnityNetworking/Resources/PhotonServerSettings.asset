@@ -124,6 +124,10 @@ MonoBehaviour:
   - UpdateRagePoints_RPC
   - UpdateSpeedPoints
   - WinMatch
+  - DistributeAttackRPC
+  - ApplyAttackEffs
+  - ResetDataRPC
+  - SwitchStartHandTurnRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

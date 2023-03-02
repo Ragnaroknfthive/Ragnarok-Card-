@@ -56,11 +56,25 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
     public class CharacterRuntimeData
     {
-        public int
-        health;
+        public int health;
         public float stamina;
         public float speed;
 
+        public Dictionary<string,int> attack_data = new Dictionary<string, int>();
+
+        public void SaveData(string key, int val){
+            if(attack_data.ContainsKey(key))
+                attack_data[key] = val;
+            else
+                attack_data.Add(key,val);
+        }
+
+        public int GetData(string key){
+            if(attack_data.ContainsKey(key))
+                return attack_data[key];
+            else
+                return 0;
+        }
 
     }
     public CharacterRuntimeData pData;

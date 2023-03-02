@@ -4139,7 +4139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &290433375
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15796,9 +15796,9 @@ MonoBehaviour:
   MyMainDeck: {fileID: 144861245}
   OppoMainDeck: {fileID: 274369053}
   spawned_ids: 
-  DestroyCardEff: {fileID: 7862228594200613705, guid: ea83ee77df6d0ab428dea6f5e900faff,
+  DestroyCardEff: {fileID: 7862228594200613705, guid: 4d47f2dfaabecc240aa8a5a5a2e6135a,
     type: 3}
-  DestroyCardEffOppo: {fileID: 7862228594200613705, guid: 4d47f2dfaabecc240aa8a5a5a2e6135a,
+  DestroyCardEffOppo: {fileID: 7862228594200613705, guid: ea83ee77df6d0ab428dea6f5e900faff,
     type: 3}
   offset_card: 50
   isShowCasing: 0
@@ -18822,6 +18822,7 @@ MonoBehaviour:
   p2SpeedSlowObj: {fileID: 556475011}
   p1Weakness: {fileID: 614491845}
   p2Weakness: {fileID: 431013246}
+  StartHandTurn: 0
   selectedMove: {fileID: 0}
   myPiece: 0
   opponentpiece: 0
@@ -18870,6 +18871,7 @@ MonoBehaviour:
   criticalHitPercentage: 0
   isResultScreenOn: 0
   isReset: 0
+  Proj: {fileID: 5719966673499620764, guid: 71a670e5804d94d4a981c7f4faeb04ab, type: 3}
   MyLastBatAmount: -1
   isNormalBat: 0
   isAllIn: 0
@@ -25942,7 +25944,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.046624985, y: 0.01875}
   m_AnchorMax: {x: 0.296625, y: 0.08125}
-  m_AnchoredPosition: {x: -860.6991, y: -344.45715}
+  m_AnchoredPosition: {x: -860.6989, y: -344.45715}
   m_SizeDelta: {x: 259.23822, y: 28.467705}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1648655086
@@ -34527,6 +34529,7 @@ MonoBehaviour:
   healthTxt: {fileID: 2370950836416300290}
   cardNameTxt: {fileID: 1384165114895862893}
   DescriptionTxt: {fileID: 2370950836776418493}
+  SpeedTxt: {fileID: 0}
   Bg: {fileID: 2754208979740776839}
   cardImage: {fileID: 2370950836607058811}
   BackSide: {fileID: 1603903520087056901}
@@ -34558,6 +34561,7 @@ MonoBehaviour:
   healthTxt: {fileID: 2370950836583569514}
   cardNameTxt: {fileID: 1384165114716082437}
   DescriptionTxt: {fileID: 2370950836927979989}
+  SpeedTxt: {fileID: 0}
   Bg: {fileID: 2754208979836667119}
   cardImage: {fileID: 2370950836426235411}
   BackSide: {fileID: 1603903520244858733}
@@ -34589,6 +34593,7 @@ MonoBehaviour:
   healthTxt: {fileID: 2370950835613310846}
   cardNameTxt: {fileID: 1384165116240254481}
   DescriptionTxt: {fileID: 2370950835432515265}
+  SpeedTxt: {fileID: 0}
   Bg: {fileID: 2754208981617738747}
   cardImage: {fileID: 2370950835800037639}
   BackSide: {fileID: 1603903518210422905}

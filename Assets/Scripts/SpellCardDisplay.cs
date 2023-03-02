@@ -10,7 +10,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
 {
     public SpellCard card;
     [SerializeField]
-    private TMPro.TextMeshProUGUI manaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt;
+    private TMPro.TextMeshProUGUI manaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
     public Image Bg, cardImage, BackSide;
     public Outline MainBGOutline;
     public SpellCardPosition cardPosition;
@@ -40,6 +40,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         manaTxt.transform.parent.gameObject.SetActive(isShow);
         attackTxt.transform.parent.gameObject.SetActive(isShow);
         healthTxt.transform.parent.gameObject.SetActive(isShow);
+        SpeedTxt.transform.parent.gameObject.SetActive(isShow);
         //DescriptionTxt.gameObject.SetActive(isShow);
         cardNameTxt.gameObject.SetActive(isShow);
         cardImage.gameObject.SetActive(isShow);
@@ -54,6 +55,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         UpdateText(attackTxt, card.Attack.ToString());
         UpdateText(healthTxt, card.Health.ToString());
         UpdateText(DescriptionTxt, card.discription.ToString());
+        UpdateText(SpeedTxt, card.speed.ToString());
         if (PVPManager.manager != null)
         {
             if (PVPManager.manager.myObj.playerType == PlayerType.Black)
@@ -80,6 +82,8 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         if (IsPreview)
             return;
         if (!PVPManager.Get().IsPetTurn)
+            return;
+        if (cardPosition == SpellCardPosition.petHomeOppoent)
             return;
 
         // if((Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petHomeOppoent || PVPManager.manager.isResultScreenOn)){
@@ -183,10 +187,11 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
             LeanTween.rotate(tempObj, new Vector3(0, 0, -180), 0);
 
         SpellManager.instance.playerBattleCards.Add(tempObj.GetComponent<BattleCardDisplay>());
-        LeanTween.move(tempObj, SpellManager.instance.spellCardBattleObj, .3f).setOnComplete(() => ChangeParent(tempObj, SpellManager.instance.spellCardBattleObj));
+        LeanTween.move(tempObj, SpellManager.instance.spellCardBattleObj, .3f).setOnComplete(() => { ChangeParent(tempObj, SpellManager.instance.spellCardBattleObj); SpellManager.instance.PetAttack(); });
         SpellManager.instance.MoveOpponentCardToBattleArea(card.cardId, tempObj.GetComponent<BattleCardDisplay>().id);
 
         PVPManager.Get().DeductMana(card.Manacost);
+
 
     }
 

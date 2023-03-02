@@ -30,6 +30,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public List<int> spawned_ids = new List<int>();
     public GameObject DestroyCardEff, DestroyCardEffOppo;
+
+
     private void Awake()
     {
         if (instance == null)
@@ -57,6 +59,17 @@ public class SpellManager : MonoBehaviourPunCallbacks
         spawned_ids = new List<int>();
         foreach (Transform item in spellCardsPlayer)
         {
+            DestroyImmediate(item.gameObject);
+        }
+        photonView.RPC("ResetDataRPC", RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void ResetDataRPC()
+    {
+        spawned_ids = new List<int>();
+        foreach (Transform item in spellCardsPlayer)
+        {
             Destroy(item.gameObject);
         }
     }
@@ -76,13 +89,18 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
             foreach (var item in playerBattleCards)
             {
+                if (item.IsAttackedThisRound) continue;
                 BattleCardDisplay oppo = null;
                 while (id < opponentBattleCards.Count)
                 {
                     oppo = opponentBattleCards[id];
                     if (oppo != null)
                     {
-                        break;
+                        if (!oppo.IsDead)
+                            break;
+                        else
+                            id++;
+
                     }
                     else
                     {
@@ -202,15 +220,14 @@ public class SpellManager : MonoBehaviourPunCallbacks
                 }
             }
         }
-
     }
 
     public void PetAttack()
     {
-        if (PVPManager.Get().IsPetTurn && !PetAlreadyAttacked)
+        if (PVPManager.Get().IsPetTurn && !PetAlreadyAttacked && Game.Get().turn > 2)
         {
             StartCoroutine(StartPetAttack());
-            PetAlreadyAttacked = true;
+
         }
     }
 
@@ -235,7 +252,6 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = isplayer;
         proj.DealDamage = !isplayer;
         proj.lifetime = 2f;
-
     }
 
     public void DestroyOb(int i)
@@ -309,7 +325,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public void DrawCard()
     {
-        //Debug.LogError("cards holding now : " + spellCardsPlayer.transform.childCount);
+        Debug.LogError("cards holding now : " + spellCardsPlayer.transform.childCount);
+        Debug.LogError(spellCardsDeck.Count+" : " + spawned_ids.Count);
         if (spawned_ids.Count == spellCardsDeck.Count)
         {
             MyMainDeck.SetActive(false);
@@ -319,7 +336,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         else
         {
             MyMainDeck.SetActive(true);
-            photonView.RPC("SetDeckIm", RpcTarget.Others, false);
+            photonView.RPC("SetDeckIm", RpcTarget.Others, true);
         }
 
         int i = Random.Range(0, spellCardsDeck.Count);
@@ -328,6 +345,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
             i = Random.Range(0, spellCardsDeck.Count);
         }
         spawned_ids.Add(i);
+
         if (spellCardsPlayer.childCount == 9)
             DestroyCard(i);
         else
@@ -355,8 +373,12 @@ public class SpellManager : MonoBehaviourPunCallbacks
         LeanTween.move(obj, spellCardsPlayer.position, 0.3f).setOnComplete(() =>
         {
             PVPManager.manager.myObj.cards.Remove(spellCardsDeck[i]);
-            Instantiate(DestroyCardEff, spellCardsPlayer.position, Quaternion.identity);
-            Destroy(obj.gameObject);
+            if (PhotonNetwork.IsMasterClient)
+                Instantiate(DestroyCardEff, spellCardsPlayer.position, Quaternion.identity);
+            else
+                Instantiate(DestroyCardEffOppo, spellCardsPlayer.position, Quaternion.identity);
+            Destroy(obj.gameObject,0.1f);
+
             // obj.transform.SetParent(spellCardsPlayer);
             // obj.transform.position = Vector3.zero;
         });
@@ -373,9 +395,9 @@ public class SpellManager : MonoBehaviourPunCallbacks
         obj.GetComponent<SpellCardDisplay>().set(false);
         obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = spawned_ids.Count + 1;
         //obj.transform.Rotate(Vector3.forward * 90);
-        if (PhotonNetwork.IsMasterClient)
-        { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
-        else { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+        // if (PhotonNetwork.IsMasterClient)
+        // { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
+        // else { LeanTween.rotate(obj, new Vector3(0, 0, 180), 0); }
         obj.GetComponent<SpellCardDisplay>().BackSide.gameObject.SetActive(true);
         obj.transform.localScale = Vector3.one * 0.7f;
 
@@ -383,8 +405,11 @@ public class SpellManager : MonoBehaviourPunCallbacks
         {
             // obj.transform.SetParent(spellCardsOpponent);
             // obj.transform.position = Vector3.zero;
-            Instantiate(DestroyCardEffOppo, spellCardsOpponent.position, Quaternion.identity);
-            Destroy(obj.gameObject);
+            if (PhotonNetwork.IsMasterClient)
+                Instantiate(DestroyCardEff, spellCardsOpponent.position, Quaternion.identity);
+            else
+                Instantiate(DestroyCardEffOppo, spellCardsOpponent.position, Quaternion.identity);
+            Destroy(obj.gameObject,0.1f);
         });
     }
 
@@ -426,6 +451,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = true;
         proj.DealDamage = true;
         proj.lifetime = 2f;
+        PVPManager.manager.myObj.cards.Remove(card);
         photonView.RPC("CastSpellRPC", RpcTarget.Others, spellCardsDeck[i].cardId);
     }
 
@@ -439,6 +465,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = true;
         proj.DealDamage = true;
         proj.lifetime = 2f;
+        PVPManager.manager.myObj.cards.Remove(card);
         photonView.RPC("CastSpellWithCard", RpcTarget.Others);
     }
 

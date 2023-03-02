@@ -13,18 +13,21 @@ public class GameData : MonoBehaviour
 
     public List<SpellCard> Pets;
     public List<SpellCard> Spells;
-    
-    
+
+
 
     private void Awake()
     {
-        if(data == null){
+        if (data == null)
+        {
             data = this;
             DontDestroyOnLoad(data.gameObject);
-        }else{
+        }
+        else
+        {
             Destroy(data.gameObject);
         }
-        
+
     }
     // Start is called before the first frame update
     void Start()
@@ -32,46 +35,49 @@ public class GameData : MonoBehaviour
         characters = Resources.LoadAll<CharacterData>("Data/Character").ToList();
         //Debug.LogError(characters.Count);
         attacks = Resources.LoadAll<AttackData>("Data/Attacks").ToList();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public CharacterData GetCharacter(string id){
+    public CharacterData GetCharacter(string id)
+    {
         foreach (var item in characters)
         {
-            if(item.id == id)
+            if (item.id == id)
                 return item;
         }
         return null;
     }
 
-    public SpellCard GetPet(int id){
+    public SpellCard GetPet(int id)
+    {
         foreach (var item in Pets)
         {
-            if(item.cardId == id)
+            if (item.cardId == id)
                 return item;
         }
         return null;
     }
 
-    public SpellCard GetSpell(int id){
+    public SpellCard GetSpell(int id)
+    {
         foreach (var item in Spells)
         {
-            if(item.cardId == id)
+            if (item.cardId == id)
                 return item;
         }
         return null;
     }
 
-    public AttackData GetAttack(AttackType type){
+    public AttackData GetAttack(AttackType type)
+    {
         foreach (var item in attacks)
         {
-            if(item.type == type)
+            if (item.type == type)
                 return item;
         }
         return null;
@@ -86,7 +92,8 @@ public class GameData : MonoBehaviour
     //     return null;
     // }
 
-    public static GameData Get(){
+    public static GameData Get()
+    {
         return data;
     }
 }

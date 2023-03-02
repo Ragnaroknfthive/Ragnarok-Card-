@@ -536,7 +536,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: -1
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -4751,7 +4751,7 @@ GameObject:
   - component: {fileID: 8061075443421915029}
   - component: {fileID: 7822209270283439789}
   m_Layer: 0
-  m_Name: card des Oppo
+  m_Name: card des oppo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24336,7 +24336,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: -1
       minScalar: 0
       maxCurve:
         serializedVersion: 2

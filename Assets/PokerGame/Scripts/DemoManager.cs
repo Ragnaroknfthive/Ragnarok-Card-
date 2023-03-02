@@ -769,10 +769,11 @@ public class DemoManager : MonoBehaviour
                     }
                 }
             }
-            PVPManager.manager.OpponentPlayerCardPositions[0].GetChild(0).GetChild(1).gameObject.GetComponent<Image>().sprite = PVPManager.manager.opponentCardSprite[0];
-            PVPManager.manager.OpponentPlayerCardPositions[1].GetChild(0).GetChild(1).gameObject.GetComponent<Image>().sprite = PVPManager.manager.opponentCardSprite[1];
+            
 
         }
+        PVPManager.manager.OpponentPlayerCardPositions[0].GetChild(0).GetChild(1).gameObject.GetComponent<Image>().sprite = PVPManager.manager.opponentCardSprite[0];
+        PVPManager.manager.OpponentPlayerCardPositions[1].GetChild(0).GetChild(1).gameObject.GetComponent<Image>().sprite = PVPManager.manager.opponentCardSprite[1];
 
     }
 
