@@ -20,6 +20,8 @@ public enum PlayerType
     Black,
     White,
     None
+
+    
 }
 
 
@@ -703,4 +705,400 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
 
     #endregion
+
+
+    public bool canDefendKing(){
+        bool canDefend = false;
+        Game sc = controller.GetComponent<Game>();
+        List<Vector2> vecs = new List<Vector2>();
+        GameObject[,] Absolute_past = sc.GetPresent();
+
+        switch (type)
+        {
+            case PieceType.King:
+                vecs = new List<Vector2>(){new Vector2(0,1),new Vector2(0,-1),new Vector2(-1,-1),new Vector2(-1,-0),new Vector2(-1,1),new Vector2(1,-1),new Vector2(1,0),new Vector2(1,1)};
+                foreach (var item in vecs)
+                {
+                    GameObject[,] prev_present = sc.GetPresent();
+                    sc.SetFuture(prev_present);
+
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    if (sc.FuturePositionOnBoard(x, y))
+                    {
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                    }
+                    sc.SetPresent(prev_present);
+                }
+                break;
+            case PieceType.Queen:
+                vecs = new List<Vector2>(){new Vector2(1,1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(-1,-1), new Vector2(1,0),new Vector2(0,1),new Vector2(-1,0),new Vector2(0,-1)};
+                foreach (var item in vecs)
+                {
+
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    GameObject[,] prev_present = sc.GetPresent();
+
+                    while (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y) == null)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        x += (int)item.x;
+                        y += (int)item.y;
+                        sc.SetPresent(prev_present);
+                    }
+
+                    if(canDefend) break;
+
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }    
+                }
+                break;
+            case PieceType.Rook:
+                vecs = new List<Vector2>(){new Vector2(1,0),new Vector2(0,1),new Vector2(-1,0),new Vector2(0,-1)};
+                foreach (var item in vecs)
+                {
+
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    GameObject[,] prev_present = sc.GetPresent();
+
+                    while (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y) == null)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        x += (int)item.x;
+                        y += (int)item.y;
+                        sc.SetPresent(prev_present);
+                    }
+
+                    if(canDefend) break;
+
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }    
+                }
+                break;
+            case PieceType.Bishop:
+                vecs = new List<Vector2>(){new Vector2(1,1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(-1,-1)};
+                foreach (var item in vecs)
+                {
+
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    GameObject[,] prev_present = sc.GetPresent();
+
+                    while (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y) == null)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        x += (int)item.x;
+                        y += (int)item.y;
+                        sc.SetPresent(prev_present);
+                    }
+
+                    if(canDefend) break;
+
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    {
+                        sc.SetFuture(prev_present);
+
+                        sc.SetFuturePosition(this,x,y);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }    
+                }
+                break;
+            case PieceType.Knight:
+                vecs = new List<Vector2>(){new Vector2(1,2),new Vector2(-1,2),new Vector2(2,1),new Vector2(2,-1),new Vector2(1,-2),new Vector2(-1,-2),new Vector2(-2,1),new Vector2(-2,-1)};
+                foreach (var item in vecs)
+                {
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    GameObject[,] prev_present = sc.GetPresent();
+                    sc.SetFuture(prev_present);
+
+                    if (sc.FuturePositionOnBoard(x, y))
+                    {
+                        GameObject cp = sc.GetFuturePosition(x, y);
+                        if(cp == null){
+                            sc.SetFuturePosition(this,x,y);
+                            sc.SetPresent(sc.GetFuture());
+                            canDefend = !sc.checkForKing();
+                            if(canDefend){sc.SetPresent(prev_present); break;}
+                            sc.SetPresent(prev_present); 
+                        }
+                        else if (cp?.GetComponent<Chessman>().player != player)
+                        {
+                            sc.SetFuturePosition(this,x,y);
+                            sc.SetPresent(sc.GetFuture());
+                            canDefend = !sc.checkForKing();
+                            if(canDefend){sc.SetPresent(prev_present); break;}
+                            sc.SetPresent(prev_present); 
+                        }
+                    }
+                }
+                break;
+            case PieceType.Pawn:
+            for (int i = 1; i <= 2; i++)
+            {
+                if(!GameManager.instace.isFristMovePawn){
+                    break;
+                }
+                GameObject[,] prev_present = sc.GetPresent();
+                sc.SetFuture(prev_present);
+                if(playerType == PlayerType.Black){
+                    if(sc.GetFuturePosition(xBoard-i,yBoard) == null){
+                        sc.SetFuturePosition(this, xBoard-i,yBoard);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                    if(sc.GetFuturePosition(xBoard-i,yBoard)?.GetComponent<Chessman>().player != player){
+                        sc.SetFuturePosition(this, xBoard-i,yBoard);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                }else{
+                    if(sc.GetFuturePosition(xBoard+i,yBoard) == null){
+                        sc.SetFuturePosition(this, xBoard+i,yBoard);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                    if(sc.GetFuturePosition(xBoard+i,yBoard)?.GetComponent<Chessman>().player != player){
+                        sc.SetFuturePosition(this, xBoard+i,yBoard);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                }
+            }
+
+            for (int i = 1; i <= 2; i++)
+            {
+                if(!GameManager.instace.isFristMovePawn){
+                    break;
+                }
+                GameObject[,] prev_present = sc.GetPresent();
+                sc.SetFuture(prev_present);
+                if(playerType == PlayerType.Black){
+                    if(sc.GetFuturePosition(xBoard,yBoard-i) == null){
+                        sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                    if(sc.GetFuturePosition(xBoard,yBoard-i)?.GetComponent<Chessman>().player != player){
+                        sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                }else{
+                    if(sc.GetFuturePosition(xBoard,yBoard+i) == null){
+                        sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                    if(sc.GetFuturePosition(xBoard,yBoard+i)?.GetComponent<Chessman>().player != player){
+                        sc.SetFuturePosition(this, xBoard,yBoard+i);
+                        sc.SetPresent(sc.GetFuture());
+                        canDefend = !sc.checkForKing();
+                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        sc.SetPresent(prev_present);
+                    }
+                }
+            }
+            break;
+            
+        }
+        sc.SetPresent(Absolute_past);
+        return canDefend;
+    }
+
+    public bool IsCheckforKing(){
+        bool isCheck = false;
+        Game sc = controller.GetComponent<Game>();
+        List<Vector2> vecs = new List<Vector2>();
+        switch (type)
+        {
+            case PieceType.Pawn:
+            
+            for (int i = 1; i <= 2; i++)
+            {
+                if(!GameManager.instace.isFristMovePawn){
+                    break;
+                }
+                if(playerType == PlayerType.Black){
+                    if(sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().player != player){
+                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    }
+                }else{
+                    if(sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().player != player){
+                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    }
+                }
+            }
+            for (int i = 1; i <= 2; i++)
+            {
+                if(!GameManager.instace.isFristMovePawn){
+                    break;
+                }
+                if(playerType == PlayerType.Black){
+                    if(sc.GetPosition(xBoard,yBoard-i)?.GetComponent<Chessman>().player != player){
+                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    }
+                }else{
+                    if(sc.GetPosition(xBoard,yBoard+i)?.GetComponent<Chessman>().player != player){
+                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    }
+                }
+            }
+
+            break;
+            case PieceType.Bishop:
+            vecs = new List<Vector2>(){new Vector2(1,1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(-1,-1)};
+            foreach (var item in vecs)
+            {
+                int x = xBoard + (int)item.x;
+                int y = yBoard + (int)item.y;
+
+                while (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
+                {
+                    
+                    x += (int)item.x;
+                    y += (int)item.y;
+                    
+                }
+
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                {
+                    isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                }    
+            }
+            break;
+            case PieceType.Rook:
+            vecs = new List<Vector2>(){new Vector2(1,0),new Vector2(0,1),new Vector2(-1,0),new Vector2(0,-1)};
+            foreach (var item in vecs)
+            {
+                int x = xBoard + (int)item.x;
+                int y = yBoard + (int)item.y;
+
+                while (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
+                {
+                    
+                    x += (int)item.x;
+                    y += (int)item.y;
+                    
+                }
+
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                {
+                    isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                }    
+            }
+            break;
+            case PieceType.Knight:
+            vecs = new List<Vector2>(){new Vector2(1,2),new Vector2(-1,2),new Vector2(2,1),new Vector2(2,-1),new Vector2(1,-2),new Vector2(-1,-2),new Vector2(-2,1),new Vector2(-2,-1)};
+            foreach (var item in vecs)
+            {
+                int x = xBoard + (int)item.x;
+                int y = yBoard + (int)item.y;
+                if (sc.PositionOnBoard(x, y))
+                {
+                    GameObject cp = sc.GetPosition(x, y);
+                    if (cp?.GetComponent<Chessman>().player != player)
+                    {
+                        isCheck = cp?.GetComponent<Chessman>().type == PieceType.King;
+                    }
+                }
+            }
+            break;
+            case PieceType.Queen:
+            vecs = new List<Vector2>(){new Vector2(1,1),new Vector2(1,-1),new Vector2(-1,1),new Vector2(-1,-1), new Vector2(1,0),new Vector2(0,1),new Vector2(-1,0),new Vector2(0,-1)};
+            foreach (var item in vecs)
+            {
+                int x = xBoard + (int)item.x;
+                int y = yBoard + (int)item.y;
+
+                while (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y) == null)
+                {
+                    
+                    x += (int)item.x;
+                    y += (int)item.y;
+                    
+                }
+
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                {
+                    isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                }    
+            }
+            break;
+            case PieceType.King:
+            vecs = new List<Vector2>(){new Vector2(0,1),new Vector2(0,-1),new Vector2(-1,-1),new Vector2(-1,-0),new Vector2(-1,1),new Vector2(1,-1),new Vector2(1,0),new Vector2(1,1)};
+            foreach (var item in vecs)
+            {
+                int x = xBoard + (int)item.x;
+                int y = yBoard + (int)item.y;
+                if (sc.PositionOnBoard(x, y))
+                {
+                    GameObject cp = sc.GetPosition(x, y);
+                    if (cp?.GetComponent<Chessman>().player != player)
+                    {
+                        isCheck = cp?.GetComponent<Chessman>().type == PieceType.King;
+                    }
+                }
+            }
+            break;
+        }
+        return isCheck;
+    }
+
+    
+
+
 }

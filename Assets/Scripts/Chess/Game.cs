@@ -20,6 +20,8 @@ public class Game : MonoBehaviour
     [SerializeField] private Chessman[] playerBlack = new Chessman[10];
     [SerializeField] private Chessman[] playerWhite = new Chessman[10];
 
+    [SerializeField] private GameObject[,] Fpositions = new GameObject[8, 8];
+
     private string currentPlayer = "white";
 
     public bool isLocalPlayerTurn;
@@ -71,13 +73,29 @@ public class Game : MonoBehaviour
     public GameObject loadingScreen;
 
     public List<Chessman> DestroyedObjects = new List<Chessman>();
+    public List<Chessman> DestroyedObjectsOppo = new List<Chessman>();
 
-    public PlayerType MyType;
+    public PlayerType MyType,OppoType;
 
     public Text WinnerTxT;
     public Text RestartTxT;
 
+    public int MyStamina, OppoStamina;
 
+    public Transform myPieces, OppoPieces;
+    public GameObject DeadPieceImage;
+
+    
+    public void IncreaseStamina(){
+        MyStamina++;
+        MyStamina = Mathf.Clamp(MyStamina,0,10);
+        photonView.RPC("IncreaseStaminaRPC",RpcTarget.Others);
+    }
+    [PunRPC]
+    public void IncreaseStaminaRPC(){
+        OppoStamina++;
+        OppoStamina = Mathf.Clamp(OppoStamina,0,10);
+    }
 
     public static Game Get()
     {
@@ -98,6 +116,7 @@ public class Game : MonoBehaviour
     void Start()
     {
         MyType = PhotonNetwork.LocalPlayer.IsMasterClient ? PlayerType.White : PlayerType.Black;
+        OppoType = MyType == PlayerType.White ? PlayerType.Black : PlayerType.White;
         //PhotonNetwork.AutomaticallySyncScene = true;
         PlayerStrengths.Add(0);
         PlayerStrengths.Add(0);
@@ -149,6 +168,8 @@ public class Game : MonoBehaviour
 
         StartCoroutine(SetLoadingScreenOnOff(false, 1f));
         gameOver = false;
+        MyStamina = 10;
+        OppoStamina = 10;
         // foreach (var item in positions)
         // {
         //     Debug.Log(item);
@@ -358,12 +379,45 @@ public class Game : MonoBehaviour
     {
         return positions[x, y];
     }
-
     public bool PositionOnBoard(int x, int y)
     {
         if (x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
         return true;
     }
+
+    public void SetPresent(GameObject[,] data){
+        positions = data;
+    }
+
+    public GameObject[,] GetPresent(){
+        return positions;
+    }
+
+    public GameObject[,] GetFuture(){
+        return Fpositions;
+    }
+    public void SetFuture(GameObject[,] data){
+        Fpositions = data;
+    }
+    public void SetFuturePosition(Chessman obj, int x, int y){
+        Fpositions[x, y] = obj.gameObject;
+    }
+    public void SetFuturePositionsEmpty(int x, int y)
+    {
+        Fpositions[x, y] = null;
+    }
+    public GameObject GetFuturePosition(int x, int y)
+    {
+        return Fpositions[x, y];
+    }
+    public bool FuturePositionOnBoard(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
+        return true;
+    }
+
+
+    
 
     public string GetCurrentPlayer()
     {
@@ -394,6 +448,11 @@ public class Game : MonoBehaviour
         }
 
         photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
+        // bool IsKinginCheck = checkForKing();
+        // Debug.LogError("Checking for Check ================> "+IsKinginCheck);
+        // if(IsKinginCheck){
+        //     Debug.LogError("Checkmate ================> "+IsCheckmateForKing());
+        // }
     }
     //Allow Moveplate display only for local player
     public void Update()
@@ -641,8 +700,39 @@ public class Game : MonoBehaviour
             }
 
             IsGameComplete = won;
+        }else{
+            DestroyedObjectsOppo.Add(man);
         }
 
+        UpdateDeadPieces();
+
+
+    }
+
+    public void UpdateDeadPieces(){
+        foreach (Transform item in myPieces)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach (Chessman item in DestroyedObjects)
+        {
+            GameObject o = Instantiate(DeadPieceImage,myPieces);
+            o.GetComponent<Image>().sprite = item.GetSprite();
+        }
+        photonView.RPC("UpdateDeadPiecesRPC",RpcTarget.Others);
+    }
+
+    [PunRPC]
+    public void UpdateDeadPiecesRPC(){
+        foreach (Transform item in OppoPieces)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach (Chessman item in DestroyedObjectsOppo)
+        {
+            GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            o.GetComponent<Image>().sprite = item.GetSprite();
+        }
     }
 
     public bool IsGameComplete = false;
@@ -798,6 +888,30 @@ public class Game : MonoBehaviour
         {
             StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
+    }
+
+    public bool checkForKing(){
+        List<Chessman> OppoPieces = Chessman.GetPiecesOfPlayer(OppoType);
+        bool isCheck = false;
+        foreach (var item in OppoPieces)
+        {
+            isCheck = item.IsCheckforKing();
+            if(isCheck){ Debug.LogError("Check by Opponent's "+item.type); break;}
+        }
+        return isCheck;
+    }
+
+    public bool IsCheckmateForKing(){
+        bool KingLives = true;
+        List<Chessman> pieces = Chessman.GetPiecesOfPlayer(MyType);
+        List<PieceType> types_lis = new List<PieceType>(){PieceType.King,PieceType.Queen,PieceType.Rook,PieceType.Bishop,PieceType.Knight,PieceType.Pawn};                
+        foreach (var Ptype in types_lis)
+        {
+            Chessman piece = pieces.Find((t)=>t.type == Ptype);
+            KingLives = piece.canDefendKing();
+            if(KingLives) {Debug.LogError("King Defended by "+piece.type); break;}
+        }
+        return !KingLives;
     }
 
     public bool isMyTurn(string player)

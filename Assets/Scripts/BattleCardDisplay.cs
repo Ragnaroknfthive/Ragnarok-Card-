@@ -119,7 +119,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
         GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
-        proj.target = isplayer ? (PVPManager.Get().p2Image.gameObject) : SpellManager.instance.opponentBattleCards.Find(x => x.id == i).gameObject;
+        proj.target = isplayer ? (PVPManager.Get().p2Image.gameObject) : SpellManager.instance.opponentBattleCards.Find(x => x.card.cardId == i).gameObject;
         proj.damage = card.Attack;
         proj.istargetPlayer = isplayer;
         proj.DealDamage = true;
@@ -136,11 +136,13 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         // }
         //SpellManager.IsPetAttacking = false;
         SpellManager.instance.ExecuteAttack(i, isplayer, card.cardId, id);
-
+        PVPManager.manager.isCheckWithoutReset = true;
+        StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));
         // photonView.RPC("PetAttackRPC",RpcTarget.Others,i,isplayer);
         // PhotonNetwork.SendAllOutgoingCommands();
         // ChangeCardPostionToCenter();
         // this is comment
+        
     }
 
     [PunRPC]
@@ -153,6 +155,8 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         proj.damage = card.Attack;
         proj.lifetime = 2f;
         SpellManager.IsPetAttacking = false;
+        PVPManager.manager.isCheckWithoutReset = true;
+        StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));
     }
 
 

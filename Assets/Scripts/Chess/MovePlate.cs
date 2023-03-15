@@ -80,9 +80,16 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
 
     public void MovePiece()
     {
-        if (Game.Get().isLocalPlayerTurn)
+        if (Game.Get().isLocalPlayerTurn){
+            Game.Get().IncreaseStamina();
             photonView.RPC("OnClickRPC", RpcTarget.AllBuffered);
+            
+        }
+            
     }
+
+    
+
 
     public void SetCoords(int x, int y)
     {

@@ -52,7 +52,7 @@ public class AttackSlider : MonoBehaviour
         //Allow Maxminum attack value which is Minimum from both player's health
 
         // _slider.maxValue = Mathf.Min(PVPManager.manager.P1HealthBar.value,PVPManager.manager.P2HealthBar.value);
-        Debug.Log("P2 LATEST REMAINING HEALTH " + PVPManager.manager.P2RemainingHandHealth);
+        //Debug.LogError("P2 LATEST REMAINING HEALTH " + PVPManager.manager.P2RemainingHandHealth);
         //_slider.minValue = action == PlayerAction.counterAttack ? Game.Get().BetAmount : 1;
         _slider.maxValue = Mathf.Min(PVPManager.manager.P1StaVal * 10f, Mathf.Min(PVPManager.manager.P1RemainingHandHealth, PVPManager.manager.P2RemainingHandHealth));
         if (action == PlayerAction.counterAttack)
@@ -75,7 +75,7 @@ public class AttackSlider : MonoBehaviour
         //_slider.minValue = (Game.Get().lastAction == PlayerAction.counterAttack) ? PVPManager.manager.AttackFor : 1;
         //_slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack? Game.Get().BetAmount * 2:Game.Get().BetAmount;
         difference = _slider.maxValue - _slider.minValue;
-        _slider.minValue = Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack ? (int)PVPManager.manager.LastAtkAmt : 1;
+        _slider.minValue = Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack ? (int)PVPManager.manager.LastAtkAmt : 2;
         _slider.minValue = action == PlayerAction.counterAttack ? ((int)PVPManager.manager.LastAtkAmt) + 1 : _slider.minValue;
         _slider.value = _slider.minValue;
         _attackValueText.text = _slider.minValue.ToString();
@@ -196,7 +196,7 @@ public class AttackSlider : MonoBehaviour
         {
             Game.Get().lastAction = action;
             Game.Get().UpdateLastAction(action);
-            Debug.LogError((int)_slider.value);
+            
             PVPManager.Get().sliderAttackbuttonClick((int)_slider.value, Mathf.RoundToInt((_slider.value - ExtraSpeedAmt) / 10f), action);
             PVPManager.Get().UpdateRemainingHandHealth((int)_slider.value - Mathf.RoundToInt(ExtraSpeedAmt));
             PVPManager.Get().DeductSpeed(MathF.Round(ExtraSpeedAmt / 10f, 1));

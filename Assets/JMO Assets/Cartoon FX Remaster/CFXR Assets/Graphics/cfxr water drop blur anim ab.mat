@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: cfxr water drop blur anim ab
   m_Shader: {fileID: 4800000, guid: e198026df304af84a85675be636192ea, type: 3}
-  m_ShaderKeywords: _FADING_ON _FLIPBOOK_BLENDING _CFXR_OVERLAYBLEND_RGBA _OVERLAYTEX_OFF
-    _CFXR_SINGLE_CHANNEL _CFXR_DITHERED_SHADOWS_ON
+  m_ShaderKeywords: _ALPHABLEND_ON _CFXR_DITHERED_SHADOWS_ON _CFXR_SINGLE_CHANNEL
+    _FADING_ON _FLIPBOOK_BLENDING
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -56,21 +56,30 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _BacklightTransmittance: 1
     - _BlendOp: 0
+    - _BlendingType: 0
     - _BumpScale: 1
+    - _CFXR_DITHERED_SHADOWS: 1
+    - _CFXR_OVERLAYBLEND: 0
+    - _CFXR_OVERLAYTEX: 0
     - _CameraFadingEnabled: 0
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
     - _ColorMode: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DirLightScreenAtten: 1
+    - _DirectLightingRamp: 1
     - _DissolveSmooth: 0.1
     - _Distort: 0.1
     - _DistortionBlend: 0.5
     - _DistortionEnabled: 0
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0
+    - _DoubleDissolve: 0
     - _DstBlend: 10
     - _EdgeFadePow: 1
     - _EmissionEnabled: 0
@@ -78,12 +87,13 @@ Material:
     - _FlipbookMode: 0
     - _HdrBoost: 0
     - _HdrMultiply: 2
+    - _IndirectLightingMix: 0.5
     - _InvertDissolveTex: 0
     - _LightingEnabled: 0
+    - _LightingWorldPosStrength: 0.2
     - _Mode: 0
     - _OVERLAYBLEND: 0
     - _OVERLAYTEX: 0
-    - _CFXR_DITHERED_SHADOWS: 1
     - _SecondColorSmooth: 0.2
     - _ShadowStrength: 0.5
     - _SingleChannel: 1
@@ -95,10 +105,17 @@ Material:
     - _SrcBlend: 5
     - _UVDistortionAdd: 0
     - _UseAlphaClip: 0
+    - _UseBackLighting: 0
     - _UseDissolve: 0
+    - _UseDissolveOffsetUV: 0
     - _UseEF: 0
+    - _UseEmission: 0
     - _UseFB: 1
+    - _UseFontColor: 0
     - _UseGradientMap: 0
+    - _UseLighting: 0
+    - _UseLightingWorldPosOffset: 0
+    - _UseNormalMap: 0
     - _UseSP: 1
     - _UseSecondColor: 0
     - _UseUV2Distortion: 0
@@ -108,8 +125,11 @@ Material:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 2, g: 2, b: 2, a: 0}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _DissolveScroll: {r: 0, g: 0, b: 0, a: 0}
     - _DistortScrolling: {r: 0, g: 0, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OverlayTex_Scroll: {r: 0.1, g: 0.1, b: 1, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SoftParticlesFadeDistance: {r: 0, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

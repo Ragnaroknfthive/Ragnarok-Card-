@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: Fire
   level: 1
-  health: 100
+  health: 220
   strength: 100
   stamina: 10
   agility: 100

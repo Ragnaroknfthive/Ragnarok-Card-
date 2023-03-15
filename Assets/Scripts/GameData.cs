@@ -25,7 +25,7 @@ public class GameData : MonoBehaviour
         }
         else
         {
-            Destroy(data.gameObject);
+            Destroy(this.gameObject);
         }
 
     }

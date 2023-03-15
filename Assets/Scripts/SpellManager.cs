@@ -31,7 +31,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     public List<int> spawned_ids = new List<int>();
     public GameObject DestroyCardEff, DestroyCardEffOppo;
 
-
+    public static bool petAttackStarted;
     private void Awake()
     {
         if (instance == null)
@@ -76,7 +76,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public IEnumerator StartPetAttack()
     {
-
+        SpellManager.petAttackStarted = true;
         playerBattleCards = playerBattleCards.OrderBy((item) => item.card.speed).ToList();
         opponentBattleCards = opponentBattleCards.OrderBy((item) => item.card.speed).ToList();
         //Debug.LogError(playerBattleCards.Count + " - "+ opponentBattleCards.Count);
@@ -90,6 +90,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
             foreach (var item in playerBattleCards)
             {
                 if (item.IsAttackedThisRound) continue;
+                if(PVPManager.manager.PVPOver) break;
                 BattleCardDisplay oppo = null;
                 while (id < opponentBattleCards.Count)
                 {
@@ -110,7 +111,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
                 if (oppo != null)
                 {
-                    item.Attack(oppo.id);
+                    item.Attack(oppo.card.cardId);
                     yield return new WaitForSeconds(0.5f);
                     yield return new WaitWhile(() => IsPetAttacking);
 
@@ -124,6 +125,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
                 }
                 yield return new WaitForSeconds(0.5f);
                 yield return new WaitWhile(() => IsPetAttacking);
+                yield return new WaitWhile(()=>PVPManager.manager.isCheckWithoutReset);
 
             }
             #region  old code
@@ -207,7 +209,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
             for (int i = playerBattleCards.Count - 1; i >= 0; i--)
             {
                 BattleCardDisplay item = null;
-
+                if(PVPManager.manager.PVPOver) break;
                 if (i < playerBattleCards.Count)
                     item = playerBattleCards[i];
 
@@ -218,8 +220,11 @@ public class SpellManager : MonoBehaviourPunCallbacks
                     yield return new WaitWhile(() => IsPetAttacking);
 
                 }
+                yield return new WaitWhile(()=>PVPManager.manager.isCheckWithoutReset);
+
             }
         }
+        SpellManager.petAttackStarted = false;
     }
 
     public void PetAttack()
@@ -245,13 +250,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
     {
         SpellCard card = GameData.Get().GetPet(cardId);
         SpellManager.IsPetAttacking = true;
-        GameObject o = Instantiate(card.SpellProjectilePref, opponentBattleCards.Find(x => x.id == attacker).gameObject.transform.position, Quaternion.identity);
+        GameObject o = Instantiate(card.SpellProjectilePref, opponentBattleCards.Find(x => x.card.cardId == cardId).gameObject.transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
-        proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : playerBattleCards.Find(x => x.id == i).gameObject;
+        proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : playerBattleCards.Find(x => x.card.cardId == i).gameObject;
         proj.damage = card.Attack;
         proj.istargetPlayer = isplayer;
         proj.DealDamage = !isplayer;
         proj.lifetime = 2f;
+        PVPManager.manager.isCheckWithoutReset = true;
+        StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));
     }
 
     public void DestroyOb(int i)
@@ -325,8 +332,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public void DrawCard()
     {
-        Debug.LogError("cards holding now : " + spellCardsPlayer.transform.childCount);
-        Debug.LogError(spellCardsDeck.Count+" : " + spawned_ids.Count);
+        //Debug.LogError("cards holding now : " + spellCardsPlayer.transform.childCount);
+        //Debug.LogError(spellCardsDeck.Count+" : " + spawned_ids.Count);
         if (spawned_ids.Count == spellCardsDeck.Count)
         {
             MyMainDeck.SetActive(false);
@@ -441,32 +448,33 @@ public class SpellManager : MonoBehaviourPunCallbacks
         PhotonNetwork.SendAllOutgoingCommands();
     }
 
-    public void CastSpell(int i)
+    public IEnumerator CastSpell(int i)
     {
         SpellCard card = spellCardsDeck[i];
-        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p1Image.gameObject.transform.position, Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p2Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = true;
-        proj.lifetime = 2f;
-        PVPManager.manager.myObj.cards.Remove(card);
-        photonView.RPC("CastSpellRPC", RpcTarget.Others, spellCardsDeck[i].cardId);
+        StartCoroutine(PVPManager.Get().DistributeSpellAttack(card.Attack));
+        PVPManager.Get().canContinue = false;
+        yield return new WaitUntil(()=> PVPManager.Get().canContinue);
+        // if(PVPManager.Get().RemainingAtk > 0){
+        //     GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p1Image.gameObject.transform.position, Quaternion.identity);
+        //     Projectile proj = o.GetComponent<Projectile>();
+        //     proj.target = PVPManager.Get().p2Image.gameObject;
+        //     proj.damage = card.Attack;
+        //     proj.istargetPlayer = true;
+        //     proj.DealDamage = true;
+        //     proj.lifetime = 2f;
+        //     PVPManager.manager.myObj.cards.Remove(card);
+        //     photonView.RPC("CastSpellRPC", RpcTarget.Others, spellCardsDeck[i].cardId);
+        // } 
+        
     }
 
-    public void CastSpell(SpellCard card)
+    public IEnumerator CastSpell(SpellCard card)
     {
+        
+        StartCoroutine(PVPManager.Get().DistributeSpellAttack(card.Attack));
+        PVPManager.Get().canContinue = false;
+        yield return new WaitUntil(()=> PVPManager.Get().canContinue);
 
-        GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p1Image.gameObject.transform.position, Quaternion.identity);
-        Projectile proj = o.GetComponent<Projectile>();
-        proj.target = PVPManager.Get().p2Image.gameObject;
-        proj.damage = card.Attack;
-        proj.istargetPlayer = true;
-        proj.DealDamage = true;
-        proj.lifetime = 2f;
-        PVPManager.manager.myObj.cards.Remove(card);
-        photonView.RPC("CastSpellWithCard", RpcTarget.Others);
     }
 
     [PunRPC]

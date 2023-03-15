@@ -164,7 +164,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
             return;
 
         PVPManager.Get().DeductMana(card.Manacost);
-        SpellManager.instance.CastSpell(index);
+        StartCoroutine(SpellManager.instance.CastSpell(index));
 
         Destroy(this.gameObject, 0.1f);
     }
@@ -180,7 +180,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         if (card.Manacost > PVPManager.Get().MyManabarVal)
             return;
 
-        GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(SpellManager.instance.spellCardsDeck.Find(x => x.cardId == card.cardId), Bg.transform.position, this.gameObject.transform, 0);
+        GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(GameData.Get().GetPet(card.cardId), Bg.transform.position, this.gameObject.transform, 0);
         tempObj.GetComponent<BattleCardDisplay>().cardPosition = SpellCardPosition.petBattlePlayer;
         tempObj.GetComponent<BattleCardDisplay>().id = SpellManager.instance.playerBattleCards.Count + 1;
         if (PhotonNetwork.IsMasterClient == false)
@@ -202,7 +202,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         //PhotonNetwork.Instantiate("SpellBattleCardPrefeb",Bg.transform.position,Quaternion.identity,0,new object[]{card});
         //  if(Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
-        GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(SpellManager.instance.spellCardsDeck.Find(x => x.cardId == card.cardId), Bg.transform.position, this.gameObject.transform, 0);
+        GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(GameData.Get().GetPet(card.cardId), Bg.transform.position, this.gameObject.transform, 0);
         tempObj.GetComponent<BattleCardDisplay>().cardPosition = SpellCardPosition.perBattleOpponent;
         tempObj.GetComponent<BattleCardDisplay>().id = battleId;
 
@@ -297,7 +297,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
     {
         MainBGOutline.enabled = false;
         LeanTween.scale(this.gameObject, Vector3.one * 0.7f, 0.25f);//.setOnComplete(ChangeParentHome);
-        SpellManager.instance.MouseOverOpponentCard(card.cardId, false);
+        //SpellManager.instance.MouseOverOpponentCard(card.cardId, false);
         canvas.sortingOrder = startSortOrder;
         cardReseted = true;
     }
