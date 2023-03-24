@@ -46,6 +46,7 @@ public class PokerButtonManager : MonoBehaviour
         //// PVPManager.manager.StartTimer();
 
         PVPManager.manager.isfold = true;
+        
         Game.Get().UpdateLastAction(PlayerAction.brace);
         
     }
@@ -256,7 +257,7 @@ public class PokerButtonManager : MonoBehaviour
                                                                                         //{
                                                                                         //  int loseHP =(int)( Game.Get().BetAmount * 0.1f);
                                                                                         //  int maxlose = (int)(PVPManager.manager.P1HealthBar.maxValue * .5f);
-            int finalLoseHealth = 2;  //lose 2 health and increase 1 stamina for fold
+            int finalLoseHealth = PVPManager.Get().myFoldAmount;  //lose 2 health and increase 1 stamina for fold
                                       //if(loseHP <= maxlose)
                                       //{
                                       //    finalLose = loseHP;
@@ -268,6 +269,8 @@ public class PokerButtonManager : MonoBehaviour
             float foldCost = 1f;
 
             PVPManager.manager.P1StaBar.value += foldCost;
+            PVPManager.manager.P2StaVal += (PVPManager.manager.P2LastAttackValue / 10);
+            PVPManager.manager.P2StaBar.value = PVPManager.manager.P2StaVal;
 
             // PVPManager.manager.P1HealthBar.value -= finalLose;
             //  if(PVPManager.manager.P1HealthBar.)
@@ -330,6 +333,8 @@ public class PokerButtonManager : MonoBehaviour
             float foldCost = 1f;
 
             PVPManager.manager.P2StaBar.value += foldCost;
+            PVPManager.manager.P1StaVal += (PVPManager.manager.P2LastAttackValue / 10);
+            PVPManager.manager.P1StaBar.value = PVPManager.manager.P2StaVal;
 
             PVPManager.manager.UpdateHMTxt();
             //}

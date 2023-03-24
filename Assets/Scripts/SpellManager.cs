@@ -61,17 +61,20 @@ public class SpellManager : MonoBehaviourPunCallbacks
         {
             DestroyImmediate(item.gameObject);
         }
+        //StartCoroutine(PVPManager.manager.SpawnPets());        
         photonView.RPC("ResetDataRPC", RpcTarget.Others);
     }
 
     [PunRPC]
     public void ResetDataRPC()
     {
+        
         spawned_ids = new List<int>();
         foreach (Transform item in spellCardsPlayer)
         {
-            Destroy(item.gameObject);
+            DestroyImmediate(item.gameObject);
         }
+        StartCoroutine(PVPManager.manager.SpawnPets());
     }
 
     public IEnumerator StartPetAttack()

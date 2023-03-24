@@ -112,6 +112,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
 
     public void Attack(int i, bool isplayer = false)
     {
+        if(isplayer && PVPManager.Get().P2RemainingHandHealth <= 0){
+            return;
+        }
         IsAttackedThisRound = true;
         SpellManager.IsPetAttacking = true;
         //if(PVPManager.manager.isResultScreenOn) return;

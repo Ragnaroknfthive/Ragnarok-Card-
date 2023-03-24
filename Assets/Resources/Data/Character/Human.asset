@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: Human
   level: 1
-  health: 150
+  health: 80
   strength: 100
   stamina: 10
   agility: 100

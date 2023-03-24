@@ -386,21 +386,51 @@ public class Game : MonoBehaviour
     }
 
     public void SetPresent(GameObject[,] data){
-        positions = data;
+        positions = new GameObject[data.GetLength(0),data.GetLength(1)];
+        for (int i = 0; i < data.GetLength(0); i++)
+        {
+            for (int j = 0; j < data.GetLength(1); j++)
+            {
+                positions[i,j] = data[i,j];
+            }
+        }
     }
 
     public GameObject[,] GetPresent(){
-        return positions;
+        GameObject[,] data = new GameObject[positions.GetLength(0), positions.GetLength(1)];
+        for (int i = 0; i < positions.GetLength(0); i++)
+        {
+            for (int j = 0; j < positions.GetLength(1); j++)
+            {
+                data[i,j] = positions[i,j];
+            }
+        }
+        return data;
     }
 
     public GameObject[,] GetFuture(){
-        return Fpositions;
+        GameObject[,] data = new GameObject[Fpositions.GetLength(0), Fpositions.GetLength(1)];
+        for (int i = 0; i < Fpositions.GetLength(0); i++)
+        {
+            for (int j = 0; j < Fpositions.GetLength(1); j++)
+            {
+                data[i,j] = Fpositions[i,j];
+            }
+        }
+        return data;
     }
     public void SetFuture(GameObject[,] data){
-        Fpositions = data;
+        Fpositions = new GameObject[data.GetLength(0),data.GetLength(1)];
+        for (int i = 0; i < data.GetLength(0); i++)
+        {
+            for (int j = 0; j < data.GetLength(1); j++)
+            {
+                Fpositions[i,j] = data[i,j];
+            }
+        }
     }
     public void SetFuturePosition(Chessman obj, int x, int y){
-        Fpositions[x, y] = obj.gameObject;
+        Fpositions[x, y] = obj?.gameObject;
     }
     public void SetFuturePositionsEmpty(int x, int y)
     {
@@ -447,12 +477,30 @@ public class Game : MonoBehaviour
             currentPlayer = "white";
         }
 
-        photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
-        // bool IsKinginCheck = checkForKing();
-        // Debug.LogError("Checking for Check ================> "+IsKinginCheck);
-        // if(IsKinginCheck){
-        //     Debug.LogError("Checkmate ================> "+IsCheckmateForKing());
-        // }
+        if(isMyTurn(currentPlayer)){
+            bool IsKinginCheck = checkForKing();
+            bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
+            Debug.LogError("Checking for Check ================> "+IsKinginCheck);
+            if(IsKinginCheck)
+            Debug.LogError("Checkmate ================> "+IsCheckmate);
+            if(IsCheckmate || IsKinginCheck){
+                if (MyType == PlayerType.White)
+                {
+                    Winner(PhotonNetwork.PlayerList[1].NickName);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
+                }
+                else    
+                {
+                    Winner(PhotonNetwork.PlayerList[0].NickName);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
+                }
+            }else{
+                photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
+            }
+        }
+
+        
+       
     }
     //Allow Moveplate display only for local player
     public void Update()
@@ -498,21 +546,16 @@ public class Game : MonoBehaviour
     [PunRPC]
     void RematchRejected(Player HeWhoGoes)
     {
-        if (PhotonNetwork.LocalPlayer == HeWhoGoes)
-        {
-            PhotonNetwork.LeaveRoom();
-            SceneManager.LoadScene("MainMenu");
-        }
-        else
-        {
+            RematchYesNo.SetActive(false);
             RematchTxt.text = "Rematch request rejected.";
             StartCoroutine("LeaveRoom");
-        }
+        
     }
 
     IEnumerator LeaveRoom()
     {
         yield return new WaitForSeconds(2f);
+        PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("MainMenu");
     }
@@ -888,9 +931,31 @@ public class Game : MonoBehaviour
         {
             StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
+
+        if(isMyTurn(currentPlayer)){
+            bool IsKinginCheck = checkForKing();
+            bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
+            Debug.LogError("Checking for Check ================> "+IsKinginCheck);
+            if(IsKinginCheck)
+            Debug.LogError("Checkmate ================> "+IsCheckmate);
+            if(IsCheckmate){
+                if (MyType == PlayerType.White)
+                {
+                    Winner(PhotonNetwork.PlayerList[1].NickName);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
+                }
+                else    
+                {
+                    Winner(PhotonNetwork.PlayerList[0].NickName);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
+                }
+            }
+        }
     }
 
+
     public bool checkForKing(){
+        
         List<Chessman> OppoPieces = Chessman.GetPiecesOfPlayer(OppoType);
         bool isCheck = false;
         foreach (var item in OppoPieces)
@@ -945,7 +1010,7 @@ public class Game : MonoBehaviour
                 {
                     PVPManager.manager.moveChoiceConfirmation.SetActive(false);
                 }
-                PVPManager.manager.TimerObject.SetActive(false);
+                PVPManager.manager.TimerObject.SetActive(false); 
             }
         }
 
@@ -958,6 +1023,7 @@ public class Game : MonoBehaviour
     }
     public void UpdateLastAction(PlayerAction action)
     {
+        PVPManager.Get().updatePlayerAction(action.ToString());
         PVPManager.Get().LastActionUpdated = true;
         photonView.RPC("UpdateLastAction_RPC", RpcTarget.All, (byte)action);
     }
@@ -967,6 +1033,5 @@ public class Game : MonoBehaviour
         lastAction = (PlayerAction)action;
     }
     #endregion
-
 
 }

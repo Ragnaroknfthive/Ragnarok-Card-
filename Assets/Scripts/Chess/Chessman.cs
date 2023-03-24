@@ -271,13 +271,25 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
         if (!Game.Get().IsGameOver() && Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn)
         {
-            photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
-            photonView.RPC("InitiateMovePlatesRPC", RpcTarget.AllViaServer, type);
-            if (PVPManager.manager.moveChoiceConfirmation.gameObject.activeSelf)
-            {
-                PVPManager.manager.moveChoiceConfirmation.gameObject.SetActive(false);
-                PVPManager.manager.selectedMove = null;
+            
+            if(type == PieceType.King && Game.Get().checkForKing()){
+                photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
+                photonView.RPC("InitiateMovePlatesRPC", RpcTarget.AllViaServer, type);
+                if (PVPManager.manager.moveChoiceConfirmation.gameObject.activeSelf)
+                {
+                    PVPManager.manager.moveChoiceConfirmation.gameObject.SetActive(false);
+                    PVPManager.manager.selectedMove = null;
+                }
+            }else if(type != PieceType.King){
+                photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
+                photonView.RPC("InitiateMovePlatesRPC", RpcTarget.AllViaServer, type);
+                if (PVPManager.manager.moveChoiceConfirmation.gameObject.activeSelf)
+                {
+                    PVPManager.manager.moveChoiceConfirmation.gameObject.SetActive(false);
+                    PVPManager.manager.selectedMove = null;
+                }
             }
+            
         }
     }
 
@@ -712,7 +724,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         Game sc = controller.GetComponent<Game>();
         List<Vector2> vecs = new List<Vector2>();
         GameObject[,] Absolute_past = sc.GetPresent();
-
+        List<Chessman> prev_pieces = Chessman.GetCurrPieces();
         switch (type)
         {
             case PieceType.King:
@@ -721,16 +733,24 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 {
                     GameObject[,] prev_present = sc.GetPresent();
                     sc.SetFuture(prev_present);
+                    Chessman.SetCurrPieces(prev_pieces);
 
                     int x = xBoard + (int)item.x;
                     int y = yBoard + (int)item.y;
-                    if (sc.FuturePositionOnBoard(x, y))
+                    if (sc.FuturePositionOnBoard(x, y) && (sc.GetFuturePosition(x,y) == null || sc.GetFuturePosition(x,y)?.GetComponent<Chessman>().playerType != playerType))
                     {
+                        if(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present); Chessman.SetCurrPieces(prev_pieces); break;}
                     }
+                    Chessman.SetCurrPieces(prev_pieces);
                     sc.SetPresent(prev_present);
                 }
                 break;
@@ -748,25 +768,32 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                         sc.SetFuture(prev_present);
 
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
+                        
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         x += (int)item.x;
                         y += (int)item.y;
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
 
                     if(canDefend) break;
-
-                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    
+                    sc.SetFuture(prev_present);
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                     {
-                        sc.SetFuture(prev_present);
-
+                        List<Chessman> p = Chessman.GetCurrPieces();
+                        p.Remove(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>());
+                        Chessman.SetCurrPieces(p);
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present); Chessman.SetCurrPieces(prev_pieces);break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }    
                 }
                 break;
@@ -784,25 +811,33 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                         sc.SetFuture(prev_present);
 
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         x += (int)item.x;
                         y += (int)item.y;
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
 
                     if(canDefend) break;
 
-                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                     {
                         sc.SetFuture(prev_present);
-
+                        if(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present); Chessman.SetCurrPieces(prev_pieces);break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }    
                 }
                 break;
@@ -818,27 +853,35 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                     while (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y) == null)
                     {
                         sc.SetFuture(prev_present);
-
+                        
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         x += (int)item.x;
                         y += (int)item.y;
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
 
                     if(canDefend) break;
 
-                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().player != player)
+                    if (sc.FuturePositionOnBoard(x, y) && sc.GetFuturePosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                     {
                         sc.SetFuture(prev_present);
-
+                        if(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this,x,y);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }    
                 }
                 break;
@@ -856,18 +899,27 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                         GameObject cp = sc.GetFuturePosition(x, y);
                         if(cp == null){
                             sc.SetFuturePosition(this,x,y);
+                            sc.SetFuturePosition(null,xBoard,yBoard);
                             sc.SetPresent(sc.GetFuture());
                             canDefend = !sc.checkForKing();
-                            if(canDefend){sc.SetPresent(prev_present); break;}
+                            if(canDefend){sc.SetPresent(prev_present); Chessman.SetCurrPieces(prev_pieces);break;}
                             sc.SetPresent(prev_present); 
+                            Chessman.SetCurrPieces(prev_pieces);
                         }
-                        else if (cp?.GetComponent<Chessman>().player != player)
+                        else if (cp?.GetComponent<Chessman>().playerType != playerType)
                         {
+                            if(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>().playerType != playerType){
+                                List<Chessman> p = Chessman.GetCurrPieces();
+                                p.Remove(sc.GetFuturePosition(x,y)?.GetComponent<Chessman>());
+                                Chessman.SetCurrPieces(p);
+                            }
                             sc.SetFuturePosition(this,x,y);
+                            sc.SetFuturePosition(null,xBoard,yBoard);
                             sc.SetPresent(sc.GetFuture());
                             canDefend = !sc.checkForKing();
-                            if(canDefend){sc.SetPresent(prev_present); break;}
+                            if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                             sc.SetPresent(prev_present); 
+                            Chessman.SetCurrPieces(prev_pieces);
                         }
                     }
                 }
@@ -875,7 +927,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             case PieceType.Pawn:
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn){
+                if(!GameManager.instace.isFristMovePawn && i > 1){
                     break;
                 }
                 GameObject[,] prev_present = sc.GetPresent();
@@ -883,39 +935,57 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 if(playerType == PlayerType.Black){
                     if(sc.GetFuturePosition(xBoard-i,yBoard) == null){
                         sc.SetFuturePosition(this, xBoard-i,yBoard);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
-                    if(sc.GetFuturePosition(xBoard-i,yBoard)?.GetComponent<Chessman>().player != player){
+                    if(sc.GetFuturePosition(xBoard-i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                        if(sc.GetFuturePosition(xBoard - i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(xBoard - i,yBoard)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this, xBoard-i,yBoard);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
                 }else{
                     if(sc.GetFuturePosition(xBoard+i,yBoard) == null){
                         sc.SetFuturePosition(this, xBoard+i,yBoard);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
-                    if(sc.GetFuturePosition(xBoard+i,yBoard)?.GetComponent<Chessman>().player != player){
+                    if(sc.GetFuturePosition(xBoard+i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                        if(sc.GetFuturePosition(xBoard+i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(xBoard+i,yBoard)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this, xBoard+i,yBoard);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
                 }
             }
 
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn){
+                if(!GameManager.instace.isFristMovePawn && i > 1){
                     break;
                 }
                 GameObject[,] prev_present = sc.GetPresent();
@@ -923,32 +993,50 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 if(playerType == PlayerType.Black){
                     if(sc.GetFuturePosition(xBoard,yBoard-i) == null){
                         sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
-                    if(sc.GetFuturePosition(xBoard,yBoard-i)?.GetComponent<Chessman>().player != player){
+                    if(sc.GetFuturePosition(xBoard,yBoard-i)?.GetComponent<Chessman>().playerType != playerType){
+                        if(sc.GetFuturePosition(xBoard,yBoard-i)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(xBoard,yBoard-i)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        }
                         sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
                 }else{
                     if(sc.GetFuturePosition(xBoard,yBoard+i) == null){
                         sc.SetFuturePosition(this, xBoard,yBoard-i);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
-                    if(sc.GetFuturePosition(xBoard,yBoard+i)?.GetComponent<Chessman>().player != player){
+                    if(sc.GetFuturePosition(xBoard,yBoard+i)?.GetComponent<Chessman>().playerType != playerType){
+                        if(sc.GetFuturePosition(xBoard,yBoard+i)?.GetComponent<Chessman>().playerType != playerType){
+                            List<Chessman> p = Chessman.GetCurrPieces();
+                            p.Remove(sc.GetFuturePosition(xBoard,yBoard+i)?.GetComponent<Chessman>());
+                            Chessman.SetCurrPieces(p);
+                        } 
                         sc.SetFuturePosition(this, xBoard,yBoard+i);
+                        sc.SetFuturePosition(null,xBoard,yBoard);
                         sc.SetPresent(sc.GetFuture());
                         canDefend = !sc.checkForKing();
-                        if(canDefend){sc.SetPresent(prev_present); break;}
+                        if(canDefend){sc.SetPresent(prev_present);Chessman.SetCurrPieces(prev_pieces); break;}
                         sc.SetPresent(prev_present);
+                        Chessman.SetCurrPieces(prev_pieces);
                     }
                 }
             }
@@ -956,6 +1044,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             
         }
         sc.SetPresent(Absolute_past);
+        Chessman.SetCurrPieces(prev_pieces);
         return canDefend;
     }
 
@@ -969,31 +1058,39 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn){
+                if(!GameManager.instace.isFristMovePawn && i > 1){
                     break;
                 }
                 if(playerType == PlayerType.Black){
-                    if(sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().player != player){
-                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    if(sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; 
+                        if(isCheck) break;
+                        break;
                     }
                 }else{
-                    if(sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().player != player){
-                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    if(sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
+                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King;
+                        if(isCheck) break;
+                        break;
                     }
                 }
             }
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn){
+                if(!GameManager.instace.isFristMovePawn && i > 1){
                     break;
                 }
                 if(playerType == PlayerType.Black){
-                    if(sc.GetPosition(xBoard,yBoard-i)?.GetComponent<Chessman>().player != player){
-                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    if(sc.GetPosition(xBoard,yBoard-i)?.GetComponent<Chessman>().playerType != playerType){
+                        isCheck = sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().type == PieceType.King;
+                        if(isCheck) break;
+                        break;
                     }
                 }else{
-                    if(sc.GetPosition(xBoard,yBoard+i)?.GetComponent<Chessman>().player != player){
-                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; break;
+                    if(sc.GetPosition(xBoard,yBoard+i)?.GetComponent<Chessman>().playerType != playerType){
+                        isCheck = sc.GetPosition(xBoard+i,yBoard)?.GetComponent<Chessman>().type == PieceType.King; 
+                        if(isCheck) break;
+                        break;
                     }
                 }
             }
@@ -1014,9 +1111,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                     
                 }
 
-                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                 {
                     isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                    if(isCheck) break;
                 }    
             }
             break;
@@ -1035,9 +1133,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                     
                 }
 
-                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                 {
                     isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                    if(isCheck) break;
                 }    
             }
             break;
@@ -1050,9 +1149,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 if (sc.PositionOnBoard(x, y))
                 {
                     GameObject cp = sc.GetPosition(x, y);
-                    if (cp?.GetComponent<Chessman>().player != player)
+                    if (cp?.GetComponent<Chessman>().playerType != playerType)
                     {
                         isCheck = cp?.GetComponent<Chessman>().type == PieceType.King;
+                        if(isCheck) break;
                     }
                 }
             }
@@ -1072,9 +1172,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                     
                 }
 
-                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().player != player)
+                if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y)?.GetComponent<Chessman>().playerType != playerType)
                 {
                     isCheck = sc.GetPosition(x, y)?.GetComponent<Chessman>().type == PieceType.King;
+                    if(isCheck) break;
                 }    
             }
             break;
@@ -1087,9 +1188,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 if (sc.PositionOnBoard(x, y))
                 {
                     GameObject cp = sc.GetPosition(x, y);
-                    if (cp?.GetComponent<Chessman>().player != player)
+                    if (cp?.GetComponent<Chessman>().playerType != playerType)
                     {
                         isCheck = cp?.GetComponent<Chessman>().type == PieceType.King;
+                        if(isCheck) break;
                     }
                 }
             }
@@ -1098,7 +1200,23 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         return isCheck;
     }
 
-    
+    public static List<Chessman> GetCurrPieces(){
+        List<Chessman> data = new List<Chessman>();
+        foreach (var item in pieces)
+        {
+            data.Add(item);
+        }
+        return data;
+    }
+
+    public static void SetCurrPieces(List<Chessman> data){
+        pieces = new List<Chessman>();
+        foreach (var item in data)
+        {
+            pieces.Add(item);
+        }        
+    }
+
 
 
 }
