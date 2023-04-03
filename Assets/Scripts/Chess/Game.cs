@@ -75,26 +75,30 @@ public class Game : MonoBehaviour
     public List<Chessman> DestroyedObjects = new List<Chessman>();
     public List<Chessman> DestroyedObjectsOppo = new List<Chessman>();
 
-    public PlayerType MyType,OppoType;
+    public PlayerType MyType, OppoType;
 
     public Text WinnerTxT;
     public Text RestartTxT;
+
+    public GameObject NewBoard;
 
     public int MyStamina, OppoStamina;
 
     public Transform myPieces, OppoPieces;
     public GameObject DeadPieceImage;
 
-    
-    public void IncreaseStamina(){
+
+    public void IncreaseStamina()
+    {
         MyStamina++;
-        MyStamina = Mathf.Clamp(MyStamina,0,10);
-        photonView.RPC("IncreaseStaminaRPC",RpcTarget.Others);
+        MyStamina = Mathf.Clamp(MyStamina, 0, 10);
+        photonView.RPC("IncreaseStaminaRPC", RpcTarget.Others);
     }
     [PunRPC]
-    public void IncreaseStaminaRPC(){
+    public void IncreaseStaminaRPC()
+    {
         OppoStamina++;
-        OppoStamina = Mathf.Clamp(OppoStamina,0,10);
+        OppoStamina = Mathf.Clamp(OppoStamina, 0, 10);
     }
 
     public static Game Get()
@@ -120,17 +124,31 @@ public class Game : MonoBehaviour
         //PhotonNetwork.AutomaticallySyncScene = true;
         PlayerStrengths.Add(0);
         PlayerStrengths.Add(0);
-        for (int i = 0; i < plates.GetLength(0); i++)
+
+        // Get board width and height
+        Renderer boardRenderer = board.GetComponent<Renderer>();
+        float boardWidth = boardRenderer.bounds.size.x;
+        float boardHeight = boardRenderer.bounds.size.y;
+
+        // Calculate plate dimensions
+        int plateRows = plates.GetLength(0);
+        int plateCols = plates.GetLength(1);
+        float plateWidth = boardWidth / plateCols;
+        float plateHeight = boardHeight / plateRows;
+
+        for (int i = 0; i < plateRows; i++)
         {
-            for (int j = 0; j < plates.GetLength(1); j++)
+            for (int j = 0; j < plateCols; j++)
             {
-                plates[i, j] = Instantiate(ColorPlate, new Vector3((i * 0.66f) - 2.3f, (j * 0.66f) - 2.3f, -0.1f), Quaternion.identity);
+                float plateX = (i * plateWidth) - (boardWidth / 2) + (plateWidth / 2) + board.transform.position.x;
+                float plateY = (j * plateHeight) - (boardHeight / 2) + (plateHeight / 2) + board.transform.position.y;
+                plates[i, j] = Instantiate(ColorPlate, new Vector3(plateX, plateY, -0.1f), Quaternion.identity);
                 plates[i, j].transform.SetParent(board.transform);
-                plates[i, j].transform.localScale = Vector3.one + new Vector3(0.15f, 0.15f, 0.1f);//new Vector3(3.15f,3.15f,1f);
+                plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
                 plates[i, j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
             }
-
         }
+
 
         isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
 
@@ -150,11 +168,14 @@ public class Game : MonoBehaviour
         photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
         if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+
+            //Camera Settings
             Camera.main.transform.Rotate(Vector3.forward, 180f);
-            foreach (Transform item in Board.transform)
-            {
-                item.Rotate(Vector3.forward, 180f);
-            }
+            NewBoard.transform.Rotate(Vector3.forward, 180f);
+            // foreach (Transform item in Board.transform)
+            // {
+            //     item.Rotate(Vector3.forward, 180f);
+            // }
         }
         SetPVPMode(false);
 
@@ -385,51 +406,56 @@ public class Game : MonoBehaviour
         return true;
     }
 
-    public void SetPresent(GameObject[,] data){
-        positions = new GameObject[data.GetLength(0),data.GetLength(1)];
+    public void SetPresent(GameObject[,] data)
+    {
+        positions = new GameObject[data.GetLength(0), data.GetLength(1)];
         for (int i = 0; i < data.GetLength(0); i++)
         {
             for (int j = 0; j < data.GetLength(1); j++)
             {
-                positions[i,j] = data[i,j];
+                positions[i, j] = data[i, j];
             }
         }
     }
 
-    public GameObject[,] GetPresent(){
+    public GameObject[,] GetPresent()
+    {
         GameObject[,] data = new GameObject[positions.GetLength(0), positions.GetLength(1)];
         for (int i = 0; i < positions.GetLength(0); i++)
         {
             for (int j = 0; j < positions.GetLength(1); j++)
             {
-                data[i,j] = positions[i,j];
+                data[i, j] = positions[i, j];
             }
         }
         return data;
     }
 
-    public GameObject[,] GetFuture(){
+    public GameObject[,] GetFuture()
+    {
         GameObject[,] data = new GameObject[Fpositions.GetLength(0), Fpositions.GetLength(1)];
         for (int i = 0; i < Fpositions.GetLength(0); i++)
         {
             for (int j = 0; j < Fpositions.GetLength(1); j++)
             {
-                data[i,j] = Fpositions[i,j];
+                data[i, j] = Fpositions[i, j];
             }
         }
         return data;
     }
-    public void SetFuture(GameObject[,] data){
-        Fpositions = new GameObject[data.GetLength(0),data.GetLength(1)];
+    public void SetFuture(GameObject[,] data)
+    {
+        Fpositions = new GameObject[data.GetLength(0), data.GetLength(1)];
         for (int i = 0; i < data.GetLength(0); i++)
         {
             for (int j = 0; j < data.GetLength(1); j++)
             {
-                Fpositions[i,j] = data[i,j];
+                Fpositions[i, j] = data[i, j];
             }
         }
     }
-    public void SetFuturePosition(Chessman obj, int x, int y){
+    public void SetFuturePosition(Chessman obj, int x, int y)
+    {
         Fpositions[x, y] = obj?.gameObject;
     }
     public void SetFuturePositionsEmpty(int x, int y)
@@ -447,7 +473,7 @@ public class Game : MonoBehaviour
     }
 
 
-    
+
 
     public string GetCurrentPlayer()
     {
@@ -477,30 +503,34 @@ public class Game : MonoBehaviour
             currentPlayer = "white";
         }
 
-        if(isMyTurn(currentPlayer)){
+        if (isMyTurn(currentPlayer))
+        {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
-            Debug.LogError("Checking for Check ================> "+IsKinginCheck);
-            if(IsKinginCheck)
-            Debug.LogError("Checkmate ================> "+IsCheckmate);
-            if(IsCheckmate || IsKinginCheck){
+            Debug.LogError("Checking for Check ================> " + IsKinginCheck);
+            if (IsKinginCheck)
+                Debug.LogError("Checkmate ================> " + IsCheckmate);
+            if (IsCheckmate || IsKinginCheck)
+            {
                 if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
-                else    
+                else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
-            }else{
+            }
+            else
+            {
                 photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
             }
         }
 
-        
-       
+
+
     }
     //Allow Moveplate display only for local player
     public void Update()
@@ -546,10 +576,10 @@ public class Game : MonoBehaviour
     [PunRPC]
     void RematchRejected(Player HeWhoGoes)
     {
-            RematchYesNo.SetActive(false);
-            RematchTxt.text = "Rematch request rejected.";
-            StartCoroutine("LeaveRoom");
-        
+        RematchYesNo.SetActive(false);
+        RematchTxt.text = "Rematch request rejected.";
+        StartCoroutine("LeaveRoom");
+
     }
 
     IEnumerator LeaveRoom()
@@ -743,7 +773,9 @@ public class Game : MonoBehaviour
             }
 
             IsGameComplete = won;
-        }else{
+        }
+        else
+        {
             DestroyedObjectsOppo.Add(man);
         }
 
@@ -752,28 +784,30 @@ public class Game : MonoBehaviour
 
     }
 
-    public void UpdateDeadPieces(){
+    public void UpdateDeadPieces()
+    {
         foreach (Transform item in myPieces)
         {
             Destroy(item.gameObject);
         }
         foreach (Chessman item in DestroyedObjects)
         {
-            GameObject o = Instantiate(DeadPieceImage,myPieces);
+            GameObject o = Instantiate(DeadPieceImage, myPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
-        photonView.RPC("UpdateDeadPiecesRPC",RpcTarget.Others);
+        photonView.RPC("UpdateDeadPiecesRPC", RpcTarget.Others);
     }
 
     [PunRPC]
-    public void UpdateDeadPiecesRPC(){
+    public void UpdateDeadPiecesRPC()
+    {
         foreach (Transform item in OppoPieces)
         {
             Destroy(item.gameObject);
         }
         foreach (Chessman item in DestroyedObjectsOppo)
         {
-            GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            GameObject o = Instantiate(DeadPieceImage, OppoPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
     }
@@ -932,19 +966,21 @@ public class Game : MonoBehaviour
             StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
 
-        if(isMyTurn(currentPlayer)){
+        if (isMyTurn(currentPlayer))
+        {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
-            Debug.LogError("Checking for Check ================> "+IsKinginCheck);
-            if(IsKinginCheck)
-            Debug.LogError("Checkmate ================> "+IsCheckmate);
-            if(IsCheckmate){
+            Debug.LogError("Checking for Check ================> " + IsKinginCheck);
+            if (IsKinginCheck)
+                Debug.LogError("Checkmate ================> " + IsCheckmate);
+            if (IsCheckmate)
+            {
                 if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
-                else    
+                else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 0);
@@ -954,27 +990,29 @@ public class Game : MonoBehaviour
     }
 
 
-    public bool checkForKing(){
-        
+    public bool checkForKing()
+    {
+
         List<Chessman> OppoPieces = Chessman.GetPiecesOfPlayer(OppoType);
         bool isCheck = false;
         foreach (var item in OppoPieces)
         {
             isCheck = item.IsCheckforKing();
-            if(isCheck){ Debug.LogError("Check by Opponent's "+item.type); break;}
+            if (isCheck) { Debug.LogError("Check by Opponent's " + item.type); break; }
         }
         return isCheck;
     }
 
-    public bool IsCheckmateForKing(){
+    public bool IsCheckmateForKing()
+    {
         bool KingLives = true;
         List<Chessman> pieces = Chessman.GetPiecesOfPlayer(MyType);
-        List<PieceType> types_lis = new List<PieceType>(){PieceType.King,PieceType.Queen,PieceType.Rook,PieceType.Bishop,PieceType.Knight,PieceType.Pawn};                
+        List<PieceType> types_lis = new List<PieceType>() { PieceType.King, PieceType.Queen, PieceType.Rook, PieceType.Bishop, PieceType.Knight, PieceType.Pawn };
         foreach (var Ptype in types_lis)
         {
-            Chessman piece = pieces.Find((t)=>t.type == Ptype);
+            Chessman piece = pieces.Find((t) => t.type == Ptype);
             KingLives = piece.canDefendKing();
-            if(KingLives) {Debug.LogError("King Defended by "+piece.type); break;}
+            if (KingLives) { Debug.LogError("King Defended by " + piece.type); break; }
         }
         return !KingLives;
     }
@@ -1010,7 +1048,7 @@ public class Game : MonoBehaviour
                 {
                     PVPManager.manager.moveChoiceConfirmation.SetActive(false);
                 }
-                PVPManager.manager.TimerObject.SetActive(false); 
+                PVPManager.manager.TimerObject.SetActive(false);
             }
         }
 
