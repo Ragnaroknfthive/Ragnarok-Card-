@@ -232,7 +232,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public void PetAttack()
     {
-        if (PVPManager.Get().IsPetTurn && !PetAlreadyAttacked)// && Game.Get().turn > 2)
+        if (PVPManager.Get().IsPetTurn && !PetAlreadyAttacked && Game.Get().turn > 2)
         {
             StartCoroutine(StartPetAttack());
 
