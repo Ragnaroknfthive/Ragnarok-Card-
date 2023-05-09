@@ -141,6 +141,7 @@ public class PVPManager : MonoBehaviour
 
     public int myFoldAmount = 4;
     public bool StartHandTurn;
+    public bool EndTurnInvokedByClick = false;
     private void Awake()
     {
         manager = this;
@@ -3195,7 +3196,7 @@ public class PVPManager : MonoBehaviour
         EndTurnTimer = 30;
         StopCoroutine(UpdateEndTurnTimer());
         LocationChoices.SetActive(false);
-        if (Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
+        if ( Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack)
         {
 
             if (Game.Get().lastAction == PlayerAction.attack && Game.Get().turn >= 2)
@@ -3207,7 +3208,6 @@ public class PVPManager : MonoBehaviour
             UpdateRangePoint(rangeCounter);
             if (isAttackViaSpeedPoints)
             {
-
                 p1AttackFor.text = (Game.Get().lastAction == PlayerAction.counterAttack) ? "Counter attack for " + (int)speedAttackSlider.value
                     : "Attack For " + (int)speedAttackSlider.value;
                 photonView.RPC("UpdateAttackForText", RpcTarget.Others, (int)speedAttackSlider.value, Game.Get().lastAction == PlayerAction.counterAttack, false);
@@ -3216,6 +3216,7 @@ public class PVPManager : MonoBehaviour
             }
             else
             {
+                Debug.LogError("ELSE PART***");
                 p1AttackFor.text = (Game.Get().lastAction == PlayerAction.counterAttack) ? "Counter attack for " + MyLastAttackAmount
                     : "Attack For " + MyLastAttackAmount ;
                 UpdateBetForPlayer(MyLastAttackAmount);
