@@ -172,17 +172,22 @@ public class AttackSlider : MonoBehaviour
         ExtraSpeedAmt = ans == "Use" ? MathF.Min(PVPManager.Get().p1Speed * 10f, (_slider.value * 2)) : 0;
         if (ExtraSpeedAmt <= 0)
         {
-            SpeedFill.anchorMax = Vector2.zero;
-            _slider.fillRect = AttackFill;
+
+           // SpeedFill.anchorMax =  Vector2.zero;
+          //  _slider.fillRect = AttackFill;
+
             SpeedCanceled = true;
             UsedSpeedButton.SetActive(false);
         }
         else
         {
-            UsedSpeedButton.SetActive(true);
+          //  UsedSpeedButton.SetActive(true);
             UsedSpeedTx.text = ExtraSpeedAmt + " Speed \nUsed";
-            SpeedFill.anchorMax = new Vector2(ExtraSpeedAmt / (_slider.maxValue / 2), 1f);
+          //  SpeedFill.anchorMax = new Vector2( ExtraSpeedAmt / (_slider.maxValue / 2), 1f);
+
             SpeedFixed = true;
+            _slider.value = ExtraSpeedAmt / 2;
+            btn_SliderComplete();
         }
 
         UseSpeedObj.SetActive(false);
@@ -219,30 +224,37 @@ public class AttackSlider : MonoBehaviour
             if (_slider.value <= speedVal)
             {
                 //_slider.value = _slider.value;
-                _slider.fillRect = SpeedFill;
-                AttackFill.anchorMax = Vector2.zero;
+                //  _slider.fillRect = SpeedFill;
+                //  AttackFill.anchorMax = Vector2.zero;
+
+                int max = Mathf.RoundToInt(MathF.Min(PVPManager.Get().p1Speed * 10f,(_slider.value * 2)));
+
                 ExtraSpeedAmt = Mathf.RoundToInt((_slider.value * 2));
+                if(ExtraSpeedAmt > max) 
+                {
+                    ExtraSpeedAmt = max;
+                }
                 speedTx.text = "Use " + ExtraSpeedAmt + "\nFree Speed?";
                 UseSpeedObj.SetActive(true);
             }
             else
             {
-                _slider.fillRect = AttackFill;
+              //  _slider.fillRect = AttackFill;
             }
         }
         else
         {
             if (SpeedFixed)
             {
-                _slider.value = Mathf.Clamp(_slider.value, ExtraSpeedAmt, (_slider.maxValue / 2));
+              //  _slider.value = Mathf.Clamp(_slider.value, ExtraSpeedAmt, (_slider.maxValue / 2));
                 UsedSpeedButton.SetActive(true);
                 UsedSpeedTx.text = ExtraSpeedAmt + " Speed \nUsed";
             }
             else
             {
-                SpeedFill.anchorMax = Vector2.zero;
+               // SpeedFill.anchorMax = Vector2.zero;
             }
-            _slider.fillRect = AttackFill;
+           // _slider.fillRect = AttackFill;
             UseSpeedObj.SetActive(false);
         }
 
@@ -251,7 +263,7 @@ public class AttackSlider : MonoBehaviour
             ExtraSpeedAmt = speedVal;
             speedTx.text = "Use " + ExtraSpeedAmt + "\nFree Speed?";
             UseSpeedObj.SetActive(true);
-            SpeedFill.anchorMax = new Vector2(speedVal / (_slider.maxValue / 2), 1f);
+           // SpeedFill.anchorMax = new Vector2(speedVal / (_slider.maxValue / 2), 1f);
         }
 
         _attackValueText.text = ((int)(_slider.value * 2)).ToString();
