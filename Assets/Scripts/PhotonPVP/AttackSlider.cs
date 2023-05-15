@@ -76,8 +76,7 @@ public class AttackSlider : MonoBehaviour
         //_slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack? Game.Get().BetAmount * 2:Game.Get().BetAmount;
         difference = (_slider.maxValue / 2) - (_slider.minValue / 2);
         _slider.minValue = Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack ? (int)(PVPManager.manager.LastAtkAmt / 2) : 1;
-        //_slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) + 1 : _slider.minValue;
-        _slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2))  : _slider.minValue;
+        _slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) + 1 : _slider.minValue;
         _slider.value = _slider.minValue;
         _attackValueText.text = (_slider.minValue * 2).ToString();
         SpeedCanceled = false;
@@ -173,8 +172,10 @@ public class AttackSlider : MonoBehaviour
         ExtraSpeedAmt = ans == "Use" ? MathF.Min(PVPManager.Get().p1Speed * 10f, (_slider.value * 2)) : 0;
         if (ExtraSpeedAmt <= 0)
         {
+
            // SpeedFill.anchorMax =  Vector2.zero;
           //  _slider.fillRect = AttackFill;
+
             SpeedCanceled = true;
             UsedSpeedButton.SetActive(false);
         }
@@ -183,6 +184,7 @@ public class AttackSlider : MonoBehaviour
           //  UsedSpeedButton.SetActive(true);
             UsedSpeedTx.text = ExtraSpeedAmt + " Speed \nUsed";
           //  SpeedFill.anchorMax = new Vector2( ExtraSpeedAmt / (_slider.maxValue / 2), 1f);
+
             SpeedFixed = true;
             _slider.value = ExtraSpeedAmt / 2;
             btn_SliderComplete();
@@ -191,10 +193,7 @@ public class AttackSlider : MonoBehaviour
         UseSpeedObj.SetActive(false);
     }
 
-    public void SliderValue()
-    {
-        Debug.Log("val : " + _slider.value);
-    }
+
 
     public void btn_SliderComplete()
     {
@@ -211,7 +210,7 @@ public class AttackSlider : MonoBehaviour
         {
             PokerButtonManager.instance.Check();
         }
-        Debug.Log("SLIDER VAL " + _slider.value);
+
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
     }

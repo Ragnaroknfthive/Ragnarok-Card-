@@ -62,7 +62,7 @@ public class PokerButtonManager : MonoBehaviour
             //  Debug.LogError("Es ist not okay........................");
             PVPManager.Get().AttackChoices.SetActive(true);
             PVPManager.Get().speedAttackChoices.SetActive(false);
-            Debug.LogError("FALSE");
+
 
             // PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
             // PVPManager.manager.UpdateBatText(0);
@@ -73,7 +73,6 @@ public class PokerButtonManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TRUE");
             //if(PVPManager.manager.P1HealthBar.value >= Game.Get().BetAmount)
             //{
             //    if(PVPManager.manager.P1HealthBar.value == Game.Get().BetAmount)
@@ -108,7 +107,6 @@ public class PokerButtonManager : MonoBehaviour
                 // Debug.LogError(Game.Get().lastAction);
                 if (Game.Get().lastAction == PlayerAction.counterAttack)
                 {
-                   // PVPManager.manager.UpdateBetForPlayer((PVPManager.manager.LastAtkAmt + PVPManager.manager.MyLastAttackAmount));
                     PVPManager.manager.UpdateBetForPlayer((PVPManager.manager.LastAtkAmt - PVPManager.manager.MyLastAttackAmount));
                     PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.LastAtkAmt - PVPManager.manager.MyLastAttackAmount);
                 }
