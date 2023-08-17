@@ -6,9 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Scenes/MainMenu.unity
-    guid: 558ba89228d7a3a4aacdb96404b60230
+    path: Assets/_Scenes/Login-Scene.unity
+    guid: 14a826462f6c55f45aff2627f6b6409b
   - enabled: 1
-    path: Assets/_Scenes/Game.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/_Scenes/HiveLogin.unity
+    guid: 863529c0a3549c8449837ebd6eb5680e
+  - enabled: 1
+    path: Assets/_Scenes/LoadingScreen.unity
+    guid: bdb96219d667895469355e82c2a50498
+  - enabled: 1
+    path: Assets/_Scenes/NewMainMenu.unity
+    guid: 8272e928991d07b4bad8e233bc8a089f
+  - enabled: 1
+    path: Assets/_Scenes/MatchScene.unity
+    guid: 728a61a1a23ee194c97438e3b531f30e
+  - enabled: 1
+    path: Assets/_Scenes/OLD_SCENES/BeforeMerge/Game.unity
+    guid: 1ff6d5232b2e9de4ebb5b35ade78e511
   m_configObjects: {}

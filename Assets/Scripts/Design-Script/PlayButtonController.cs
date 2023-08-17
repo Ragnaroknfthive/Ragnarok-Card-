@@ -7,19 +7,25 @@ public class PlayButtonController : MonoBehaviourPunCallbacks
 {
     public Button playButton;
     public Text statusText;
-
+    PhotonCallback photonCallback;
     private void Start()
     {
         playButton.onClick.AddListener(OnPlayButtonClick);
         playButton.interactable = true;
         PhotonNetwork.AddCallbackTarget(this);
+        photonCallback = FindObjectOfType<PhotonCallback>();
+        photonCallback.playButtonController = this;
+        playButton.onClick.AddListener(QuickMatchCall);
     }
 
     private void OnDestroy()
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
-
+    public void QuickMatchCall() 
+    {
+        photonCallback.QuickMatch();
+    }
     private void OnPlayButtonClick()
     {
         statusText.text = "Finding match...";

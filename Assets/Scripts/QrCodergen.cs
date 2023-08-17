@@ -21,7 +21,8 @@ namespace generator
     {
         private string m_auth_key;
         // private string m_auth_host = "wss://hive-auth.arcange.eu"; // HAS server we are connecting to
-        public InputField txtUsername;
+        public TMPro.TMP_InputField txtUsername;
+        //public InputField txtUsername;
         public RawImage picQRCode;
         public Button connectButton;
         public Text errorMessage;
@@ -45,8 +46,6 @@ namespace generator
             ClientWebSocket socket = await ConnectionManager.Instance.Connect(m_auth_host);
 
             connectButton.onClick.AddListener(OnConnectButtonClick);
-
-
 
         }
 

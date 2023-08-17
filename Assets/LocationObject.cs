@@ -32,6 +32,9 @@ public class LocationObject : MonoBehaviour
     }
 
     public static LocationObject GetLocation(int i){
+     objects = PVPManager.manager.locationObjects;
+            Debug.LogError("object set");
+
         foreach (var item in objects)
         {
             if(item.id == i)

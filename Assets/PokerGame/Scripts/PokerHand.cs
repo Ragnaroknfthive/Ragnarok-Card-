@@ -699,7 +699,7 @@ public class PokerHand
         cards = cards.OrderBy(x => x.cardValue).ToList();
         this.highCard = new List<Card>();
         this.highCard.Add(cards.ElementAt(4));
-        Debug.Log(this.highCard.ElementAt(0));
+       // Debug.Log(this.highCard.ElementAt(0));
 
         if (isFlush(cards) && isStraight(cards) && CheckHighCardConditionForRoyalFlush(cards.ElementAt(4))) //this.highCard.ElementAt(0).cardValue == CardValue.ace)
         {

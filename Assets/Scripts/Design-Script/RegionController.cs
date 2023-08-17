@@ -73,6 +73,29 @@ public class RegionController : MonoBehaviour
             UpdateDropdownText();
         }
     }
+    public static  int GetIndexOfRegion(string _region) 
+    {
+        int index = -1;
+       _region= _region.Remove(_region.Length-2,2);
+        switch(_region)
+        {
+            case "asia":index = 0; break;
+            case "au":index=1; break;
+            case "cae":index=2; break;
+            case "eu": index=3;break;
+            case "in":index=4; break;
+            case "jp":index=5; break;
+            case "ru":index=6; break;
+            case "sa":index=7; break;
+            case "kr":index=8; break;
+            case "us":index=9; break;
+            case "usw":index=10; break;
+            case "rue":index=11; break;
+            case "za":index=12; break;
+            case "tr":index=13; break;
+        }
+        return index;
+    }
 
     public void UpdateDropdownText()
     {

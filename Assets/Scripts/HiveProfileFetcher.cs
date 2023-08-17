@@ -10,14 +10,14 @@ public class HiveProfileFetcher : MonoBehaviour
     {
         string apiUrl = "https://api.hive.blog";
         string postData = "{\"jsonrpc\":\"2.0\", \"method\":\"condenser_api.get_accounts\", \"params\":[[\"" + account + "\"]], \"id\":1}";
-
+     
         using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
         {
             byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(postData);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-
+           
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.Success)

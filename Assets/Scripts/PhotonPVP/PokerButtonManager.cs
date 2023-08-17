@@ -386,10 +386,9 @@ public class PokerButtonManager : MonoBehaviour
         //// PVPManager.manager.StartTimer();
         PVPManager.manager.isNormalBat = true;
         Game.Get().UpdateLastAction(PlayerAction.engage);
+        PVPManager.manager.selectChoice(UnityEngine.Random.Range(1,5));
 
-        PVPManager.manager.OnClickEndTurn();
-
-
+        //PVPManager.manager.OnClickEndTurn();
         // PVPManager.Get().AttackChoices.SetActive(true);
     }
     public void SetAllButtonsOff()

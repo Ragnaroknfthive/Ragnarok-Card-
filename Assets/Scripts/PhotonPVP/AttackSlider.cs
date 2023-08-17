@@ -76,7 +76,8 @@ public class AttackSlider : MonoBehaviour
         //_slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack? Game.Get().BetAmount * 2:Game.Get().BetAmount;
         difference = (_slider.maxValue / 2) - (_slider.minValue / 2);
         _slider.minValue = Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack ? (int)(PVPManager.manager.LastAtkAmt / 2) : 1;
-        _slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) + 1 : _slider.minValue;
+        //_slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) + 1 : _slider.minValue;
+        _slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) : _slider.minValue;
         _slider.value = _slider.minValue;
         _attackValueText.text = (_slider.minValue * 2).ToString();
         SpeedCanceled = false;
@@ -227,7 +228,7 @@ public class AttackSlider : MonoBehaviour
                 //  _slider.fillRect = SpeedFill;
                 //  AttackFill.anchorMax = Vector2.zero;
 
-                int max = Mathf.RoundToInt(MathF.Min(PVPManager.Get().p1Speed * 10f,(_slider.value * 2)));
+                int max = Mathf.RoundToInt(MathF.Min(PVPManager.Get().p1Speed * 10f,(_slider.maxValue * 2)));
 
                 ExtraSpeedAmt = Mathf.RoundToInt((_slider.value * 2));
                 if(ExtraSpeedAmt > max) 

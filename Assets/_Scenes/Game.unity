@@ -9354,6 +9354,7 @@ MonoBehaviour:
   OppoType: 0
   WinnerTxT: {fileID: 739317124}
   RestartTxT: {fileID: 1575290348}
+  NewBoard: {fileID: 0}
   MyStamina: 0
   OppoStamina: 0
   myPieces: {fileID: 82705931}
@@ -20732,6 +20733,8 @@ MonoBehaviour:
   p2Weakness: {fileID: 431013246}
   myFoldAmount: 4
   StartHandTurn: 0
+  EndTurnInvokedByClick: 0
+  locationObjects: []
   selectedMove: {fileID: 0}
   myPiece: 0
   opponentpiece: 0

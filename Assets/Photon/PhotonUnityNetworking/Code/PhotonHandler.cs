@@ -76,6 +76,9 @@ namespace Photon.Pun
             if (instance == null || ReferenceEquals(this, instance))
             {
                 instance = this;
+                DontDestroyOnLoad(this.gameObject);
+
+               // instance = this;
                 base.Awake();
             }
             else
@@ -163,8 +166,6 @@ namespace Photon.Pun
                 this.Dispatch();
             }
             #endif
-
-
             int currentMsSinceStart = (int)(Time.realtimeSinceStartup * 1000); // avoiding Environment.TickCount, which could be negative on long-running platforms
             if (PhotonNetwork.IsMessageQueueRunning && currentMsSinceStart > this.nextSendTickCountOnSerialize)
             {

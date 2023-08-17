@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,28 +21,36 @@ public class MenuUI : MonoBehaviour
     public Button PlayBtn;
 
     public GameObject Logo, Splash;
-    public TMP_Dropdown dropdown;
+  //  public TMP_Dropdown dropdown;
+    public Dropdown dropdown;
     public Text regionTXT;
     public List<string> regions = new List<string>() { "Asia", "Australia", "Canada, East", "Europe", "India", "Japan", "Russia", "South America", "South Korea", "USA, East", "USA, West", "Russia, East", "South Africa", "Turkey" };
     static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
-
+    public List<MenuOption> menuOptions = new List<MenuOption>();
+    public Sprite deckCardHoverSprite,deckHoverSprite;
 
     private void Awake()
     {
         mui = this;
-        PlayBtn.GetComponentInChildren<Text>().text = "Connecting...";
+       // if(PlayBtn)
+       // PlayBtn.GetComponentInChildren<Text>().text = "Connecting...";
+        if(regionTXT)
         regionTXT.text = "Connecting to...";
+        if(PlayBtn)
         PlayBtn.interactable = false;
+        if(dropdown)
         dropdown.interactable = false;
         InitOptions();
     }
 
     public void InitOptions()
     {
-        List<TMP_Dropdown.OptionData> optionDatas = new List<TMP_Dropdown.OptionData>();
+        if(!dropdown) return;
+
+        List<Dropdown.OptionData> optionDatas = new List<Dropdown.OptionData>();
         foreach (var item in regions)
         {
-            optionDatas.Add(new TMP_Dropdown.OptionData(item));
+            optionDatas.Add(new Dropdown.OptionData(item));
         }
         dropdown.options = optionDatas;
         dropdown.value = PlayerPrefs.GetInt("pun_region", 0);
@@ -99,11 +107,16 @@ public class MenuUI : MonoBehaviour
             case 13: region = "tr"; break;
 
         }
-        PlayBtn.GetComponentInChildren<Text>().text = "Connecting...";
+       // if(PlayBtn)
+       // PlayBtn.GetComponentInChildren<Text>().text = "Connecting...";
+        if(regionTXT)
         regionTXT.text = "Connecting to...";
+        if(PlayBtn)
         PlayBtn.interactable = false;
+        if(dropdown)
         dropdown.interactable = false;
 
+        if(dropdown)
         StartCoroutine(ConnnectToNewRegion(region));
 
 
@@ -125,6 +138,12 @@ public class MenuUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(menuOptions.Count > 0) 
+        {
+            ShowHomeScreen();
+        }
+        if(!Logo) return;
+
         LeanTween.alphaCanvas(Logo.GetComponent<CanvasGroup>(), 1f, 0.7f).setDelay(0.3f).setOnComplete(() =>
         {
             LeanTween.alphaCanvas(Logo.GetComponent<CanvasGroup>(), 0f, 0.3f).setDelay(0.7f);
@@ -136,26 +155,34 @@ public class MenuUI : MonoBehaviour
     public void HideMsg()
     {
         PhotonNetwork.LeaveRoom();
+       // PhotonNetwork.Disconnect();
         ErrorDisp.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //if(!PhotonNetwork.IsConnected) 
+        //{
+        //    PlayBtn.GetComponentInChildren<Text>().text = "Connecting...";
+        //    regionTXT.text = "Connecting to...";
+        //    PlayBtn.interactable = false;
+        //    dropdown.interactable = false;
+        //}
 
     }
 
     public void ShowMsg(string msg, bool Cancellable = false, bool AutoDistruct = false)
     {
-        MsgTxt.text = msg;
-        ErrorDisp.SetActive(true);
+        //MsgTxt.text = msg;
+        //ErrorDisp.SetActive(true);
 
-        if (ErrorDisp.GetComponentInChildren<Button>() != null)
-            ErrorDisp.GetComponentInChildren<Button>().gameObject.SetActive(Cancellable);
-        if (AutoDistruct)
-        {
-            StartCoroutine(Hide());
-        }
+        //if(ErrorDisp.GetComponentInChildren<Button>() != null)
+        //    ErrorDisp.GetComponentInChildren<Button>().gameObject.SetActive(Cancellable);
+        //if(AutoDistruct)
+        //{
+        //    StartCoroutine(Hide());
+        //}
     }
 
     IEnumerator Hide()
@@ -168,9 +195,63 @@ public class MenuUI : MonoBehaviour
 
     public void UpdatePlayButtonText()
     {
+        if(!PlayBtn) return;
+
         dropdown.interactable = true;
-        PlayBtn.GetComponentInChildren<Text>().text = "PLAY";
+       // PlayBtn.GetComponentInChildren<Text>().text = "PLAY";
         regionTXT.text = "Connected to";
         PlayBtn.interactable = true;
     }
+    public void Quit() 
+    {
+        Application.Quit();
+    }
+    public void ShowHomeScreen()
+    {
+        OpenMenuOption(MenuOptionType.Home);
+    }
+    public void ShowPlayScreen()
+    {
+        OpenMenuOption(MenuOptionType.Play);
+    }
+    public void ShowPRofileScreen()
+    {
+        OpenMenuOption(MenuOptionType.Profile);
+    }
+    public void ShowDeckScreen()
+    {
+        OpenMenuOption(MenuOptionType.Decks);
+    }
+    public void ShowShopScreen()
+    {
+        OpenMenuOption(MenuOptionType.Shop);
+    }
+    public void OpenMenuOption(MenuOptionType optionType)
+    {
+        foreach(MenuOption item in menuOptions)
+        {
+            if(item.optionType == optionType)
+            {
+                item.optionScreen.SetActive(true);
+
+            }
+            else
+            {
+                item.optionScreen.SetActive(false);
+                //  item.optionButton.interactable = true;
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public enum MenuOptionType { Home,Play,Profile, Decks, Shop }
+[System.Serializable]
+public class MenuOption
+{
+    public MenuOptionType optionType;
+    public GameObject optionScreen;
+    public Button optionButton;
+
+    public bool ShowAsDefault = false;
 }

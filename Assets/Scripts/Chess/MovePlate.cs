@@ -13,8 +13,16 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     int matrixX;
     int matrixY;
     private PhotonView photonView;
-
+    
     public bool attack = false;
+    [SerializeField]
+    Sprite selectedMove;
+    [SerializeField]
+    Sprite attackSprite;
+    [SerializeField]
+    SpriteRenderer spriteRenderer;
+    Sprite NormalSprite;
+
     public PieceType GetPieceTypeOnThisPlate()
     {
         PieceType type = PieceType.Pawn;
@@ -28,18 +36,32 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     }
     public void Start()
     {
+        NormalSprite = spriteRenderer.sprite;
         if (attack)
         {
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            gameObject.GetComponent<SpriteRenderer>().sprite = attackSprite;
+           // gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
         photonView = GetComponent<PhotonView>();
     }
-
+    public void SetNormalSprite() 
+    {
+        spriteRenderer.sprite = NormalSprite;
+    }
+    public void SetSelectedSprite()
+    {
+        spriteRenderer.sprite = selectedMove;
+    }
     public void OnMouseUp()
     {
         if (Game.Get().isLocalPlayerTurn)
         {
             PVPManager.manager.moveChoiceConfirmation.gameObject.SetActive(true);
+            SetSelectedSprite();//Update selected move sprite
+            if(PVPManager.manager.selectedMove) 
+            {
+                PVPManager.manager.selectedMove.SetNormalSprite();
+            }
             PVPManager.manager.selectedMove = GetComponent<MovePlate>();
         }
         //if(Game.Get().isLocalPlayerTurn)

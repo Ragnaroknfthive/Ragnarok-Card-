@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 744378045863390006}
   - component: {fileID: 744378045863390001}
   - component: {fileID: 518307371257342753}
-  - component: {fileID: 1664206046956843815}
   - component: {fileID: 7722872110479007392}
   - component: {fileID: 6938942083774677379}
+  - component: {fileID: 9075611836122627595}
   m_Layer: 0
   m_Name: ChessPiece
   m_TagString: Untagged
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: -278127945
   m_SortingLayer: 1
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: 7548617a6fbab3a4983a41fd38920edb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b6bb6bd8837e91c419c5f4cd26dc8818, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -111,75 +111,31 @@ MonoBehaviour:
   xBoard: -1
   yBoard: -1
   player: 
-  black_queen: {fileID: 21300000, guid: ee7384137e324fa459a73a71472f4ddf, type: 3}
-  black_knight: {fileID: 21300000, guid: d238f44a7c097814fa5dc6004a451c79, type: 3}
-  black_bishop: {fileID: 21300000, guid: 7d46d4f095f7bac44acf92b6ffa2bf9c, type: 3}
-  black_king: {fileID: 21300000, guid: e53eee37ef1b7a045a78f93b3386336e, type: 3}
-  black_rook: {fileID: 21300000, guid: 17a745f1855cb6344ae6cf7072d01a87, type: 3}
-  black_pawn: {fileID: 21300000, guid: 98b0b625b1561714588f75d6aee43cb2, type: 3}
-  white_queen: {fileID: 21300000, guid: 766511cd03c0f3446a6ca7a7a5ff1622, type: 3}
-  white_knight: {fileID: 21300000, guid: 1dcd0263d23d58043b6c9111b873a44e, type: 3}
-  white_bishop: {fileID: 21300000, guid: 841c9bde994e5f34f905ae62061a9f21, type: 3}
-  white_king: {fileID: 21300000, guid: 01a1aa394f1012e4e8bb32de1368ac1a, type: 3}
-  white_rook: {fileID: 21300000, guid: 1b17f7ed5dd01ec409e809f4cafefdc3, type: 3}
-  white_pawn: {fileID: 21300000, guid: 3f255698932dc3d45b63de6c2408eeb5, type: 3}
+  black_queen: {fileID: 21300000, guid: 4e2af84aec7c0ab4592293b1cc8e55e9, type: 3}
+  black_knight: {fileID: 21300000, guid: e7aa256dd0761c0439d5eb528830ed92, type: 3}
+  black_bishop: {fileID: 21300000, guid: c18253b4f7d75b24a903107d38181d84, type: 3}
+  black_king: {fileID: 21300000, guid: ae8d7f61e2836464e8a87d30122cde55, type: 3}
+  black_rook: {fileID: 21300000, guid: d3a9a540f02258e4ea4197dffb0681c9, type: 3}
+  black_pawn: {fileID: 21300000, guid: 2a114a2a629c408498e3ca7f3370345b, type: 3}
+  white_queen: {fileID: 21300000, guid: 7cf3c5d79b323634d8d8e8ae16134a7b, type: 3}
+  white_knight: {fileID: 21300000, guid: 707e658b999ab244bbf59faf633a0960, type: 3}
+  white_bishop: {fileID: 21300000, guid: ec10b1350119afe4facb26869a2bc215, type: 3}
+  white_king: {fileID: 21300000, guid: 8956f4424c3e7224e9a90cf48be512ba, type: 3}
+  white_rook: {fileID: 21300000, guid: 110ba782c74695c4ea573bcfb1af2618, type: 3}
+  white_pawn: {fileID: 21300000, guid: ae641b19244cfa14dbf159ba47454ac6, type: 3}
   character: {fileID: 0}
   high: 0
   low: 0
   left: 0
   right: 0
   medle: 0
+  scaleValue: 0.07
   PieceIndex: 0
   healthBar: {fileID: 5251841510146595007}
   myPiece: 0
   opponentpiece: 0
   AlreadyPlayedPvP: 0
   cards: []
---- !u!61 &1664206046956843815
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744378045863390000}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 5, y: 5}
-    newSize: {x: 5, y: 5}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 5, y: 5}
-  m_EdgeRadius: 0
 --- !u!114 &7722872110479007392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +175,32 @@ MonoBehaviour:
   m_SynchronizeRotation: 0
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!61 &9075611836122627595
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744378045863390000}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 19, y: 21.762863}
+    newSize: {x: 5, y: 5}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 19, y: 21.762863}
+  m_EdgeRadius: 0
 --- !u!1 &2221982079548939033
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,7 +303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6560342517843729927
 RectTransform:
   m_ObjectHideFlags: 0
@@ -492,8 +474,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.001, y: -1.866}
-  m_SizeDelta: {x: 2612.41, y: 525.013}
+  m_AnchoredPosition: {x: -0.4, y: 10.15}
+  m_SizeDelta: {x: 12000, y: 1500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6932351168845866026
 Canvas:
@@ -513,9 +495,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -278127945
-  m_SortingOrder: 4
+  m_SortingOrder: 6
   m_TargetDisplay: 0
 --- !u!1 &8492030259591902577
 GameObject:
@@ -533,7 +514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1615186415834478962
 Transform:
   m_ObjectHideFlags: 0
