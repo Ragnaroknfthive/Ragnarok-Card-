@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Linq;
+using UnityEngine.Networking;
+using System;
+
 public enum PlayerAction { idle, attack, counterAttack, defend, engage, brace }
 public enum SpellCardPosition { None, petHomePlayer, petHomeOppoent, petBattlePlayer, perBattleOpponent }
 public class Game : MonoBehaviour
@@ -89,6 +92,7 @@ public class Game : MonoBehaviour
     public GameObject DeadPieceImage;
 
     public TMPro.TextMeshProUGUI playerName, opponentName;
+    public Image playerProfileImage, opponentProfileImage;
     public void IncreaseStamina()
     {
         MyStamina++;
@@ -1002,6 +1006,18 @@ public class Game : MonoBehaviour
     {
         if(b)
         {
+            if(PhotonNetwork.IsMasterClient)
+            {
+              PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
+                PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
+               
+            }
+            else
+            {
+                PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
+                PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
+
+            }
             ChessCanvas.SetActive(false);
             Game.Get().Board.SetActive(false);
             PVPCanvas.SetActive(true);
@@ -1012,19 +1028,71 @@ public class Game : MonoBehaviour
             ChessCanvas.SetActive(true);
             // GameManager.instace.isFristMovePawn = true;
             Game.Get().Board.SetActive(true);
+           
             if(PhotonNetwork.IsMasterClient)
             {
                 playerName.text = PhotonNetwork.PlayerList[0].NickName;
                 opponentName.text = PhotonNetwork.PlayerList[1].NickName;
+                SetProfileImageForPlayer(true,PhotonNetwork.PlayerList[0]); //Set player profile pic
+                SetProfileImageForPlayer(false,PhotonNetwork.PlayerList[1]);// Set oppoenet profile pic
             }
             else
             {
                 playerName.text = PhotonNetwork.PlayerList[1].NickName;
                 opponentName.text = PhotonNetwork.PlayerList[0].NickName;
+                SetProfileImageForPlayer(true,PhotonNetwork.PlayerList[1]); //Set player profile pic
+                SetProfileImageForPlayer(false,PhotonNetwork.PlayerList[0]);// Set oppoenet profile pic
+            }
+        }
+    }
+    public void SetProfileImageForPlayer(bool isplayer,Player player) 
+    {
+        ExitGames.Client.Photon.Hashtable _playerCustomProperties = player.CustomProperties;
+        if(isplayer)
+        {  //SetProfileImage for player
+            if(Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
+            {
+                playerProfileImage.sprite = GameData.playerSprite;
+            }
+            else
+            {
+                int dummypicIndex = -1;
+                dummypicIndex = Convert.ToInt32(_playerCustomProperties[GameData.dummyProfileImageIndex].ToString());
+                if(dummypicIndex != -1)
+                {
+                    playerProfileImage.sprite = GameData.Get().DummyProfile[dummypicIndex];
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("Not Player");
+            if(Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
+            {
+                if(GameData.opponentSprite == GameData.Get().DummyProfile[0])
+                {
+                    Debug.LogError("Opponet has profile pic");
+                    StartCoroutine(FetchOpponentProfilePicture(_playerCustomProperties[GameData.profileUrl].ToString()));
+                }
+                else 
+                {
+                  opponentProfileImage.sprite=  GameData.opponentSprite;
+                    Debug.LogError("Opponet has profile pic" + "But not set");
+                }
+            }
+            else
+            {
+                int dummypicIndex = -1;
+                dummypicIndex = Convert.ToInt32(_playerCustomProperties[GameData.dummyProfileImageIndex].ToString());
+                if(dummypicIndex != -1)
+                {
+                    opponentProfileImage.sprite = GameData.Get().DummyProfile[dummypicIndex];
+                }
             }
 
-
         }
+        //
+
     }
     public void SwitchPlayerTurn_RPCCall()
     {
@@ -1151,6 +1219,24 @@ public class Game : MonoBehaviour
     }
     #endregion
 
+    private IEnumerator FetchOpponentProfilePicture(string url)
+    {
+        Debug.Log("Fetching profile picture from URL: " + url);
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+        yield return www.SendWebRequest();
+        if(www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log("Failed to download profile picture: " + www.error);
+        }
+        else
+        {
+            Debug.Log("Successfully downloaded profile picture.");
+            Texture2D texture2D = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            GameData.opponentProfileTexture = texture2D; //((DownloadHandlerTexture)www.downloadHandler).texture;
+            GameData.opponentSprite = GameData.SpriteFromTexture2D(texture2D);
+            opponentProfileImage.sprite = GameData.opponentSprite;
+        }
+    }
 }
 [System.Serializable]
 public class BoardPosition 

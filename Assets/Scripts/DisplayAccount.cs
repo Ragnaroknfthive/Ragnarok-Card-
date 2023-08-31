@@ -72,6 +72,7 @@ public class DisplayAccount : MonoBehaviour
         PlayerPrefs.SetString("HiveProfileName",profileName.text.ToString());
        
         HiveProfileName = profileName.text.ToString();
+        
         //StartCoroutine(LoadProfileImage((string)parsedProfileData["profile_image"]));
     }
 

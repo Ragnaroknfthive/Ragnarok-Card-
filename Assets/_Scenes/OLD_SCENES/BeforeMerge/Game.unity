@@ -3984,6 +3984,9 @@ MonoBehaviour:
   attacks: []
   Pets: []
   Spells: []
+  DummyProfile:
+  - {fileID: 21300000, guid: 87363cebd58993045a173ab4927d7182, type: 3}
+  - {fileID: 21300000, guid: b1fe01c106eca7c4287657c861a0f50d, type: 3}
 --- !u!4 &221776881
 Transform:
   m_ObjectHideFlags: 0
@@ -10946,6 +10949,8 @@ MonoBehaviour:
     type: 3}
   playerName: {fileID: 990554136}
   opponentName: {fileID: 1207629844}
+  playerProfileImage: {fileID: 1438539352}
+  opponentProfileImage: {fileID: 1274060211}
   IsGameComplete: 0
   revivePr: {fileID: 1247650374}
   reviveLisItem: {fileID: 5918770303389746322, guid: 27b373c0257baa04c9132aad07b251de,
@@ -16542,8 +16547,8 @@ RectTransform:
   m_Father: {fileID: 1194406682}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.049934667, y: 1.074074}
-  m_AnchorMax: {x: 0.9500653, y: 1.2222222}
+  m_AnchorMin: {x: 0.04887218, y: 1.0738636}
+  m_AnchorMax: {x: 0.9511278, y: 1.2159091}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -23206,7 +23211,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1181161424
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34872,10 +34877,10 @@ RectTransform:
   m_Father: {fileID: 1474475726}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 200, y: 20}
+  m_AnchorMin: {x: 0.124060154, y: -0.14244318}
+  m_AnchorMax: {x: 0.87593985, y: -0.00039772553}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1738607532
 MonoBehaviour:

@@ -98,6 +98,31 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         {
             PhotonNetwork.LocalPlayer.NickName = "Player_" + Random.Range(99,199);
         }
+        ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        if(!playerProperties.ContainsKey(GameData.hasProfileConst))
+        { playerProperties.Add(GameData.hasProfileConst,GameData.hasProfileImage ? 1 : 0); }
+        else
+        {
+            playerProperties[GameData.hasProfileConst] = GameData.hasProfileImage ? 1 : 0;
+           
+        }
+
+        if(!playerProperties.ContainsKey(GameData.profileUrl))
+        { playerProperties.Add(GameData.profileUrl,GameData.playerProfileUrl); }
+        else
+        {
+            playerProperties[GameData.profileUrl]=GameData.playerProfileUrl;
+            Debug.LogError(playerProperties[GameData.profileUrl]);
+        }
+
+        if(!playerProperties.ContainsKey(GameData.dummyProfileImageIndex))
+        { playerProperties.Add(GameData.dummyProfileImageIndex,GameData.hasProfileImage ? -1 : GameData.dummyProfileIndex); }
+        else
+        {
+            playerProperties[GameData.dummyProfileImageIndex] = GameData.dummyProfileIndex;
+           
+        }
+        //PhotonNetwork.LocalPlayer.SetCustomProperties=playerProperties;
         Debug.Log("Joined Lobby"+ DisplayAccount.HiveProfileName);
     }
 

@@ -14,8 +14,13 @@ public class GameData : MonoBehaviour
     public List<SpellCard> Pets;
     public List<SpellCard> Spells;
 
-
-
+    public List<Sprite> DummyProfile = new List<Sprite>();
+    public static string playerProfileUrl;
+    public static bool hasProfileImage = false;
+    public static Texture2D playerProfileTexture, opponentProfileTexture;
+    public static Sprite playerSprite,opponentSprite;
+    public static int dummyProfileIndex=-1;
+    public const string hasProfileConst = "hasProfileConst", profileUrl = "profileUrl", dummyProfileImageIndex = "dummyProfileIndex";
     private void Awake()
     {
         if (data == null)
@@ -32,6 +37,8 @@ public class GameData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerSprite = DummyProfile[0];
+        opponentSprite = DummyProfile[0];
         characters = Resources.LoadAll<CharacterData>("Data/Character").ToList();
         //Debug.LogError(characters.Count);
         attacks = Resources.LoadAll<AttackData>("Data/Attacks").ToList();
@@ -95,5 +102,9 @@ public class GameData : MonoBehaviour
     public static GameData Get()
     {
         return data;
+    }
+    public static Sprite SpriteFromTexture2D(Texture2D texture)
+    {
+        return Sprite.Create(texture,new Rect(0.0f,0.0f,texture.width,texture.height),new Vector2(0.5f,0.5f),100.0f);
     }
 }
