@@ -281,7 +281,7 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             {
                 displayOpponentProfile.DisplayOpponent(opponentAccount);
             }
-            // DeckManager.instance.SetDeck();
+            DeckManager.instance.SetOpponentDeck();
             PhotonNetwork.LoadLevel("Game");
             
         }

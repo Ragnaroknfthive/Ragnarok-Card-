@@ -62,6 +62,7 @@ public class AttackSlider : MonoBehaviour
                 _slider.maxValue = Mathf.Max(_slider.maxValue, PVPManager.manager.P1RemainingHandHealth);
             }
         }
+
         // if(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8)
         // {
         //     _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount;
@@ -87,6 +88,8 @@ public class AttackSlider : MonoBehaviour
         SpeedFill.anchorMax = Vector2.zero;
         UsedSpeedButton.SetActive(false);
         _slider.onValueChanged.AddListener(delegate { UpdateAttackValueText(); });
+
+        Debug.LogError("Slider Max Val" + _slider.maxValue);
     }
 
     void OnDisable()
@@ -269,9 +272,11 @@ public class AttackSlider : MonoBehaviour
 
         _attackValueText.text = ((int)(_slider.value * 2)).ToString();
 
-        if (_slider.value == _slider.maxValue && !(speedVal > 0 && !SpeedCanceled))
+        if (_slider.value >= _slider.maxValue && !(speedVal > 0 && !SpeedCanceled))
         {
-            _attackValueText.text = "All In";
+            Debug.LogError("OTHER PLAYER HEALTH "+PVPManager.Get().P2HealthBar.maxValue);
+            if(PVPManager.Get().P2HealthBar.maxValue >= PVPManager.Get().P2HealthBar.maxValue)
+            { _attackValueText.text = "All In"; }
         }
     }
 }

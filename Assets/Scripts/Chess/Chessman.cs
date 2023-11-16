@@ -127,6 +127,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         // Debug.LogError(cards.Count+ " cards added");
 
         //SaveHighLowLeftRightMedle(-1, -1, -1, -1, -1);
+       
     }
 
     private void Update()
@@ -233,6 +234,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             case PieceType.Rook: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_rook : white_rook; break;
             case PieceType.Pawn: this.GetComponent<SpriteRenderer>().sprite = playerType == PlayerType.Black ? black_pawn : white_pawn; break;
         }
+        if(type == PieceType.Pawn) ShowIndicator();
     }
 
     public Sprite GetSprite()
@@ -1251,24 +1253,40 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
     public void OnMouseEnter()
     {
-       // if(!photonView.IsMine) return;
+       
+       // if(!photonView.IsMine) return;----
 
-        SpriteRenderer currentSprite = Game.Get().plates[xBoard,yBoard].GetComponent<SpriteRenderer>();
-        Color c = currentSprite.color;
-        c.a = 1;
-        currentSprite.color = c;
+     //   SpriteRenderer currentSprite = Game.Get().plates[xBoard,yBoard].GetComponent<SpriteRenderer>();
+       
+    //    SpriteRenderer currentSpriteIndicator = Game.Get().platesIndicator[xBoard,yBoard].GetComponent<SpriteRenderer>();
+    //    Color c = currentSprite.color;
+    //    c.a = 1f;
+      
+    //    currentSpriteIndicator.color = c;
+      
+       // currentSprite.color = c;
+
         healthBar.transform.parent.gameObject.SetActive(true);
     }
     public void OnMouseExit()
     {
        // if(!photonView.IsMine) return;
 
-        SpriteRenderer currentSprite = Game.Get().plates[xBoard,yBoard].GetComponent<SpriteRenderer>();
-        Color c = currentSprite.color;
-        c.a = 0;
-        currentSprite.color = c;
-
+      //  SpriteRenderer currentSprite = Game.Get().plates[xBoard,yBoard].GetComponent<SpriteRenderer>();
+       // SpriteRenderer currentSpriteIndicator = Game.Get().platesIndicator[xBoard,yBoard].GetComponent<SpriteRenderer>();
+      //  Color c = currentSprite.color;
+     //   c.a = 0;
+     //   currentSprite.color = c;
+      //  currentSpriteIndicator.color = c;
         healthBar.transform.parent.gameObject.SetActive(false);
     }
-
+    public void ShowIndicator()
+    {
+        SpriteRenderer currentSprite = Game.Get().plates[xBoard,yBoard].GetComponent<SpriteRenderer>();
+        SpriteRenderer currentSpriteIndicator= Game.Get().platesIndicator[xBoard,yBoard].GetComponent<SpriteRenderer>();
+        Color c = currentSprite.color;
+        c.a = 1;
+        currentSpriteIndicator.color = c;
+    }
+  
 }

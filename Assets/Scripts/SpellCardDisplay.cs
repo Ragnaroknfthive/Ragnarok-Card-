@@ -241,6 +241,10 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
     }
     public void ChangeParentHome()
     {
+        animating = false;
+        return;
+
+        //Not used
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;
 
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardsPlayer);
@@ -292,11 +296,17 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
         }
 
     }
-
+    bool animating = false;
     public void ResetCard()
     {
+        if(animating|| !PVPManager.manager.isLocalPVPTurn) return;
+
+        animating = true;
         MainBGOutline.enabled = false;
-        LeanTween.scale(this.gameObject, Vector3.one * 0.7f, 0.25f);//.setOnComplete(ChangeParentHome);
+        if(gameObject)
+        {
+            LeanTween.scale(this.gameObject,Vector3.one * 0.7f,0.25f).setOnComplete(ChangeParentHome);
+        }
         //SpellManager.instance.MouseOverOpponentCard(card.cardId, false);
         canvas.sortingOrder = startSortOrder;
         cardReseted = true;

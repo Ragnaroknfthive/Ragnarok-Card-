@@ -36,9 +36,9 @@ public class Game : MonoBehaviour
     private static Game game;
     public CharacterData defChar;
 
-    public GameObject ColorPlate;
+    public GameObject ColorPlate,ColorPlateIndicator;
     public GameObject[,] plates = new GameObject[8,8];
-
+    public GameObject[,] platesIndicator = new GameObject[8,8];
     public Color BoardBlack, BoardWhite;
     public GameObject board;
 
@@ -180,11 +180,29 @@ public class Game : MonoBehaviour
                 plates[i,j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
 
                 SpriteRenderer sr = plates[i,j].GetComponent<SpriteRenderer>();
+
+                //Indicators
+                platesIndicator[i,j] = Instantiate(ColorPlateIndicator,new Vector3(plateX,plateY,-0.1f),Quaternion.identity);
+                platesIndicator[i,j].transform.SetParent(board.transform);
+                // plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
+                platesIndicator[i,j].transform.localScale = new Vector3(8.8f,8.8f,8.8f);
+                platesIndicator[i,j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
+
+                SpriteRenderer srIndicator = platesIndicator[i,j].GetComponent<SpriteRenderer>();
+
+                //
                 if(sr.color== BoardBlack|| sr.color == BoardWhite) 
                 {
                     Color c = sr.color;
                     c.a = 0;
                     sr.color = c;
+                    srIndicator.color = c;
+                }
+                else 
+                {
+                    Color c = sr.color;
+                    c.a = .7f;
+                    srIndicator.color = c;
                 }
                 if(!PhotonNetwork.LocalPlayer.IsMasterClient)
                 {
@@ -192,8 +210,11 @@ public class Game : MonoBehaviour
                     pos.x= pos.x*(-1);
                     pos.y =pos.y*(-1);
                     LeanTween.rotate(plates[i,j],new Vector3(0,0,-180),0);
-                   // Debug.LogError("Updated");
+                    LeanTween.rotate(platesIndicator[i,j],new Vector3(0,0,-180),0);
+
+                    // Debug.LogError("Updated");
                 }
+                
             }
         }
 
@@ -221,6 +242,7 @@ public class Game : MonoBehaviour
             Camera.main.transform.Rotate(Vector3.forward,180f);
             RotatedBoardSpriteObject.transform.Rotate(Vector3.forward,-180);
             RotatedBoardSpriteObject.gameObject.SetActive(true);
+            if(NewBoard)
             NewBoard.transform.Rotate(Vector3.forward,180f);
             // foreach (Transform item in Board.transform)
             // {
@@ -440,6 +462,7 @@ public class Game : MonoBehaviour
     {
         positions[obj.GetXboard(),obj.GetYboard()] = obj.gameObject;
         SpriteRenderer sr = plates[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>();
+        SpriteRenderer srInidcator = platesIndicator[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>();
         //if(sr.color.a == 0)
         //{
         //    Color c = sr.color;
@@ -447,12 +470,15 @@ public class Game : MonoBehaviour
         //    sr.color = c;
         //}
         plates[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>().color = obj.character.tileColor;
-        if(sr.color.a != 0)
-        {
+      //  if(sr.color.a != 0)
+      //  {
             Color c = sr.color;
-            c.a = 0;
-            sr.color = c;
-        }
+        Color indicator = c;
+            c.a = .9f;
+        indicator.a = 0;
+            sr.color = indicator;
+            srInidcator.color = c;
+     //   }
 
     }
 
@@ -461,11 +487,13 @@ public class Game : MonoBehaviour
         positions[x,y] = null;
         plates[x,y].GetComponent<SpriteRenderer>().color = (x + y) % 2 == 0 ? BoardBlack : BoardWhite;
         SpriteRenderer sr = plates[x,y].GetComponent<SpriteRenderer>();
+        SpriteRenderer srIndicator = platesIndicator[x,y].GetComponent<SpriteRenderer>();
         if(sr.color == BoardBlack || sr.color == BoardWhite)
         {
             Color c = sr.color;
             c.a = 0;
             sr.color = c;
+            srIndicator.color = c;
         }
     }
 

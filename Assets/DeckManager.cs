@@ -201,6 +201,38 @@ public class DeckManager : MonoBehaviour
         //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
         //Invoke("StarGame",0.3f);
     }
+
+    
+   
+    public void SetOpponentDeck()
+    {
+        for(int i = 0 ; i < PhotonNetwork.PlayerList.Length ; i++)
+        {
+            if(!PhotonNetwork.PlayerList[i].IsMasterClient) 
+            {
+
+                Debug.LogError("Opponent Deck set");
+                List<int> deckIds = new List<int>();
+                foreach(var item in playerDeck)
+                {
+                    deckIds.Add(item.cardId);
+                }
+                string deckStr = string.Join('_',deckIds);
+                ExitGames.Client.Photon.Hashtable data = PhotonNetwork.LocalPlayer.CustomProperties;
+                if(data.ContainsKey("PlayerDeck"))
+                    data["PlayerDeck"] = deckStr;
+                else
+                    data.Add("PlayerDeck",deckStr);
+                PhotonNetwork.LocalPlayer.CustomProperties = data;
+
+                PlayerPrefs.SetString("player_deck",deckStr);
+
+            }
+        }
+        
+        //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
+        //Invoke("StarGame",0.3f);
+    }
     public const string DeckCounter = "DeckCounter";
     public int GetNewDeckCounter() 
     {

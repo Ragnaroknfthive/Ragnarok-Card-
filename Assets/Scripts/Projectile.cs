@@ -55,6 +55,7 @@ public class Projectile : MonoBehaviour
             lifetime += Time.deltaTime;
             if (lifetime > 1f)
             {
+                Debug.LogError("Projectile Destoryed");
                 Destroy(gameObject);
             }
         }
