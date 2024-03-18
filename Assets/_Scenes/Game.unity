@@ -3282,6 +3282,7 @@ MonoBehaviour:
   attacks: []
   Pets: []
   Spells: []
+  DummyProfile: []
 --- !u!4 &221776881
 Transform:
   m_ObjectHideFlags: 0
@@ -9292,6 +9293,8 @@ MonoBehaviour:
     type: 3}
   movePlate: {fileID: 0}
   Board: {fileID: 1606879900}
+  RotatedBoardSpriteObject: {fileID: 0}
+  boardPositions: []
   playerBlack:
   - {fileID: 0}
   - {fileID: 0}
@@ -9320,6 +9323,7 @@ MonoBehaviour:
   defChar: {fileID: 0}
   ColorPlate: {fileID: 8918081180470814590, guid: 34ae373289c9bb544b7d3a706130acf6,
     type: 3}
+  ColorPlateIndicator: {fileID: 0}
   BoardBlack: {r: 0.22352943, g: 0.22352943, b: 0.22352943, a: 1}
   BoardWhite: {r: 1, g: 1, b: 1, a: 1}
   board: {fileID: 1606879900}
@@ -9361,6 +9365,10 @@ MonoBehaviour:
   OppoPieces: {fileID: 970776231}
   DeadPieceImage: {fileID: 5918770303389746322, guid: af2e3314929661847ac0a09046a21ae1,
     type: 3}
+  playerName: {fileID: 0}
+  opponentName: {fileID: 0}
+  playerProfileImage: {fileID: 0}
+  opponentProfileImage: {fileID: 0}
   IsGameComplete: 0
   revivePr: {fileID: 1247650374}
   reviveLisItem: {fileID: 5918770303389746322, guid: 27b373c0257baa04c9132aad07b251de,
@@ -11675,6 +11683,7 @@ RectTransform:
   - {fileID: 1050268496}
   - {fileID: 810251375}
   - {fileID: 1530284163}
+  - {fileID: 1252512965}
   m_Father: {fileID: 1474475726}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20785,6 +20794,7 @@ MonoBehaviour:
   P2Shield: {fileID: 1103257711}
   P1LastAction: {fileID: 1538758684}
   P2LastAction: {fileID: 945026154}
+  P1StaminPopup: {fileID: 1252512964}
   timer: 0
   ChessTimer: 0
   LastAtkAmt: 0
@@ -21628,6 +21638,83 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 0
+--- !u!1 &1252512964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1252512965}
+  - component: {fileID: 1252512967}
+  - component: {fileID: 1252512966}
+  m_Layer: 5
+  m_Name: LowStaminaPopup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1252512965
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252512964}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2045004718}
+  m_Father: {fileID: 701301042}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.000030517578, y: 49.547993}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1252512966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252512964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1252512967
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252512964}
+  m_CullTransparentMesh: 1
 --- !u!1 &1256016653
 GameObject:
   m_ObjectHideFlags: 0
@@ -35435,6 +35522,88 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043147607}
   m_CullTransparentMesh: 1
+--- !u!1 &2045004717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2045004718}
+  - component: {fileID: 2045004720}
+  - component: {fileID: 2045004719}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2045004718
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045004717}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1252512965}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2045004719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045004717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9056604, g: 0.19223925, b: 0.19223925, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 'Low Stamina :(
+
+    You can''t attack with full health points'
+--- !u!222 &2045004720
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045004717}
+  m_CullTransparentMesh: 0
 --- !u!1 &2046565500
 GameObject:
   m_ObjectHideFlags: 0

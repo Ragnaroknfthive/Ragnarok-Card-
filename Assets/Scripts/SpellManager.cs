@@ -244,12 +244,14 @@ public class SpellManager : MonoBehaviourPunCallbacks
 
     public void ExecuteAttack(int i, bool IsPlayer, int cardId, int attacker)
     {
+        Debug.LogError("Spell Card Id" + cardId);
         photonView.RPC("ExecuteAttackRPC", RpcTarget.Others, i, IsPlayer, cardId, attacker);
     }
 
     [PunRPC]
     public void ExecuteAttackRPC(int i, bool isplayer, int cardId, int attacker)
     {
+        Debug.LogError("Opponenet spell card " + cardId);
         SpellCard card = GameData.Get().GetPet(cardId);
         SpellManager.IsPetAttacking = true;
         GameObject o = Instantiate(card.SpellProjectilePref, opponentBattleCards.Find(x => x.card.cardId == cardId).gameObject.transform.position, Quaternion.identity);
@@ -274,7 +276,6 @@ public class SpellManager : MonoBehaviourPunCallbacks
         BattleCardDisplay battleCard = opponentBattleCards.Find(x => x.card.cardId == cardId);
         SpellManager.instance.opponentBattleCards.Remove(battleCard);
     }
-
 
 
 

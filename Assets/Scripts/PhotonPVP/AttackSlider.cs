@@ -50,7 +50,10 @@ public class AttackSlider : MonoBehaviour
     }
     void OnEnable()
     {
-
+        if(PVPManager.manager.P1StaVal < 10f) 
+        {
+            PVPManager.manager.ShowLowStaminaPopup();
+        }
         //Allow Maxminum attack value which is Minimum from both player's health
 
         // _slider.maxValue = Mathf.Min(PVPManager.manager.P1HealthBar.value,PVPManager.manager.P2HealthBar.value);
@@ -209,6 +212,7 @@ public class AttackSlider : MonoBehaviour
     {
         if(_slider.value > 0)
         {
+            PVPManager.manager.HideLowStamina();
             Game.Get().lastAction = action;
             Game.Get().UpdateLastAction(action);
 

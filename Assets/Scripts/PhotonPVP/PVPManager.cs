@@ -179,6 +179,7 @@ public class PVPManager : MonoBehaviour
     public Image P1Shield, P2Shield;
 
     public TextMeshProUGUI P1LastAction, P2LastAction;
+    public GameObject P1StaminPopup;
 
     // Start is called before the first frame update
     void Start()
@@ -5632,5 +5633,18 @@ public class PVPManager : MonoBehaviour
             case PieceType.Pawn: oppPiece.sprite = oppType == PlayerType.Black ? black_pawn : white_pawn; break;
         }
 
+    }
+    public void ShowLowStaminaPopup() 
+    {
+        LeanTween.scale(P1StaminPopup,Vector3.zero,0f);
+        P1StaminPopup.SetActive(true);
+        LeanTween.scale(P1StaminPopup,Vector3.one,0.5f);
+        
+        Invoke(nameof(HideLowStamina),2f);
+    }
+    public void HideLowStamina() 
+    {
+        P1StaminPopup.SetActive(false);
+        LeanTween.scale(P1StaminPopup,Vector3.zero,0f);
     }
 }
