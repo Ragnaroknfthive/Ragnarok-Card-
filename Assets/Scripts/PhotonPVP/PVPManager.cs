@@ -63,7 +63,7 @@ public class PVPManager : MonoBehaviour
     public Text[] player1ChoiceTxt, player2ChoiceTxt;
 
     public Slider P1HealthBar, P2HealthBar;
-    public Slider P1StaBar, P2StaBar;
+    public Slider P1StaBar, P2StaBar,P1ChessStaminaBar,P2ChessStaminaBar;
 
     public float P1StaVal, P2StaVal;
 
@@ -90,7 +90,7 @@ public class PVPManager : MonoBehaviour
     public Button skipTurn;
     public GameObject LocationChoices, AttackChoices, LocationChoiceHeading;
 
-    public Text P1StaTxt, P2StaTxt, P1HealthTxt, P2HealthTxt, P1RageTxt, P2RageTxt;
+    public Text P1StaTxt, P2StaTxt, P1HealthTxt, P2HealthTxt, P1RageTxt, P2RageTxt,P1ChessStaminaTxt,P2ChessStaminaTxt;
     public Text MyManaBarTxt, OppoManaBarTxt;
 
     public Text P1ExtraDamageAnimationText, P2ExtraDamageAnimationText;
@@ -738,6 +738,10 @@ public class PVPManager : MonoBehaviour
         P2SpeedTxt.text = p2Speed.ToString("F2");
         P1StaBar.value = P1StaVal;
         P2StaBar.value = P2StaVal;
+        P1ChessStaminaTxt.text = P1StaTxt.text;
+        P2ChessStaminaTxt.text = P2StaTxt.text;
+        P1ChessStaminaBar.value = P1StaBar.value;
+        P2ChessStaminaBar.value = P2StaBar.value;
 
         //Debug.LogError("P1 STAMIN " + P1StaBar.value + " Time "+ DateTime.Now);
         //Debug.LogError("P2 STAMIN " + P2StaBar.value);
@@ -2409,6 +2413,8 @@ public class PVPManager : MonoBehaviour
             P1StaTxt.text = "10/10";
             P2StaBar.value = 10;
             P2StaTxt.text = "10/10";
+            P1ChessStaminaTxt.text = P1StaTxt.ToString();
+            P2ChessStaminaTxt.text = P2StaTxt.ToString();
             //p1Speed = 0;
             //P1SpeedTxt.text = MathF.Round(p1Speed,2).ToString();
             //p2Speed = 0;
@@ -3084,6 +3090,7 @@ public class PVPManager : MonoBehaviour
         //P1StaBar.value -= Game.Get().BetAmount * 0.1f;
         P1StaBar.value -= AttackFor * 0.1f;
         P1StaTxt.text = (P1StaBar.value).ToString();
+        P1ChessStaminaTxt.text = P1StaTxt.text;
         //p1Speed += (int)Game.Get().BetAmount * 0.1f;
         //Debug.LogError("Speed Calc To be increased : " + (int)(myAttackRisk * 0.1f) + "Actually increased :" + p1SpeedSlowBy);
         p1Speed += (float)((myAttackRisk * 0.1f));
@@ -5467,6 +5474,8 @@ public class PVPManager : MonoBehaviour
     {
         //Debug.LogError("*1Stamina Changed From Here " + P1StaBar.value);
         // P1StaTxt.text = P1StaBar.value + "/" + P1StaBar.maxValue;
+       
+
     }
     public void UpdateRageTextP1()
     {
@@ -5481,6 +5490,7 @@ public class PVPManager : MonoBehaviour
 
         //Debug.LogError("*1Stamina 2 Changed From Here " + P2StaBar.value);
         // P2StaTxt.text =   P2StaBar.value + "/" + P2StaBar.maxValue;
+        
     }
     public void UpdateRageTextP2()
     {
