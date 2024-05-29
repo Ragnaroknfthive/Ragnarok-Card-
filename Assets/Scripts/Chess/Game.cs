@@ -630,6 +630,50 @@ public class Game : MonoBehaviour
             }
         }
     }
+    public void  NextTurnContinue()
+    {
+        if(IsGameOver())
+        {
+            PVPManager.manager.TimerObject.SetActive(false);
+            return;
+        }
+
+
+        if(currentPlayer == "white")
+        {
+            currentPlayer = "black";
+        }
+        else
+        {
+            currentPlayer = "white";
+        }
+
+        if(isMyTurn(currentPlayer))
+        {
+            bool IsKinginCheck = checkForKing();
+            bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
+            Debug.LogError("Checking for Check ================> " + IsKinginCheck);
+            if(IsKinginCheck)
+                Debug.LogError("Checkmate ================> " + IsCheckmate);
+            if(IsCheckmate || IsKinginCheck)
+            {
+                if(MyType == PlayerType.White)
+                {
+                    Winner(PhotonNetwork.PlayerList[1].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                }
+                else
+                {
+                    Winner(PhotonNetwork.PlayerList[0].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                }
+            }
+            else
+            {
+                photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer,true);
+            }
+        }
+    }
     //Allow Moveplate display only for local player
     public void Update()
     {
@@ -1036,15 +1080,13 @@ public class Game : MonoBehaviour
         {
             if(PhotonNetwork.IsMasterClient)
             {
-              PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
+                PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
                 PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
-               
             }
             else
             {
                 PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
                 PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
-
             }
             ChessCanvas.SetActive(false);
             Game.Get().Board.SetActive(false);
@@ -1160,6 +1202,48 @@ public class Game : MonoBehaviour
                     Winner(PhotonNetwork.PlayerList[0].NickName);
                     photonView.RPC("PlayerWon",RpcTarget.Others,0);
                 }
+            }
+        }
+    }
+    [PunRPC]
+    public void SwitchCurrentPlayer(string player,bool continueTurn)
+    {
+
+        currentPlayer = player;
+        //isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
+        isLocalPlayerTurn = PhotonNetwork.PlayerList[currentPlayer == "white" ? 0 : 1].IsLocal;
+        if(currentPlayer == "white")
+        {
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName,PhotonNetwork.PlayerList[0]));
+        }
+        if(currentPlayer != "white")
+        {
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName,PhotonNetwork.PlayerList[1]));
+        }
+
+        if(isMyTurn(currentPlayer))
+        {
+            bool IsKinginCheck = checkForKing();
+            bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
+            Debug.LogError("Checking for Check ================> " + IsKinginCheck);
+            if(IsKinginCheck)
+                Debug.LogError("Checkmate ================> " + IsCheckmate);
+            if(IsCheckmate)
+            {
+                if(MyType == PlayerType.White)
+                {
+                    Winner(PhotonNetwork.PlayerList[1].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                }
+                else
+                {
+                    Winner(PhotonNetwork.PlayerList[0].NickName);
+                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                }
+            }
+            else 
+            {
+                NextTurn();
             }
         }
     }

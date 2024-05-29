@@ -134,6 +134,7 @@ MonoBehaviour:
   - UpdateDeadPiecesRPC
   - updatePLayerActionRPC
   - StartGame
+  - SwitchCurrentPlayer_ContinueSameplayerTurn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

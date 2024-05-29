@@ -727,7 +727,6 @@ public class PVPManager : MonoBehaviour
 
     public void UpdateHMTxt()
     {
-
         P1HealthTxt.text = P1HealthBar.value + " / " + P1HealthBar.maxValue;
         P2HealthTxt.text = P2HealthBar.value + " / " + P2HealthBar.maxValue;
         P1StaTxt.text = "Stamina " + MathF.Round(P1StaVal,2) + " / " + P1StaBar.maxValue;

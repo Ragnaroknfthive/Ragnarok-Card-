@@ -151,78 +151,90 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         if (attack)
         {
             //    Debug.LogError("******Piece Type  " + reference.type);
-            reference.DestroyMovePlates();
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    DemoManager.instance.UpdateCards();
-            //}
-            PhotonNetwork.SendAllOutgoingCommands();
-            Game.Get().SetPVPMode(true);
-            //PVPManager.manager.SetChessSpriteForPVP();
-            bool localplayerTurn = Game.Get().isLocalPlayerTurn;
-            if (reference.playerType == PlayerType.White)
+           
+            Debug.LogError(reference.type + " Ref Type" + PVPManager.manager.tempPieceOpp);
+            if( 1==0)//PVPManager.manager.tempPieceOpp == PieceType.Pawn) //Temporary bypass this codnition 
             {
-                PVPManager.Get().SetData(new Vector2(reference.GetXboard(), reference.GetYboard()), new Vector2(matrixX, matrixY), localplayerTurn, false);
-                //Debug.Log("if --------- if");
+                //no pvp battel
+                //Continue turn
+                // Debug.LogError("No pvp battle , continue same player turn");
+                //
             }
             else
             {
-                PVPManager.Get().SetData(new Vector2(matrixX, matrixY), new Vector2(reference.GetXboard(), reference.GetYboard()), localplayerTurn, true);
-                Debug.Log("else --------- else");
+                //if (PhotonNetwork.IsMasterClient)
+                //{
+                //    DemoManager.instance.UpdateCards();
+                //}
+                reference.DestroyMovePlates();
+                PhotonNetwork.SendAllOutgoingCommands();
+                Game.Get().SetPVPMode(true);
+                //PVPManager.manager.SetChessSpriteForPVP();
+                bool localplayerTurn = Game.Get().isLocalPlayerTurn;
+                if(reference.playerType == PlayerType.White)
+                {
+                    PVPManager.Get().SetData(new Vector2(reference.GetXboard(),reference.GetYboard()),new Vector2(matrixX,matrixY),localplayerTurn,false);
+                    //Debug.Log("if --------- if");
+                }
+                else
+                {
+                    PVPManager.Get().SetData(new Vector2(matrixX,matrixY),new Vector2(reference.GetXboard(),reference.GetYboard()),localplayerTurn,true);
+                    Debug.Log("else --------- else");
+                }
+                // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
+
+                // if (cp.name == "white_king") Game.Get().Winner("black");
+                // if (cp.name == "black_king") Game.Get().Winner("white");
+
+                // Destroy(cp);
+
+                //Handle the aftereffect of PVP
+                reference.DestroyMovePlates();
+                
+                
+                Debug.Log("================================== pvp start here =============================");
+                Debug.Log("*****White Kings " + Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x => x.type == PieceType.King).Count);
+                Debug.Log("*****Black Kings " + Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count);
+
+
+                //if (Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x=>x.type==PieceType.King).Count==0 || Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count == 0) 
+                //{
+
+                //    Game.Get().CheckWinner();
+                //}
+                //else 
+                //{
+                //    //reference.DestroyMovePlates();
+                //    Game.Get().SetPVPMode(true);
+
+
+
+                //    bool localplayerTurn = Game.Get().isLocalPlayerTurn;
+                //    if (reference.playerType == PlayerType.White)
+                //    {
+                //        PVPManager.Get().SetData(new Vector2(reference.GetXboard(), reference.GetYboard()), new Vector2(matrixX, matrixY), localplayerTurn);
+                //        //Debug.Log("if --------- if");
+                //    }
+                //    else
+                //    {
+                //        PVPManager.Get().SetData(new Vector2(matrixX, matrixY), new Vector2(reference.GetXboard(), reference.GetYboard()), localplayerTurn);
+                //        Debug.Log("else --------- else");
+                //    }
+                //    // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
+
+                //    // if (cp.name == "white_king") Game.Get().Winner("black");
+                //    // if (cp.name == "black_king") Game.Get().Winner("white");
+
+                //    // Destroy(cp);
+
+                //    //Handle the aftereffect of PVP
+
+                //    Debug.Log("================================== pvp start here =============================");
+                //}
             }
-            // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
-
-            // if (cp.name == "white_king") Game.Get().Winner("black");
-            // if (cp.name == "black_king") Game.Get().Winner("white");
-
-            // Destroy(cp);
-
-            //Handle the aftereffect of PVP
-            reference.DestroyMovePlates();
-            Debug.Log("================================== pvp start here =============================");
-            Debug.Log("*****White Kings " + Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x => x.type == PieceType.King).Count);
-            Debug.Log("*****Black Kings " + Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count);
-
-
-            //if (Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x=>x.type==PieceType.King).Count==0 || Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count == 0) 
-            //{
-
-            //    Game.Get().CheckWinner();
-            //}
-            //else 
-            //{
-            //    //reference.DestroyMovePlates();
-            //    Game.Get().SetPVPMode(true);
-
-
-
-            //    bool localplayerTurn = Game.Get().isLocalPlayerTurn;
-            //    if (reference.playerType == PlayerType.White)
-            //    {
-            //        PVPManager.Get().SetData(new Vector2(reference.GetXboard(), reference.GetYboard()), new Vector2(matrixX, matrixY), localplayerTurn);
-            //        //Debug.Log("if --------- if");
-            //    }
-            //    else
-            //    {
-            //        PVPManager.Get().SetData(new Vector2(matrixX, matrixY), new Vector2(reference.GetXboard(), reference.GetYboard()), localplayerTurn);
-            //        Debug.Log("else --------- else");
-            //    }
-            //    // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
-
-            //    // if (cp.name == "white_king") Game.Get().Winner("black");
-            //    // if (cp.name == "black_king") Game.Get().Winner("white");
-
-            //    // Destroy(cp);
-
-            //    //Handle the aftereffect of PVP
-
-            //    Debug.Log("================================== pvp start here =============================");
-            //}
-
         }
         else
         {
-
             if (FindObjectOfType<Game>()._currnetTurnPlayer == PhotonNetwork.LocalPlayer && reference.type == PieceType.Pawn)
             {
                 GameManager.instace.isFristMovePawn = false;
@@ -261,14 +273,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             {
                 Game.Get().NextTurn();
             }
-
-
-
-
-
             reference.DestroyMovePlates();
-
-
         }
     }
 
