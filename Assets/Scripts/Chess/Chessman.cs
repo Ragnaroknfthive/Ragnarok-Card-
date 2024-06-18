@@ -470,8 +470,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
         if (sc.PositionOnBoard(x, y) && sc.GetPosition(x, y).GetComponent<Chessman>().player != player)
         {
-            PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
-            PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
+            Chessman chessman = sc.GetPosition(x,y).GetComponent<Chessman>();
+            PieceType pieceType = chessman.type;
+            PVPManager.manager.SetOpponentAttackPieceInfo(pieceType,chessman);
             MovePlateAttackSpawn(x, y);
             isPlateInstantiated = true;
         }
@@ -521,8 +522,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             }
             else if (cp.GetComponent<Chessman>().player != player)
             {
-                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
-                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
+                Chessman chessman = sc.GetPosition(x,y).GetComponent<Chessman>();
+                PieceType pieceType =chessman.type;
+                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType,chessman);
                 MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
             }
@@ -557,8 +559,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             {
                 //if((x) == (pieceVector.x) && y == (pieceVector.y))
                 // {
-                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
-                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
+                Chessman chessman = sc.GetPosition(x,y).GetComponent<Chessman>();
+                PieceType pieceType = chessman.type;
+                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType,chessman);
                 MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
                 // }
@@ -618,8 +621,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             {
                 //if(x == (pieceVector.x) && y == (pieceVector.y))
                 //{
-                PieceType pieceType = sc.GetPosition(x, y).GetComponent<Chessman>().type;
-                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType);
+                Chessman chessman = sc.GetPosition(x,y).GetComponent<Chessman>();
+                PieceType pieceType = chessman.type;
+                PVPManager.manager.SetOpponentAttackPieceInfo(pieceType,chessman);
                 MovePlateAttackSpawn(x, y);
                 isPlateInstantiated = true;
                // Debug.Log($"<color=yellow> if1 MovePlateAttackSpawn(x + 1, y) {x} {y}   </color>");

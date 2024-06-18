@@ -151,7 +151,7 @@ public class PVPManager : MonoBehaviour
     public MovePlate selectedMove;
 
     public PieceType myPiece, opponentpiece, tempPiece, opponentPieceAttack, tempPieceOpp;
-
+    public Chessman oppPieceType,MyAttackedPiece;
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
     public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
     public GameObject speedAttackChoices, speedAttackButton;
@@ -494,7 +494,7 @@ public class PVPManager : MonoBehaviour
         //AttackChoices.SetActive(false);
         //speedAttackChoices.SetActive(true);
     }
-    public void SetOpponentAttackPieceInfo(PieceType type)
+    public void SetOpponentAttackPieceInfo(PieceType type,Chessman oppPiece)
     {
 
         // opponentpiece = type;
@@ -510,11 +510,18 @@ public class PVPManager : MonoBehaviour
         {
             Debug.Log("OPP PIECe TYPE " + type + " This Player is Turn Player-" + (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer));
 
-
+           
             PVPManager.manager.tempPieceOpp = type;
-
+            oppPieceType = oppPiece;
+            photonView.RPC("SetAttackedPiece",RpcTarget.Others,oppPiece.GetXboard(),oppPiece.GetYboard());
+            PhotonNetwork.SendAllOutgoingCommands();
             //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
         }
+    }
+    [PunRPC]
+    public void SetAttackedPiece(int x,int y) 
+    {
+        MyAttackedPiece = Game.Get().GetPosition(x,y).GetComponent<Chessman>();
     }
     [PunRPC]
     public void SetPieceType(PieceType type,PieceType myType)

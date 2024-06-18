@@ -275,6 +275,7 @@ public class Game : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if(PhotonNetwork.IsMasterClient)
         {
+            Debug.LogError("Loading screen set from here");
             photonView.RPC("SetLoadingScreenOff_RPC",RpcTarget.All,isOn);
             PhotonNetwork.SendAllOutgoingCommands();
         }
@@ -845,8 +846,6 @@ public class Game : MonoBehaviour
                 //PhotonNetwork.Destroy(reference.gameObject);
                 DestroyPieceObject(reference);
             }
-
-
         }
         else
         {
@@ -911,10 +910,11 @@ public class Game : MonoBehaviour
                         photonView.RPC("PlayerWon",RpcTarget.All,0);
 
                     }
+                    Debug.LogError("King Taken-Game Over");
                     break;
                 }
             }
-
+        
             IsGameComplete = won;
         }
         else
@@ -923,8 +923,64 @@ public class Game : MonoBehaviour
         }
 
         UpdateDeadPieces();
+    }
+    public void DestroyPieceObjectForPawnTaken(Chessman man)
+    {
+        if(PhotonNetwork.LocalPlayer!=_currnetTurnPlayer)
+        {
+            if(PVPManager.manager.MyAttackedPiece)
+            { 
+                man = PVPManager.manager.MyAttackedPiece;
+            }
+            else 
+            {
+                Debug.LogError("Man not found");
+            }
+        }
+        
+        //  Debug.LogError("Adding : "+man.type+" to "+MyType);
+        //   Debug.LogError("Adding : "+man.playerType+" to "+MyType);
+        man.transform.position = new Vector3(1000f,1000f,1000f);
 
+        if(man.playerType == MyType)
+        {
+            Debug.LogError("This should not be the case for Pawn taken");
+            DestroyedObjects.Add(man);
 
+            bool won = false;
+            foreach(var item in DestroyedObjects)
+            {
+                //     Debug.LogError(item.playerType);
+                if(item.type == PieceType.King)
+                {
+                    won = true;
+                    if(item.playerType == PlayerType.White)
+                    {
+                        //Winner(PhotonNetwork.PlayerList[1].NickName);
+                        photonView.RPC("PlayerWon",RpcTarget.All,1);
+                    }
+                    else
+                    {
+                        //Winner(PhotonNetwork.PlayerList[0].NickName);
+                        photonView.RPC("PlayerWon",RpcTarget.All,0);
+
+                    }
+                    Debug.LogError("King Taken-Game Over");
+                    break;
+                }
+            }
+
+            //IsGameComplete = won;
+        }
+        else
+        {
+            Debug.LogError("Else part");
+            
+            DestroyedObjectsOppo.Add(man);
+        }
+       
+       UpdateOtherPlayerDeadPieces();
+       // UpdateDeadPieces();
     }
 
     public void UpdateDeadPieces()
@@ -940,6 +996,20 @@ public class Game : MonoBehaviour
         }
         photonView.RPC("UpdateDeadPiecesRPC",RpcTarget.Others);
     }
+    public void UpdateOtherPlayerDeadPieces()
+    {
+        foreach(Transform item in OppoPieces)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach(Chessman item in DestroyedObjectsOppo)
+        {
+            GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            o.GetComponent<Image>().sprite = item.GetSprite();
+        }
+        photonView.RPC("UpdateDeadPiecesMyRPC",RpcTarget.Others);
+    }
+
 
     [PunRPC]
     public void UpdateDeadPiecesRPC()
@@ -951,6 +1021,19 @@ public class Game : MonoBehaviour
         foreach(Chessman item in DestroyedObjectsOppo)
         {
             GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            o.GetComponent<Image>().sprite = item.GetSprite();
+        }
+    }
+    [PunRPC]
+    public void UpdateDeadPiecesMyRPC()
+    {
+        foreach(Transform item in myPieces)
+        {
+            Destroy(item.gameObject);
+        }
+        foreach(Chessman item in DestroyedObjects)
+        {
+            GameObject o = Instantiate(DeadPieceImage,myPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
     }
