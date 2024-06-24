@@ -334,7 +334,7 @@ public class PokerButtonManager : MonoBehaviour
 
             PVPManager.manager.P2StaBar.value += foldCost;
             PVPManager.manager.P1StaVal += (PVPManager.manager.P2LastAttackValue / 10);
-            PVPManager.manager.P1StaBar.value = PVPManager.manager.P2StaVal;
+            PVPManager.manager.P1StaBar.value = PVPManager.manager.P1StaVal;
 
             PVPManager.manager.UpdateHMTxt();
             //}

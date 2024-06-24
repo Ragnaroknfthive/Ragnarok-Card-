@@ -153,7 +153,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             //    Debug.LogError("******Piece Type  " + reference.type);
            
             Debug.LogError(reference.type + " Ref Type" + PVPManager.manager.tempPieceOpp);
-            if(PVPManager.manager.tempPieceOpp == PieceType.Pawn||(PhotonNetwork.LocalPlayer != Game.Get(). _currnetTurnPlayer && PVPManager.manager.MyAttackedPiece!=null && PVPManager.manager.MyAttackedPiece.type== PieceType.Pawn )) 
+            if(PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer &&  PVPManager.manager.tempPieceOpp == PieceType.Pawn||(PhotonNetwork.LocalPlayer != Game.Get(). _currnetTurnPlayer && PVPManager.manager.MyAttackedPiece!=null && PVPManager.manager.MyAttackedPiece.type== PieceType.Pawn )) 
             {
                 //no pvp battel
                 //Continue turn

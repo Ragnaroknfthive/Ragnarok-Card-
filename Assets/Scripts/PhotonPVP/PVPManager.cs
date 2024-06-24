@@ -734,6 +734,23 @@ public class PVPManager : MonoBehaviour
 
     public void UpdateHMTxt()
     {
+        //Clamp values to minimun and maximum
+        if(P1StaVal > P1StaBar.maxValue)
+        {
+            P1StaVal = P1StaBar.maxValue;
+        }
+        else if(P1StaVal < 0)
+        {
+            P1StaVal = 0;
+        }
+
+        if(P2StaVal > P2StaBar.maxValue)
+        { P2StaVal = P2StaBar.maxValue; }
+        else if(P2StaVal < 0)
+        {
+            P2StaVal = 0;
+        }
+        //
         P1HealthTxt.text = P1HealthBar.value + " / " + P1HealthBar.maxValue;
         P2HealthTxt.text = P2HealthBar.value + " / " + P2HealthBar.maxValue;
         P1StaTxt.text = "Stamina " + MathF.Round(P1StaVal,2) + " / " + P1StaBar.maxValue;
@@ -741,6 +758,7 @@ public class PVPManager : MonoBehaviour
         P1RageTxt.text = "Rage " + P1RageBar.value.ToString();//+//" / "+P1RageBar.maxValue;
         P2RageTxt.text = "Rage " + P2RageBar.value.ToString();//+" / "+P2RageBar.maxValue;
         P1SpeedTxt.text = p1Speed.ToString("F2");
+
         P2SpeedTxt.text = p2Speed.ToString("F2");
         P1StaBar.value = P1StaVal;
         P2StaBar.value = P2StaVal;
@@ -1122,12 +1140,14 @@ public class PVPManager : MonoBehaviour
             if(isCheck)
             {
                 float checkCost = 1f - p1StaminRecoveryReducedBy;
-
+                Debug.LogError("check cost : " + checkCost + "stamina recovery reducedBy :" + p1StaminRecoveryReducedBy);
                 if(checkCost < 0) checkCost = 0;
 
-                P1StaBar.value += checkCost;
+                P1StaVal += checkCost;
+                //P1StaBar.value += checkCost;
                 isCheck = false;
                 UpdateHMTxt();
+                Debug.LogError(PhotonNetwork.LocalPlayer.NickName + " " + _player.NickName);
                 photonView.RPC("UpdateOpponentStamina",RpcTarget.Others,checkCost);
                 PhotonNetwork.SendAllOutgoingCommands();
             }
@@ -1425,6 +1445,7 @@ public class PVPManager : MonoBehaviour
     {
         // float checkCost = 1f;
         P2StaBar.value += val;
+        P2StaVal += val;
         UpdateHMTxt();
         // isCheck = false;
     }
@@ -5287,17 +5308,16 @@ public class PVPManager : MonoBehaviour
         AddMana();
 
         SpellManager.instance.spellCardsDeck = new List<SpellCard>();
-
-        foreach(var item in myObj.cards)
+        if(myPiece != PieceType.Pawn)
         {
-            SpellManager.instance.spellCardsDeck.Add(item);
+            foreach(var item in myObj.cards)
+            {
+                SpellManager.instance.spellCardsDeck.Add(item);
+            }
+            //   Debug.LogError(SpellManager.instance.spellCardsDeck.Count + " cards added");
+
+            SpellManager.instance.ResetData();
         }
-        //   Debug.LogError(SpellManager.instance.spellCardsDeck.Count + " cards added");
-
-
-        SpellManager.instance.ResetData();
-
-
         // StartTimer();
         // EndTurnBtn.gameObject.SetActive(true);
 
