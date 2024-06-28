@@ -20625,6 +20625,8 @@ MonoBehaviour:
   P2HealthBar: {fileID: 2026191977}
   P1StaBar: {fileID: 640752297}
   P2StaBar: {fileID: 1275881770}
+  P1ChessStaminaBar: {fileID: 0}
+  P2ChessStaminaBar: {fileID: 0}
   P1StaVal: 0
   P2StaVal: 0
   P1RageBar: {fileID: 2012998738}
@@ -20656,6 +20658,8 @@ MonoBehaviour:
   P2HealthTxt: {fileID: 1868088326}
   P1RageTxt: {fileID: 2119795704}
   P2RageTxt: {fileID: 2125608848}
+  P1ChessStaminaTxt: {fileID: 0}
+  P2ChessStaminaTxt: {fileID: 0}
   MyManaBarTxt: {fileID: 1227498356}
   OppoManaBarTxt: {fileID: 1486194761}
   P1ExtraDamageAnimationText: {fileID: 476972756}
@@ -20750,6 +20754,8 @@ MonoBehaviour:
   tempPiece: 0
   opponentPieceAttack: 0
   tempPieceOpp: 0
+  oppPieceType: {fileID: 0}
+  MyAttackedPiece: {fileID: 0}
   black_queen: {fileID: 21300000, guid: ee7384137e324fa459a73a71472f4ddf, type: 3}
   black_knight: {fileID: 21300000, guid: d238f44a7c097814fa5dc6004a451c79, type: 3}
   black_bishop: {fileID: 21300000, guid: 7d46d4f095f7bac44acf92b6ffa2bf9c, type: 3}
@@ -21674,7 +21680,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000030517578, y: 49.547993}
+  m_AnchoredPosition: {x: -0.000030517578, y: 49.54799}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1252512966
@@ -28296,7 +28302,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29635,7 +29641,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -34702,7 +34708,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
