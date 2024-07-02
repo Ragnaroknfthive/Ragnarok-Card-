@@ -16765,7 +16765,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9fd4d61dc12a55342afdac0671fbc52c, type: 2}
   - {fileID: 11400000, guid: 3b8a71456787fda4685abeab9c1025a7, type: 2}
   offset_card: 50
-  placeholderBoard: {fileID: 0}
+  placeholderBoard: {fileID: 837070629}
   placeholderHand: {fileID: 1034415848}
   placeholderPlayerHands:
   - {fileID: 1214287040}
@@ -19906,7 +19906,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.35
+  m_fontSize: 24.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -24654,7 +24654,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.1
+  m_fontSize: 24.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -24813,6 +24813,8 @@ MonoBehaviour:
   p2Pos: {x: 0, y: 0}
   p1Obj: {fileID: 0}
   p2Obj: {fileID: 0}
+  lowestSpeedNeeded: 1.5
+  isattackerMaster: 0
   skipTurn: {fileID: 1810086126}
   LocationChoices: {fileID: 1693282230}
   AttackChoices: {fileID: 118754467}
@@ -24832,7 +24834,6 @@ MonoBehaviour:
   _playersNameInPvP:
   - {fileID: 1738607530}
   - {fileID: 843312154}
-  BatPoints: 0
   p1SliderAttack: 0
   p2SliderAttack: 0
   EndTurnBtn: {fileID: 1934218246}
@@ -24884,15 +24885,6 @@ MonoBehaviour:
   extraDamageMessageP1: {fileID: 2128382362}
   extraDamageMessageP2: {fileID: 1010487667}
   isAttackViaSpeedPoints: 0
-  p1DamageCapacityReducedby: 0
-  p2DamageCapacityReducedby: 0
-  p1StaminRecoveryReducedBy: 0
-  p2StaminaRecovertReducedby: 0
-  p1DamageIncreasedby: 0
-  p2DamageIncreasedby: 0
-  p1SpeedSlowBy: 0
-  opponentAttackWeakPercentageVal: 0
-  p2SpeedSlowedBy: 0
   myExtraDamagePercentage: 0
   my_OpponetSpeedMakeSlowerPercentage: 0
   my_opponentAttackMadeWeakerPerntage: 0
@@ -24911,7 +24903,6 @@ MonoBehaviour:
   p2Weakness: {fileID: 431013246}
   myFoldAmount: 4
   StartHandTurn: 0
-  EndTurnInvokedByClick: 0
   locationObjects:
   - {fileID: 1107048684}
   - {fileID: 527831307}

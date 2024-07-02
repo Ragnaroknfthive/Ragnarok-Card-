@@ -17,13 +17,13 @@ public class Game : MonoBehaviour
     public GameObject movePlate;
 
 
-    public GameObject Board,RotatedBoardSpriteObject;
+    public GameObject Board, RotatedBoardSpriteObject;
     public List<BoardPosition> boardPositions = new List<BoardPosition>();
-    [SerializeField] private GameObject[,] positions = new GameObject[8,8];
+    [SerializeField] private GameObject[,] positions = new GameObject[8, 8];
     [SerializeField] private Chessman[] playerBlack = new Chessman[10];
     [SerializeField] private Chessman[] playerWhite = new Chessman[10];
 
-    [SerializeField] private GameObject[,] Fpositions = new GameObject[8,8];
+    [SerializeField] private GameObject[,] Fpositions = new GameObject[8, 8];
 
     private string currentPlayer = "white";
 
@@ -36,9 +36,9 @@ public class Game : MonoBehaviour
     private static Game game;
     public CharacterData defChar;
 
-    public GameObject ColorPlate,ColorPlateIndicator;
-    public GameObject[,] plates = new GameObject[8,8];
-    public GameObject[,] platesIndicator = new GameObject[8,8];
+    public GameObject ColorPlate, ColorPlateIndicator;
+    public GameObject[,] plates = new GameObject[8, 8];
+    public GameObject[,] platesIndicator = new GameObject[8, 8];
     public Color BoardBlack, BoardWhite;
     public GameObject board;
 
@@ -70,10 +70,10 @@ public class Game : MonoBehaviour
 
     public Player _currnetTurnPlayer;
     public List<int> PlayerStrengths = new List<int>(2);
-    public List<string> PokerHandResults = new List<string>(2) { "","" };
+    public List<string> PokerHandResults = new List<string>(2) { "", "" };
     public int MyHighCardValue = 0, OpponentHighCardValue = 0, MySecondHighCardValue = -1, OpponentSecondHighCardValue = -1;
-    public List<int> MyHighCardList = new List<int>() { -1,-1,-1,-1,-1 };
-    public List<int> OpponentHighCardList = new List<int>() { -1,-1,-1,-1,-1 };
+    public List<int> MyHighCardList = new List<int>() { -1, -1, -1, -1, -1 };
+    public List<int> OpponentHighCardList = new List<int>() { -1, -1, -1, -1, -1 };
     public GameObject loadingScreen;
 
     public List<Chessman> DestroyedObjects = new List<Chessman>();
@@ -96,14 +96,14 @@ public class Game : MonoBehaviour
     public void IncreaseStamina()
     {
         MyStamina++;
-        MyStamina = Mathf.Clamp(MyStamina,0,10);
-        photonView.RPC("IncreaseStaminaRPC",RpcTarget.Others);
+        MyStamina = Mathf.Clamp(MyStamina, 0, 10);
+        photonView.RPC("IncreaseStaminaRPC", RpcTarget.Others);
     }
     [PunRPC]
     public void IncreaseStaminaRPC()
     {
         OppoStamina++;
-        OppoStamina = Mathf.Clamp(OppoStamina,0,10);
+        OppoStamina = Mathf.Clamp(OppoStamina, 0, 10);
     }
 
     public static Game Get()
@@ -124,7 +124,7 @@ public class Game : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        foreach(var item in PhotonNetwork.PlayerList)
+        foreach (var item in PhotonNetwork.PlayerList)
         {
 
         }
@@ -155,105 +155,105 @@ public class Game : MonoBehaviour
         float plateWidth = boardWidth / plateCols;
         float plateHeight = boardHeight / plateRows;
 
-        for(int i = 0 ; i < plateRows ; i++)
+        for (int i = 0; i < plateRows; i++)
         {
-            for(int j = 0 ; j < plateCols ; j++)
+            for (int j = 0; j < plateCols; j++)
             {
-                float plateX = ((i * plateWidth) - (boardWidth / 2) + (plateWidth  / 2) + board.transform.position.x)+0.270f;
-                float plateY = ((j * plateHeight ) - (boardHeight / 2) + (plateHeight/ 2) + board.transform.position.y)+0.270f;
-                if(i==0 && j == 0) 
+                float plateX = ((i * plateWidth) - (boardWidth / 2) + (plateWidth / 2) + board.transform.position.x) + 0.270f;
+                float plateY = ((j * plateHeight) - (boardHeight / 2) + (plateHeight / 2) + board.transform.position.y) + 0.270f;
+                if (i == 0 && j == 0)
                 {
                     Debug.LogError("COLOR PLATE + X pos " + plateX + "Y pos " + plateY);
                 }
                 //float plateX = ((i * plateWidth-.150f) - (boardWidth / 2) + (plateWidth - .150f / 2) + board.transform.position.x);// - 0.150f);  ;//-0.200f;
                 //float plateY = ((j * plateHeight-0.300f) - (boardHeight / 2) + (plateHeight - 0.300f / 2) + board.transform.position.y) ;//- 0.300f); ;//-0.500f;
                 //if(i == 0 && j < 4)
-               // {
-                    Vector3 pos1 = Game.Get().boardPositions.Find(x => x.xBoard == i && x.yboard == j).boardPoint.position;
-                    plateX = pos1.x;
-                    plateY = pos1.y;
+                // {
+                Vector3 pos1 = Game.Get().boardPositions.Find(x => x.xBoard == i && x.yboard == j).boardPoint.position;
+                plateX = pos1.x;
+                plateY = pos1.y;
                 //}
-                plates[i,j] = Instantiate(ColorPlate,new Vector3(plateX,plateY,-0.1f),Quaternion.identity);
-                plates[i,j].transform.SetParent(board.transform);
-               // plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
-                plates[i,j].transform.localScale = new Vector3(1,1,1f);
-                plates[i,j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
+                plates[i, j] = Instantiate(ColorPlate, new Vector3(plateX, plateY, -0.1f), Quaternion.identity);
+                plates[i, j].transform.SetParent(board.transform);
+                // plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
+                plates[i, j].transform.localScale = new Vector3(1, 1, 1f);
+                plates[i, j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
 
-                SpriteRenderer sr = plates[i,j].GetComponent<SpriteRenderer>();
+                SpriteRenderer sr = plates[i, j].GetComponent<SpriteRenderer>();
 
                 //Indicators
-                platesIndicator[i,j] = Instantiate(ColorPlateIndicator,new Vector3(plateX,plateY,-0.1f),Quaternion.identity);
-                platesIndicator[i,j].transform.SetParent(board.transform);
+                platesIndicator[i, j] = Instantiate(ColorPlateIndicator, new Vector3(plateX, plateY, -0.1f), Quaternion.identity);
+                platesIndicator[i, j].transform.SetParent(board.transform);
                 // plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
-                platesIndicator[i,j].transform.localScale = new Vector3(8.8f,8.8f,8.8f);
-                platesIndicator[i,j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
+                platesIndicator[i, j].transform.localScale = new Vector3(8.8f, 8.8f, 8.8f);
+                platesIndicator[i, j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
 
-                SpriteRenderer srIndicator = platesIndicator[i,j].GetComponent<SpriteRenderer>();
+                SpriteRenderer srIndicator = platesIndicator[i, j].GetComponent<SpriteRenderer>();
 
                 //
-                if(sr.color== BoardBlack|| sr.color == BoardWhite) 
+                if (sr.color == BoardBlack || sr.color == BoardWhite)
                 {
                     Color c = sr.color;
                     c.a = 0;
                     sr.color = c;
                     srIndicator.color = c;
                 }
-                else 
+                else
                 {
                     Color c = sr.color;
                     c.a = .7f;
                     srIndicator.color = c;
                 }
-                if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+                if (!PhotonNetwork.LocalPlayer.IsMasterClient)
                 {
-                    Vector3 pos = plates[i,j].transform.position;
-                    pos.x= pos.x*(-1);
-                    pos.y =pos.y*(-1);
-                    LeanTween.rotate(plates[i,j],new Vector3(0,0,-180),0);
-                    LeanTween.rotate(platesIndicator[i,j],new Vector3(0,0,-180),0);
+                    Vector3 pos = plates[i, j].transform.position;
+                    pos.x = pos.x * (-1);
+                    pos.y = pos.y * (-1);
+                    LeanTween.rotate(plates[i, j], new Vector3(0, 0, -180), 0);
+                    LeanTween.rotate(platesIndicator[i, j], new Vector3(0, 0, -180), 0);
 
                     // Debug.LogError("Updated");
                 }
-                
+
             }
         }
 
 
         isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
 
-        for(int i = 0 ; i < PhotonNetwork.PlayerList.Length ; i++)
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            if(PhotonNetwork.PlayerList[i].IsMasterClient && currentPlayer == "white")
+            if (PhotonNetwork.PlayerList[i].IsMasterClient && currentPlayer == "white")
             {
-                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i],_isTurn = true });
+                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = true });
             }
-            else if(!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white")
+            else if (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white")
             {
-                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i],_isTurn = false });
+                _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = false });
             }
         }
 
         photonView = GetComponent<PhotonView>();
-        photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);
-        if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+        photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
 
             //Camera Settings
-            Camera.main.transform.Rotate(Vector3.forward,180f);
-            RotatedBoardSpriteObject.transform.Rotate(Vector3.forward,-180);
+            Camera.main.transform.Rotate(Vector3.forward, 180f);
+            RotatedBoardSpriteObject.transform.Rotate(Vector3.forward, -180);
             RotatedBoardSpriteObject.gameObject.SetActive(true);
-            if(NewBoard)
-            NewBoard.transform.Rotate(Vector3.forward,180f);
+            if (NewBoard)
+                NewBoard.transform.Rotate(Vector3.forward, 180f);
             // foreach (Transform item in Board.transform)
             // {
             //     item.Rotate(Vector3.forward, 180f);
             // }
-          
+
 
         }
         SetPVPMode(false);
 
-        if(!setUpCalled && PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (!setUpCalled && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
             StartCoroutine("setPos");
             setUpCalled = true;
@@ -261,7 +261,7 @@ public class Game : MonoBehaviour
 
         DestroyedObjects = new List<Chessman>();
 
-        StartCoroutine(SetLoadingScreenOnOff(false,1f));
+        StartCoroutine(SetLoadingScreenOnOff(false, 1f));
         gameOver = false;
         MyStamina = 10;
         OppoStamina = 10;
@@ -270,13 +270,13 @@ public class Game : MonoBehaviour
         //     Debug.Log(item);
         // }
     }
-    public IEnumerator SetLoadingScreenOnOff(bool isOn,float delay)
+    public IEnumerator SetLoadingScreenOnOff(bool isOn, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogError("Loading screen set from here");
-            photonView.RPC("SetLoadingScreenOff_RPC",RpcTarget.All,isOn);
+            photonView.RPC("SetLoadingScreenOff_RPC", RpcTarget.All, isOn);
             PhotonNetwork.SendAllOutgoingCommands();
         }
     }
@@ -288,29 +288,29 @@ public class Game : MonoBehaviour
 
     public void WinPlayer(int i)
     {
-        photonView.RPC("WinMatch",RpcTarget.All,i);
+        photonView.RPC("WinMatch", RpcTarget.All, i);
     }
 
     [PunRPC]
     void WinMatch(int i)
     {
-        if(i == 1)
+        if (i == 1)
         {
-            foreach(var item in Chessman.GetPiecesOfPlayer(PlayerType.Black))
+            foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.Black))
             {
                 //Destroy(item.gameObject);
-                if(item.GetComponent<PhotonView>().IsMine)
+                if (item.GetComponent<PhotonView>().IsMine)
                 {
                     PhotonNetwork.Destroy(item.gameObject);
                 }
             }
         }
-        else if(i == 2)
+        else if (i == 2)
         {
-            foreach(var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
+            foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
             {
                 //Destroy(item.gameObject);
-                if(item.GetComponent<PhotonView>().IsMine)
+                if (item.GetComponent<PhotonView>().IsMine)
                 {
                     PhotonNetwork.Destroy(item.gameObject);
                 }
@@ -374,7 +374,7 @@ public class Game : MonoBehaviour
         //}
         yield return new WaitForSeconds(0.2f);
 
-        photonView.RPC("SetPosRPC",RpcTarget.All);
+        photonView.RPC("SetPosRPC", RpcTarget.All);
     }
 
     [PunRPC]
@@ -386,25 +386,25 @@ public class Game : MonoBehaviour
         Debug.Log(playerBlack.Length + " - " + playerWhite.Length);
         Debug.Log("+++++++++++++++++++++++++++++++++++++++++");
 
-        if(!PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            foreach(var item in playerBlack)
+            foreach (var item in playerBlack)
             {
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
-                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
+                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
                 item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
             }
-            foreach(var item in playerWhite)
+            foreach (var item in playerWhite)
             {
                 //      Debug.LogError("name : "+item.name);
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
-                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
+                item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
                 //item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
             }
 
         }
 
-        for(int i = 0 ; i < playerBlack.Length ; i++)
+        for (int i = 0; i < playerBlack.Length; i++)
         {
             SetPosition(playerBlack[i]);
             SetPosition(playerWhite[i]);
@@ -415,7 +415,7 @@ public class Game : MonoBehaviour
 
     string getCharId(PieceType type)
     {
-        switch(type)
+        switch (type)
         {
             case PieceType.King:
                 return "Fire";
@@ -435,12 +435,12 @@ public class Game : MonoBehaviour
         }
     }
 
-    public Chessman Create(string name,PieceType type,PlayerType ptype,int x,int y,int id,string cid = null)
+    public Chessman Create(string name, PieceType type, PlayerType ptype, int x, int y, int id, string cid = null)
     {
         cid = getCharId(type);
-        object[] cinit = new object[] { name,type,ptype,x,y,id,cid };
+        object[] cinit = new object[] { name, type, ptype, x, y, id, cid };
         //photonView.RPC("CreateObj",RpcTarget.All,cinit);
-        GameObject obj = PhotonNetwork.Instantiate("chesspiece",new Vector3(0,0,-1),Quaternion.identity,0,cinit) as GameObject;
+        GameObject obj = PhotonNetwork.Instantiate("chesspiece", new Vector3(0, 0, -1), Quaternion.identity, 0, cinit) as GameObject;
         // obj.transform.SetParent(Board.transform);
         // Chessman cm = obj.GetComponent<Chessman>();
         // cm.name = name;
@@ -455,41 +455,41 @@ public class Game : MonoBehaviour
     [PunRPC]
     public void CreateObj(object[] cinit)
     {
-        GameObject ob = Instantiate(chesspiece,new Vector3(0f,0f,-1f),Quaternion.identity);
+        GameObject ob = Instantiate(chesspiece, new Vector3(0f, 0f, -1f), Quaternion.identity);
         ob.GetComponent<Chessman>().OnInstantiate(cinit);
     }
 
     public void SetPosition(Chessman obj)
     {
-        positions[obj.GetXboard(),obj.GetYboard()] = obj.gameObject;
-        SpriteRenderer sr = plates[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>();
-        SpriteRenderer srInidcator = platesIndicator[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>();
+        positions[obj.GetXboard(), obj.GetYboard()] = obj.gameObject;
+        SpriteRenderer sr = plates[obj.GetXboard(), obj.GetYboard()].GetComponent<SpriteRenderer>();
+        SpriteRenderer srInidcator = platesIndicator[obj.GetXboard(), obj.GetYboard()].GetComponent<SpriteRenderer>();
         //if(sr.color.a == 0)
         //{
         //    Color c = sr.color;
         //    c.a = 1;
         //    sr.color = c;
         //}
-        plates[obj.GetXboard(),obj.GetYboard()].GetComponent<SpriteRenderer>().color = obj.character.tileColor;
-      //  if(sr.color.a != 0)
-      //  {
-            Color c = sr.color;
+        plates[obj.GetXboard(), obj.GetYboard()].GetComponent<SpriteRenderer>().color = obj.character.tileColor;
+        //  if(sr.color.a != 0)
+        //  {
+        Color c = sr.color;
         Color indicator = c;
-            c.a = .9f;
+        c.a = .9f;
         indicator.a = 0;
-            sr.color = indicator;
-            srInidcator.color = c;
-     //   }
+        sr.color = indicator;
+        srInidcator.color = c;
+        //   }
 
     }
 
-    public void SetPositionsEmpty(int x,int y)
+    public void SetPositionsEmpty(int x, int y)
     {
-        positions[x,y] = null;
-        plates[x,y].GetComponent<SpriteRenderer>().color = (x + y) % 2 == 0 ? BoardBlack : BoardWhite;
-        SpriteRenderer sr = plates[x,y].GetComponent<SpriteRenderer>();
-        SpriteRenderer srIndicator = platesIndicator[x,y].GetComponent<SpriteRenderer>();
-        if(sr.color == BoardBlack || sr.color == BoardWhite)
+        positions[x, y] = null;
+        plates[x, y].GetComponent<SpriteRenderer>().color = (x + y) % 2 == 0 ? BoardBlack : BoardWhite;
+        SpriteRenderer sr = plates[x, y].GetComponent<SpriteRenderer>();
+        SpriteRenderer srIndicator = platesIndicator[x, y].GetComponent<SpriteRenderer>();
+        if (sr.color == BoardBlack || sr.color == BoardWhite)
         {
             Color c = sr.color;
             c.a = 0;
@@ -498,36 +498,36 @@ public class Game : MonoBehaviour
         }
     }
 
-    public GameObject GetPosition(int x,int y)
+    public GameObject GetPosition(int x, int y)
     {
-        return positions[x,y];
+        return positions[x, y];
     }
-    public bool PositionOnBoard(int x,int y)
+    public bool PositionOnBoard(int x, int y)
     {
-        if(x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
+        if (x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
         return true;
     }
 
     public void SetPresent(GameObject[,] data)
     {
-        positions = new GameObject[data.GetLength(0),data.GetLength(1)];
-        for(int i = 0 ; i < data.GetLength(0) ; i++)
+        positions = new GameObject[data.GetLength(0), data.GetLength(1)];
+        for (int i = 0; i < data.GetLength(0); i++)
         {
-            for(int j = 0 ; j < data.GetLength(1) ; j++)
+            for (int j = 0; j < data.GetLength(1); j++)
             {
-                positions[i,j] = data[i,j];
+                positions[i, j] = data[i, j];
             }
         }
     }
 
     public GameObject[,] GetPresent()
     {
-        GameObject[,] data = new GameObject[positions.GetLength(0),positions.GetLength(1)];
-        for(int i = 0 ; i < positions.GetLength(0) ; i++)
+        GameObject[,] data = new GameObject[positions.GetLength(0), positions.GetLength(1)];
+        for (int i = 0; i < positions.GetLength(0); i++)
         {
-            for(int j = 0 ; j < positions.GetLength(1) ; j++)
+            for (int j = 0; j < positions.GetLength(1); j++)
             {
-                data[i,j] = positions[i,j];
+                data[i, j] = positions[i, j];
             }
         }
         return data;
@@ -535,42 +535,42 @@ public class Game : MonoBehaviour
 
     public GameObject[,] GetFuture()
     {
-        GameObject[,] data = new GameObject[Fpositions.GetLength(0),Fpositions.GetLength(1)];
-        for(int i = 0 ; i < Fpositions.GetLength(0) ; i++)
+        GameObject[,] data = new GameObject[Fpositions.GetLength(0), Fpositions.GetLength(1)];
+        for (int i = 0; i < Fpositions.GetLength(0); i++)
         {
-            for(int j = 0 ; j < Fpositions.GetLength(1) ; j++)
+            for (int j = 0; j < Fpositions.GetLength(1); j++)
             {
-                data[i,j] = Fpositions[i,j];
+                data[i, j] = Fpositions[i, j];
             }
         }
         return data;
     }
     public void SetFuture(GameObject[,] data)
     {
-        Fpositions = new GameObject[data.GetLength(0),data.GetLength(1)];
-        for(int i = 0 ; i < data.GetLength(0) ; i++)
+        Fpositions = new GameObject[data.GetLength(0), data.GetLength(1)];
+        for (int i = 0; i < data.GetLength(0); i++)
         {
-            for(int j = 0 ; j < data.GetLength(1) ; j++)
+            for (int j = 0; j < data.GetLength(1); j++)
             {
-                Fpositions[i,j] = data[i,j];
+                Fpositions[i, j] = data[i, j];
             }
         }
     }
-    public void SetFuturePosition(Chessman obj,int x,int y)
+    public void SetFuturePosition(Chessman obj, int x, int y)
     {
-        Fpositions[x,y] = obj?.gameObject;
+        Fpositions[x, y] = obj?.gameObject;
     }
-    public void SetFuturePositionsEmpty(int x,int y)
+    public void SetFuturePositionsEmpty(int x, int y)
     {
-        Fpositions[x,y] = null;
+        Fpositions[x, y] = null;
     }
-    public GameObject GetFuturePosition(int x,int y)
+    public GameObject GetFuturePosition(int x, int y)
     {
-        return Fpositions[x,y];
+        return Fpositions[x, y];
     }
-    public bool FuturePositionOnBoard(int x,int y)
+    public bool FuturePositionOnBoard(int x, int y)
     {
-        if(x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
+        if (x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
         return true;
     }
 
@@ -589,14 +589,14 @@ public class Game : MonoBehaviour
 
     public void NextTurn()
     {
-        if(IsGameOver())
+        if (IsGameOver())
         {
             PVPManager.manager.TimerObject.SetActive(false);
             return;
         }
 
 
-        if(currentPlayer == "white")
+        if (currentPlayer == "white")
         {
             currentPlayer = "black";
         }
@@ -605,42 +605,42 @@ public class Game : MonoBehaviour
             currentPlayer = "white";
         }
 
-        if(isMyTurn(currentPlayer))
+        if (isMyTurn(currentPlayer))
         {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
-            if(IsKinginCheck)
+            if (IsKinginCheck)
                 Debug.LogError("Checkmate ================> " + IsCheckmate);
-            if(IsCheckmate || IsKinginCheck)
+            if (IsCheckmate || IsKinginCheck)
             {
-                if(MyType == PlayerType.White)
+                if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
             }
             else
             {
-                photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);
+                photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
             }
         }
     }
-    public void  NextTurnContinue()
+    public void NextTurnContinue()
     {
-        if(IsGameOver())
+        if (IsGameOver())
         {
             PVPManager.manager.TimerObject.SetActive(false);
             return;
         }
 
 
-        if(currentPlayer == "white")
+        if (currentPlayer == "white")
         {
             currentPlayer = "black";
         }
@@ -649,46 +649,46 @@ public class Game : MonoBehaviour
             currentPlayer = "white";
         }
 
-        if(isMyTurn(currentPlayer))
+        if (isMyTurn(currentPlayer))
         {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
-            if(IsKinginCheck)
+            if (IsKinginCheck)
                 Debug.LogError("Checkmate ================> " + IsCheckmate);
-            if(IsCheckmate || IsKinginCheck)
+            if (IsCheckmate || IsKinginCheck)
             {
-                if(MyType == PlayerType.White)
+                if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
             }
             else
             {
-                photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer,true);
+                photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer, true);
             }
         }
     }
     //Allow Moveplate display only for local player
     public void Update()
     {
-        if(gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked)
+        if (gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked)
         {
             RestartClicked();
         }
-        if(PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
+        if (PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
         {
-            if(GameObject.FindObjectsOfType<MovePlate>() != null)
+            if (GameObject.FindObjectsOfType<MovePlate>() != null)
             {
 
                 MovePlate[] movePlates = GameObject.FindObjectsOfType<MovePlate>();
-                foreach(var item in movePlates)
+                foreach (var item in movePlates)
                 {
                     item.GetComponent<SpriteRenderer>().enabled = false;
                 }
@@ -701,18 +701,18 @@ public class Game : MonoBehaviour
     public void RestartClicked()
     {
         RestartButtonClicked = true;
-        photonView.RPC("ShowRematch",RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
+        photonView.RPC("ShowRematch", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.NickName);
     }
 
     public void RematchChoice(int i)
     {
-        if(i == 0)
+        if (i == 0)
         {
-            photonView.RPC("RematchRejected",RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer);
+            photonView.RPC("RematchRejected", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
         }
         else
         {
-            photonView.RPC("RestartRPC",RpcTarget.AllBuffered);
+            photonView.RPC("RestartRPC", RpcTarget.AllBuffered);
         }
     }
 
@@ -730,13 +730,13 @@ public class Game : MonoBehaviour
         yield return new WaitForSeconds(2f);
         PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.LeaveRoom();
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MatchScene");
     }
 
     [PunRPC]
     public void ShowRematch(string name)
     {
-        if(PhotonNetwork.LocalPlayer.NickName == name)
+        if (PhotonNetwork.LocalPlayer.NickName == name)
         {
             RematchTxt.text = "Waiting for other player.";
             RematchPopUp.SetActive(true);
@@ -765,7 +765,7 @@ public class Game : MonoBehaviour
         //    Destroy(item);
         // }
 
-        if(gameOver == true)
+        if (gameOver == true)
         {
             gameOver = false;
             setUpCalled = false;
@@ -792,13 +792,13 @@ public class Game : MonoBehaviour
 
     public void SetPVPMode(bool b)
     {
-        photonView.RPC("SetPVPModeRPC",RpcTarget.All,b);
+        photonView.RPC("SetPVPModeRPC", RpcTarget.All, b);
     }
 
-    public void HandleWin(bool attackerWon,bool isAttackerMaster,Vector2 p1Pos,Vector2 p2Pos)
+    public void HandleWin(bool attackerWon, bool isAttackerMaster, Vector2 p1Pos, Vector2 p2Pos)
     {
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            photonView.RPC("HandleWinRPC",RpcTarget.All,attackerWon,isAttackerMaster,p1Pos,p2Pos);
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            photonView.RPC("HandleWinRPC", RpcTarget.All, attackerWon, isAttackerMaster, p1Pos, p2Pos);
     }
 
 
@@ -813,16 +813,16 @@ public class Game : MonoBehaviour
     #region RPC Calls
 
     [PunRPC]
-    public void HandleWinRPC(bool attackerWon,bool isAttackerMaster,Vector2 p1Pos,Vector2 p2Pos)
+    public void HandleWinRPC(bool attackerWon, bool isAttackerMaster, Vector2 p1Pos, Vector2 p2Pos)
     {
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
-            photonView.RPC("SetPVPModeRPC",RpcTarget.All,false);
-        Chessman reference = GetPosition((int)p1Pos.x,(int)p1Pos.y).GetComponent<Chessman>();
-        Chessman ob = GetPosition((int)p2Pos.x,(int)p2Pos.y).GetComponent<Chessman>();
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            photonView.RPC("SetPVPModeRPC", RpcTarget.All, false);
+        Chessman reference = GetPosition((int)p1Pos.x, (int)p1Pos.y).GetComponent<Chessman>();
+        Chessman ob = GetPosition((int)p2Pos.x, (int)p2Pos.y).GetComponent<Chessman>();
         Debug.Log("attacker Won : " + attackerWon + ", attackerMaster :" + isAttackerMaster + ", p1pos : " + p1Pos + ", p2pos : " + p2Pos);
-        if(attackerWon)
+        if (attackerWon)
         {
-            if(isAttackerMaster)
+            if (isAttackerMaster)
             {
                 Game.Get().SetPositionsEmpty(reference.GetXboard(),
                 reference.GetYboard());
@@ -849,7 +849,7 @@ public class Game : MonoBehaviour
         }
         else
         {
-            if(isAttackerMaster)
+            if (isAttackerMaster)
             {
                 Game.Get().SetPositionsEmpty(reference.GetXboard(),
                 reference.GetYboard());
@@ -868,8 +868,8 @@ public class Game : MonoBehaviour
 
         }
 
-        if(!IsGameComplete)
-            photonView.RPC("SwitchCurrentPlayer",RpcTarget.AllBuffered,currentPlayer);
+        if (!IsGameComplete)
+            photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
         else
         {
             StopCoroutine(PVPManager.Get().UpdateChessTurnTimer());
@@ -886,35 +886,35 @@ public class Game : MonoBehaviour
     {
         //  Debug.LogError("Adding : "+man.type+" to "+MyType);
         //   Debug.LogError("Adding : "+man.playerType+" to "+MyType);
-        man.transform.position = new Vector3(1000f,1000f,1000f);
+        man.transform.position = new Vector3(1000f, 1000f, 1000f);
 
-        if(man.playerType == MyType)
+        if (man.playerType == MyType)
         {
             DestroyedObjects.Add(man);
 
             bool won = false;
-            foreach(var item in DestroyedObjects)
+            foreach (var item in DestroyedObjects)
             {
                 //     Debug.LogError(item.playerType);
-                if(item.type == PieceType.King)
+                if (item.type == PieceType.King)
                 {
                     won = true;
-                    if(item.playerType == PlayerType.White)
+                    if (item.playerType == PlayerType.White)
                     {
                         //Winner(PhotonNetwork.PlayerList[1].NickName);
-                        photonView.RPC("PlayerWon",RpcTarget.All,1);
+                        photonView.RPC("PlayerWon", RpcTarget.All, 1);
                     }
                     else
                     {
                         //Winner(PhotonNetwork.PlayerList[0].NickName);
-                        photonView.RPC("PlayerWon",RpcTarget.All,0);
+                        photonView.RPC("PlayerWon", RpcTarget.All, 0);
 
                     }
                     Debug.LogError("King Taken-Game Over");
                     break;
                 }
             }
-        
+
             IsGameComplete = won;
         }
         else
@@ -926,43 +926,43 @@ public class Game : MonoBehaviour
     }
     public void DestroyPieceObjectForPawnTaken(Chessman man)
     {
-        if(PhotonNetwork.LocalPlayer!=_currnetTurnPlayer)
+        if (PhotonNetwork.LocalPlayer != _currnetTurnPlayer)
         {
-            if(PVPManager.manager.MyAttackedPiece)
-            { 
+            if (PVPManager.manager.MyAttackedPiece)
+            {
                 man = PVPManager.manager.MyAttackedPiece;
             }
-            else 
+            else
             {
                 Debug.LogError("Man not found");
             }
         }
-        
+
         //  Debug.LogError("Adding : "+man.type+" to "+MyType);
         //   Debug.LogError("Adding : "+man.playerType+" to "+MyType);
-        man.transform.position = new Vector3(1000f,1000f,1000f);
+        man.transform.position = new Vector3(1000f, 1000f, 1000f);
 
-        if(man.playerType == MyType)
+        if (man.playerType == MyType)
         {
             Debug.LogError("This should not be the case for Pawn taken");
             DestroyedObjects.Add(man);
 
             bool won = false;
-            foreach(var item in DestroyedObjects)
+            foreach (var item in DestroyedObjects)
             {
                 //     Debug.LogError(item.playerType);
-                if(item.type == PieceType.King)
+                if (item.type == PieceType.King)
                 {
                     won = true;
-                    if(item.playerType == PlayerType.White)
+                    if (item.playerType == PlayerType.White)
                     {
                         //Winner(PhotonNetwork.PlayerList[1].NickName);
-                        photonView.RPC("PlayerWon",RpcTarget.All,1);
+                        photonView.RPC("PlayerWon", RpcTarget.All, 1);
                     }
                     else
                     {
                         //Winner(PhotonNetwork.PlayerList[0].NickName);
-                        photonView.RPC("PlayerWon",RpcTarget.All,0);
+                        photonView.RPC("PlayerWon", RpcTarget.All, 0);
 
                     }
                     Debug.LogError("King Taken-Game Over");
@@ -975,65 +975,65 @@ public class Game : MonoBehaviour
         else
         {
             Debug.LogError("Else part");
-            
+
             DestroyedObjectsOppo.Add(man);
         }
-       
-       UpdateOtherPlayerDeadPieces();
-       // UpdateDeadPieces();
+
+        UpdateOtherPlayerDeadPieces();
+        // UpdateDeadPieces();
     }
 
     public void UpdateDeadPieces()
     {
-        foreach(Transform item in myPieces)
+        foreach (Transform item in myPieces)
         {
             Destroy(item.gameObject);
         }
-        foreach(Chessman item in DestroyedObjects)
+        foreach (Chessman item in DestroyedObjects)
         {
-            GameObject o = Instantiate(DeadPieceImage,myPieces);
+            GameObject o = Instantiate(DeadPieceImage, myPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
-        photonView.RPC("UpdateDeadPiecesRPC",RpcTarget.Others);
+        photonView.RPC("UpdateDeadPiecesRPC", RpcTarget.Others);
     }
     public void UpdateOtherPlayerDeadPieces()
     {
-        foreach(Transform item in OppoPieces)
+        foreach (Transform item in OppoPieces)
         {
             Destroy(item.gameObject);
         }
-        foreach(Chessman item in DestroyedObjectsOppo)
+        foreach (Chessman item in DestroyedObjectsOppo)
         {
-            GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            GameObject o = Instantiate(DeadPieceImage, OppoPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
-        photonView.RPC("UpdateDeadPiecesMyRPC",RpcTarget.Others);
+        photonView.RPC("UpdateDeadPiecesMyRPC", RpcTarget.Others);
     }
 
 
     [PunRPC]
     public void UpdateDeadPiecesRPC()
     {
-        foreach(Transform item in OppoPieces)
+        foreach (Transform item in OppoPieces)
         {
             Destroy(item.gameObject);
         }
-        foreach(Chessman item in DestroyedObjectsOppo)
+        foreach (Chessman item in DestroyedObjectsOppo)
         {
-            GameObject o = Instantiate(DeadPieceImage,OppoPieces);
+            GameObject o = Instantiate(DeadPieceImage, OppoPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
     }
     [PunRPC]
     public void UpdateDeadPiecesMyRPC()
     {
-        foreach(Transform item in myPieces)
+        foreach (Transform item in myPieces)
         {
             Destroy(item.gameObject);
         }
-        foreach(Chessman item in DestroyedObjects)
+        foreach (Chessman item in DestroyedObjects)
         {
-            GameObject o = Instantiate(DeadPieceImage,myPieces);
+            GameObject o = Instantiate(DeadPieceImage, myPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
     }
@@ -1048,14 +1048,14 @@ public class Game : MonoBehaviour
     public void ShowReviveOption(Chessman pawn)
     {
         pawntobeRenewed = pawn;
-        foreach(Transform item in revivePr)
+        foreach (Transform item in revivePr)
         {
             Destroy(item.gameObject);
         }
         int i = 0;
-        foreach(var item in DestroyedObjects)
+        foreach (var item in DestroyedObjects)
         {
-            GameObject o = Instantiate(reviveLisItem,revivePr);
+            GameObject o = Instantiate(reviveLisItem, revivePr);
             o.GetComponentInChildren<Image>().sprite = item.GetSprite();
             o.GetComponent<RevivePieceItem>().id = i;
             i++;
@@ -1068,16 +1068,16 @@ public class Game : MonoBehaviour
     {
         Chessman pawn = pawntobeRenewed;
         PieceSelectionPanel.SetActive(false);
-        if(DestroyedObjects != null)
+        if (DestroyedObjects != null)
         {
             Chessman c = DestroyedObjects[i];
 
-            Create("New_" + c.gameObject.name,c.type,c.playerType,pawn.GetXboard(),pawn.GetYboard(),30 + DestroyedObjects.Count);
+            Create("New_" + c.gameObject.name, c.type, c.playerType, pawn.GetXboard(), pawn.GetYboard(), 30 + DestroyedObjects.Count);
             //Chessman.pieces.Remove(pawn);
             DestroyedObjects.Remove(c);
-            photonView.RPC("DestroyPiece",RpcTarget.All,c.PieceIndex);
-            photonView.RPC("DestroyPiece",RpcTarget.All,pawn.PieceIndex);
-            photonView.RPC("SetPosRPC",RpcTarget.All);
+            photonView.RPC("DestroyPiece", RpcTarget.All, c.PieceIndex);
+            photonView.RPC("DestroyPiece", RpcTarget.All, pawn.PieceIndex);
+            photonView.RPC("SetPosRPC", RpcTarget.All);
             Game.Get().NextTurn();
         }
     }
@@ -1087,16 +1087,16 @@ public class Game : MonoBehaviour
     {
         Chessman piece = Chessman.GetPiece(PieceIndex);
         List<Chessman> blacks = playerBlack.ToList();
-        if(blacks.Contains(piece))
+        if (blacks.Contains(piece))
             blacks.Remove(piece);
         playerBlack = blacks.ToArray();
 
         List<Chessman> whites = playerWhite.ToList();
-        if(whites.Contains(piece))
+        if (whites.Contains(piece))
             whites.Remove(piece);
         playerWhite = whites.ToArray();
 
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        if (PhotonNetwork.LocalPlayer.IsMasterClient)
             PhotonNetwork.Destroy(piece.GetComponent<PhotonView>());
 
     }
@@ -1113,21 +1113,21 @@ public class Game : MonoBehaviour
         //  Debug.LogError(playerWhite.ToList().FindAll(x=>x.type== PieceType.King).Count + " _ " + playerBlack.ToList().FindAll(x => x.type == PieceType.King).Count);
         //  Debug.LogError(DestroyedObjects.Count);
         bool won = false;
-        foreach(var item in DestroyedObjects)
+        foreach (var item in DestroyedObjects)
         {
             //    Debug.LogError(item.type);
-            if(item.type == PieceType.King)
+            if (item.type == PieceType.King)
             {
                 won = true;
-                if(item.playerType == PlayerType.White)
+                if (item.playerType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
                 break;
             }
@@ -1140,16 +1140,16 @@ public class Game : MonoBehaviour
         // }else{
         //     NextTurn();
         // }
-        if(!won)
+        if (!won)
         {
-            photonView.RPC("PlayerWon",RpcTarget.Others,-1);
+            photonView.RPC("PlayerWon", RpcTarget.Others, -1);
         }
     }
 
     [PunRPC]
     public void PlayerWon(int i)
     {
-        if(i != -1)
+        if (i != -1)
             Winner(PhotonNetwork.PlayerList[i].NickName);
         else
             NextTurn();
@@ -1159,9 +1159,9 @@ public class Game : MonoBehaviour
     [PunRPC]
     public void SetPVPModeRPC(bool b)
     {
-        if(b)
+        if (b)
         {
-            if(PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
             {
                 PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
                 PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
@@ -1181,29 +1181,29 @@ public class Game : MonoBehaviour
             ChessCanvas.SetActive(true);
             // GameManager.instace.isFristMovePawn = true;
             Game.Get().Board.SetActive(true);
-           
-            if(PhotonNetwork.IsMasterClient)
+
+            if (PhotonNetwork.IsMasterClient)
             {
                 playerName.text = PhotonNetwork.PlayerList[0].NickName;
                 opponentName.text = PhotonNetwork.PlayerList[1].NickName;
-                SetProfileImageForPlayer(true,PhotonNetwork.PlayerList[0]); //Set player profile pic
-                SetProfileImageForPlayer(false,PhotonNetwork.PlayerList[1]);// Set oppoenet profile pic
+                SetProfileImageForPlayer(true, PhotonNetwork.PlayerList[0]); //Set player profile pic
+                SetProfileImageForPlayer(false, PhotonNetwork.PlayerList[1]);// Set oppoenet profile pic
             }
             else
             {
                 playerName.text = PhotonNetwork.PlayerList[1].NickName;
                 opponentName.text = PhotonNetwork.PlayerList[0].NickName;
-                SetProfileImageForPlayer(true,PhotonNetwork.PlayerList[1]); //Set player profile pic
-                SetProfileImageForPlayer(false,PhotonNetwork.PlayerList[0]);// Set oppoenet profile pic
+                SetProfileImageForPlayer(true, PhotonNetwork.PlayerList[1]); //Set player profile pic
+                SetProfileImageForPlayer(false, PhotonNetwork.PlayerList[0]);// Set oppoenet profile pic
             }
         }
     }
-    public void SetProfileImageForPlayer(bool isplayer,Player player) 
+    public void SetProfileImageForPlayer(bool isplayer, Player player)
     {
         ExitGames.Client.Photon.Hashtable _playerCustomProperties = player.CustomProperties;
-        if(isplayer)
+        if (isplayer)
         {  //SetProfileImage for player
-            if(Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
+            if (Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
             {
                 playerProfileImage.sprite = GameData.playerSprite;
             }
@@ -1211,7 +1211,7 @@ public class Game : MonoBehaviour
             {
                 int dummypicIndex = -1;
                 dummypicIndex = Convert.ToInt32(_playerCustomProperties[GameData.dummyProfileImageIndex].ToString());
-                if(dummypicIndex != -1)
+                if (dummypicIndex != -1)
                 {
                     playerProfileImage.sprite = GameData.Get().DummyProfile[dummypicIndex];
                 }
@@ -1220,16 +1220,16 @@ public class Game : MonoBehaviour
         else
         {
             Debug.LogError("Not Player");
-            if(Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
+            if (Convert.ToInt32(_playerCustomProperties[GameData.hasProfileConst].ToString()) == 1)
             {
-                if(GameData.opponentSprite == GameData.Get().DummyProfile[0])
+                if (GameData.opponentSprite == GameData.Get().DummyProfile[0])
                 {
                     Debug.LogError("Opponet has profile pic");
                     StartCoroutine(FetchOpponentProfilePicture(_playerCustomProperties[GameData.profileUrl].ToString()));
                 }
-                else 
+                else
                 {
-                  opponentProfileImage.sprite=  GameData.opponentSprite;
+                    opponentProfileImage.sprite = GameData.opponentSprite;
                     Debug.LogError("Opponet has profile pic" + "But not set");
                 }
             }
@@ -1237,7 +1237,7 @@ public class Game : MonoBehaviour
             {
                 int dummypicIndex = -1;
                 dummypicIndex = Convert.ToInt32(_playerCustomProperties[GameData.dummyProfileImageIndex].ToString());
-                if(dummypicIndex != -1)
+                if (dummypicIndex != -1)
                 {
                     opponentProfileImage.sprite = GameData.Get().DummyProfile[dummypicIndex];
                 }
@@ -1257,74 +1257,74 @@ public class Game : MonoBehaviour
         currentPlayer = player;
         //isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
         isLocalPlayerTurn = PhotonNetwork.PlayerList[currentPlayer == "white" ? 0 : 1].IsLocal;
-        if(currentPlayer == "white")
+        if (currentPlayer == "white")
         {
-            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName,PhotonNetwork.PlayerList[0]));
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName, PhotonNetwork.PlayerList[0]));
         }
-        if(currentPlayer != "white")
+        if (currentPlayer != "white")
         {
-            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName,PhotonNetwork.PlayerList[1]));
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
 
-        if(isMyTurn(currentPlayer))
+        if (isMyTurn(currentPlayer))
         {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
-            if(IsKinginCheck)
+            if (IsKinginCheck)
                 Debug.LogError("Checkmate ================> " + IsCheckmate);
-            if(IsCheckmate)
+            if (IsCheckmate)
             {
-                if(MyType == PlayerType.White)
+                if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
             }
         }
     }
     [PunRPC]
-    public void SwitchCurrentPlayer(string player,bool continueTurn)
+    public void SwitchCurrentPlayer(string player, bool continueTurn)
     {
 
         currentPlayer = player;
         //isLocalPlayerTurn = (PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer == "white") || (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white");
         isLocalPlayerTurn = PhotonNetwork.PlayerList[currentPlayer == "white" ? 0 : 1].IsLocal;
-        if(currentPlayer == "white")
+        if (currentPlayer == "white")
         {
-            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName,PhotonNetwork.PlayerList[0]));
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[0].NickName, PhotonNetwork.PlayerList[0]));
         }
-        if(currentPlayer != "white")
+        if (currentPlayer != "white")
         {
-            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName,PhotonNetwork.PlayerList[1]));
+            StartCoroutine(COR_playerTurnNameShow(PhotonNetwork.PlayerList[1].NickName, PhotonNetwork.PlayerList[1]));
         }
 
-        if(isMyTurn(currentPlayer))
+        if (isMyTurn(currentPlayer))
         {
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
-            if(IsKinginCheck)
+            if (IsKinginCheck)
                 Debug.LogError("Checkmate ================> " + IsCheckmate);
-            if(IsCheckmate)
+            if (IsCheckmate)
             {
-                if(MyType == PlayerType.White)
+                if (MyType == PlayerType.White)
                 {
                     Winner(PhotonNetwork.PlayerList[1].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,1);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
                     Winner(PhotonNetwork.PlayerList[0].NickName);
-                    photonView.RPC("PlayerWon",RpcTarget.Others,0);
+                    photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
             }
-            else 
+            else
             {
                 NextTurn();
             }
@@ -1337,10 +1337,10 @@ public class Game : MonoBehaviour
 
         List<Chessman> OppoPieces = Chessman.GetPiecesOfPlayer(OppoType);
         bool isCheck = false;
-        foreach(var item in OppoPieces)
+        foreach (var item in OppoPieces)
         {
             isCheck = item.IsCheckforKing();
-            if(isCheck) { Debug.LogError("Check by Opponent's " + item.type); break; }
+            if (isCheck) { Debug.LogError("Check by Opponent's " + item.type); break; }
         }
         return isCheck;
     }
@@ -1349,12 +1349,12 @@ public class Game : MonoBehaviour
     {
         bool KingLives = true;
         List<Chessman> pieces = Chessman.GetPiecesOfPlayer(MyType);
-        List<PieceType> types_lis = new List<PieceType>() { PieceType.King,PieceType.Queen,PieceType.Rook,PieceType.Bishop,PieceType.Knight,PieceType.Pawn };
-        foreach(var Ptype in types_lis)
+        List<PieceType> types_lis = new List<PieceType>() { PieceType.King, PieceType.Queen, PieceType.Rook, PieceType.Bishop, PieceType.Knight, PieceType.Pawn };
+        foreach (var Ptype in types_lis)
         {
             Chessman piece = pieces.Find((t) => t.type == Ptype);
             KingLives = piece.canDefendKing();
-            if(KingLives) { Debug.LogError("King Defended by " + piece.type); break; }
+            if (KingLives) { Debug.LogError("King Defended by " + piece.type); break; }
         }
         return !KingLives;
     }
@@ -1364,7 +1364,7 @@ public class Game : MonoBehaviour
         return Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn;
     }
 
-    private IEnumerator COR_playerTurnNameShow(string namePlayer,Player _player)
+    private IEnumerator COR_playerTurnNameShow(string namePlayer, Player _player)
     {
         PieceSelectionPanel.SetActive(false);
         PlayerTurnScreen.SetActive(true);
@@ -1380,13 +1380,13 @@ public class Game : MonoBehaviour
         PVPManager.Get().p2Outline.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? false : true);
         PVPManager.Get().chessTurnIndicator.gameObject.SetActive(_currnetTurnPlayer.IsLocal ? true : false);
 
-        if(ChessCanvas.activeSelf)
+        if (ChessCanvas.activeSelf)
         {
-            if(_currnetTurnPlayer.IsLocal)
+            if (_currnetTurnPlayer.IsLocal)
             { PVPManager.manager.StartChessTimer(); }
             else
             {
-                if(PVPManager.manager.moveChoiceConfirmation.activeSelf)
+                if (PVPManager.manager.moveChoiceConfirmation.activeSelf)
                 {
                     PVPManager.manager.moveChoiceConfirmation.SetActive(false);
                 }
@@ -1405,7 +1405,7 @@ public class Game : MonoBehaviour
     {
         PVPManager.Get().updatePlayerAction(action.ToString());
         PVPManager.Get().LastActionUpdated = true;
-        photonView.RPC("UpdateLastAction_RPC",RpcTarget.All,(byte)action);
+        photonView.RPC("UpdateLastAction_RPC", RpcTarget.All, (byte)action);
     }
     [PunRPC]
     public void UpdateLastAction_RPC(byte action)
@@ -1419,7 +1419,7 @@ public class Game : MonoBehaviour
         Debug.Log("Fetching profile picture from URL: " + url);
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
         yield return www.SendWebRequest();
-        if(www.result != UnityWebRequest.Result.Success)
+        if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log("Failed to download profile picture: " + www.error);
         }
@@ -1434,8 +1434,8 @@ public class Game : MonoBehaviour
     }
 }
 [System.Serializable]
-public class BoardPosition 
+public class BoardPosition
 {
-  public  int xBoard,yboard;
+    public int xBoard, yboard;
     public Transform boardPoint;
 }
