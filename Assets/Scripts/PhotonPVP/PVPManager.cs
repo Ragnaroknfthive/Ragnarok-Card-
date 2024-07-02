@@ -106,7 +106,7 @@ public class PVPManager : MonoBehaviour
     public int PlayerChoiceOnce = -1, OpponentChoiceOne = -1, OpponentRangCounter = 0;
     public int[] opponentCardColor = new int[2] { -1, -1 };
     public int[] opponentCardValue = new int[2] { -1, -1 };
-    public List<Sprite> opponentCardSprite = new List<Sprite>();
+    public List<Sprite> opponentCardSprite = new List<Sprite>();//aña
     public Card_SO[] deckFullList;
     public List<RectTransform> OpponentPlayerCardPositions;
     public GameObject BoardCardParent;

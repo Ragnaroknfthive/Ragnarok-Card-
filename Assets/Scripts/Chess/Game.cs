@@ -13,6 +13,11 @@ public enum PlayerAction { idle, attack, counterAttack, defend, engage, brace }
 public enum SpellCardPosition { None, petHomePlayer, petHomeOppoent, petBattlePlayer, perBattleOpponent }
 public class Game : MonoBehaviour
 {
+    [Header("Cesar's Variables")]
+    [SerializeField] private GameObject background;
+    [SerializeField] private GameObject chessBg;
+
+    [Header("Other Variables")]
     public GameObject chesspiece;
     public GameObject movePlate;
 
@@ -241,6 +246,8 @@ public class Game : MonoBehaviour
             //Camera Settings
             Camera.main.transform.Rotate(Vector3.forward, 180f);
             RotatedBoardSpriteObject.transform.Rotate(Vector3.forward, -180);
+            background.transform.Rotate(Vector3.forward, 180f);
+            chessBg.transform.Rotate(Vector3.forward, 180f);
             RotatedBoardSpriteObject.gameObject.SetActive(true);
             if (NewBoard)
                 NewBoard.transform.Rotate(Vector3.forward, 180f);
@@ -1021,7 +1028,7 @@ public class Game : MonoBehaviour
         foreach (Chessman item in DestroyedObjectsOppo)
         {
             GameObject o = Instantiate(DeadPieceImage, OppoPieces);
-            o.GetComponent<Image>().sprite = item.GetSprite();
+            o.GetComponent<UnityEngine.UI.Image>().sprite = item.GetSprite();
         }
     }
     [PunRPC]
@@ -1056,7 +1063,7 @@ public class Game : MonoBehaviour
         foreach (var item in DestroyedObjects)
         {
             GameObject o = Instantiate(reviveLisItem, revivePr);
-            o.GetComponentInChildren<Image>().sprite = item.GetSprite();
+            o.GetComponentInChildren<UnityEngine.UI.Image>().sprite = item.GetSprite();
             o.GetComponent<RevivePieceItem>().id = i;
             i++;
         }
@@ -1172,13 +1179,17 @@ public class Game : MonoBehaviour
                 PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
             }
             ChessCanvas.SetActive(false);
+            chessBg.SetActive(false);
             Game.Get().Board.SetActive(false);
             PVPCanvas.SetActive(true);
+            background.SetActive(true);
         }
         else
         {
             PVPCanvas.SetActive(false);
+            background.SetActive(false);
             ChessCanvas.SetActive(true);
+            chessBg.SetActive(true);
             // GameManager.instace.isFristMovePawn = true;
             Game.Get().Board.SetActive(true);
 
