@@ -2331,7 +2331,7 @@ public class PVPManager : MonoBehaviour
                 //  ShowExtraDamageMessage(0);
                 // Debug.Log("EXTRA DAMAGE %___" + player1weaknessfactor);
                 p1DamageIncreasedby += (isAttackedHigh * 0.05f);
-
+                
                 break;
             case AttackLocation.Low:
 

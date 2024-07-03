@@ -250,6 +250,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             if (FindObjectOfType<Game>()._currnetTurnPlayer == PhotonNetwork.LocalPlayer && reference.type == PieceType.Pawn)
             {
                 GameManager.instace.isFristMovePawn = false;
+                reference.isFirstmove = false;
 
                 //   Debug.LogError("is " + GameManager.instace.isFristMovePawn + " and " + reference.type.ToString());
             }

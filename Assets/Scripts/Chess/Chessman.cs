@@ -46,6 +46,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
     public int xBoard = -1;
     public int yBoard = -1;
+    public bool isFirstmove = true;
 
     public string player;
     public static List<Chessman> pieces = new List<Chessman>();
@@ -186,6 +187,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         Activate();
         pieces.Add(this);
         PieceIndex = (int)data[5];
+        isFirstmove = true;
     }
 
     public void OnInstantiate(object[] data)
@@ -207,6 +209,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         Activate();
         pieces.Add(this);
         PieceIndex = (int)data[5];
+        isFirstmove = true;
 
     }
 
@@ -375,9 +378,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 Game sc = controller.GetComponent<Game>();
                 if (playerType == PlayerType.Black)
                 {
-
-                    if (GameManager.instace.isFristMovePawn)
+                  //  if(GameManager.instace.isFristMovePawn)
+                    if (sc.GetPosition(xBoard,yBoard).GetComponent<Chessman>().isFirstmove)
                     {
+                        sc.GetPosition(xBoard,yBoard).GetComponent<Chessman>().isFirstmove = false;
                         // Debug.LogError("*****Black Two by Two X :" + xBoard + " Y :" + yBoard);
                         //   Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
                         if ((sc.GetPosition(xBoard, yBoard - 2) == null || sc.GetPosition(xBoard, yBoard - 2).GetComponent<Chessman>().player != player) && sc.GetPosition(xBoard, yBoard - 1) == null)
@@ -405,8 +409,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 {
 
 
-                    if (GameManager.instace.isFristMovePawn)
-                    {
+                   // if (GameManager.instace.isFristMovePawn)
+                    if(sc.GetPosition(xBoard,yBoard).GetComponent<Chessman>().isFirstmove)
+                        {
+                        sc.GetPosition(xBoard,yBoard).GetComponent<Chessman>().isFirstmove = false;
 
                         //    Debug.LogError("*****White Two by Two X :" + xBoard + " Y :" + yBoard);
                         //    Debug.LogError("*****FIRST PAWN " + GameManager.instace.isFristMovePawn);
@@ -965,8 +971,11 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             case PieceType.Pawn:
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn && i > 1){
-                    break;
+                    //if(!GameManager.instace.isFristMovePawn && i > 1){
+                   
+                    if(!isFirstmove && i > 1)
+                        {
+                            break;
                 }
                 GameObject[,] prev_present = sc.GetPresent();
                 sc.SetFuture(prev_present);
@@ -1023,8 +1032,11 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn && i > 1){
-                    break;
+                    // if(!GameManager.instace.isFristMovePawn && i > 1){
+                    
+                    if(isFirstmove && i > 1)
+                    {
+                        break;
                 }
                 GameObject[,] prev_present = sc.GetPresent();
                 sc.SetFuture(prev_present);
@@ -1096,8 +1108,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn && i > 1){
-                    break;
+                    //if(!GameManager.instace.isFristMovePawn && i > 1){
+                    if(!isFirstmove && i > 1) { 
+                        break;
                 }
                 if(playerType == PlayerType.Black){
                     if(sc.GetPosition(xBoard-i,yBoard)?.GetComponent<Chessman>().playerType != playerType){
@@ -1115,8 +1128,11 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             }
             for (int i = 1; i <= 2; i++)
             {
-                if(!GameManager.instace.isFristMovePawn && i > 1){
-                    break;
+                    //if(!GameManager.instace.isFristMovePawn && i > 1){
+                    
+                    if(isFirstmove && i > 1)
+                    {
+                        break;
                 }
                 if(playerType == PlayerType.Black){
                     if(sc.GetPosition(xBoard,yBoard-i)?.GetComponent<Chessman>().playerType != playerType){

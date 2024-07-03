@@ -15,7 +15,8 @@ public class LocationObject : MonoBehaviour
     public static List<LocationObject> objects = new List<LocationObject>();
     public TextMeshProUGUI DispText;
     public string LocationName;
-
+    public GameObject PartHitDetails;
+    public TextMeshProUGUI partHitTimeText,paneltiesForBeingHitText;
     
     void Awake()
     {
@@ -45,7 +46,7 @@ public class LocationObject : MonoBehaviour
     private void Start()
     {
         part = GetComponent<Image>();
-        part.color = Color.white - (Color.white * (damaged_amt *  damaged_times));
+        part.color = Color.white - (Color.white * (damaged_amt *  GetHitTimes()));
         DispText.text = "";
     }
     
@@ -55,7 +56,7 @@ public class LocationObject : MonoBehaviour
             objects.Add(this);
         }
         part = GetComponent<Image>();
-        part.color = Color.white - (Color.white * (damaged_amt *  damaged_times));
+        part.color = Color.white - (Color.white * (damaged_amt *  GetHitTimes()));
         DispText.text = "";
     }
 
@@ -63,10 +64,42 @@ public class LocationObject : MonoBehaviour
     public void OnPointerEnter(){
         part.color = HighlightColor;
         DispText.text = LocationName;
+
+        partHitTimeText.text ="Hit : "+ GetHitTimes().ToString();
+       
+        paneltiesForBeingHitText.text = "Damage : " + damaged_amt.ToString();
+        PartHitDetails.SetActive(true);
+        Debug.LogError("Name of Location " + LocationName);
+    }
+    public int GetHitTimes() 
+    {
+        int attackTimes = 0;
+        switch(LocationName)
+        {
+            case "High":
+                attackTimes =  PVPManager.manager.isAttackedHigh;
+                break;
+            case "Left":
+                attackTimes = PVPManager.manager.isAttackedOnLeftSide;
+                break;
+            case "Low":
+                attackTimes = PVPManager.manager.isAttackedLow;
+                break;
+            case "Middle":
+                attackTimes = PVPManager.manager.isAttackedInMiddle;
+                break;
+            case "Right":
+                attackTimes = PVPManager.manager.isAttackedOnRightSide;
+                break;
+            default:
+                break;
+        }
+        return attackTimes;
     }
 
     public void OnPointerExit(){
-        part.color = Color.white - (Color.white * (damaged_amt *  damaged_times));
+        part.color = Color.white - (Color.white * (damaged_amt *  GetHitTimes()));
+        PartHitDetails.SetActive(false);
     }
 
     public void OnPointerDown(){
