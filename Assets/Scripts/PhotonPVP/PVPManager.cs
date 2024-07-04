@@ -247,7 +247,6 @@ public class PVPManager : MonoBehaviour
         //{
 
 
-
         while (ChessTurnTimer > 0)
         {
             yield return new WaitForSeconds(1);

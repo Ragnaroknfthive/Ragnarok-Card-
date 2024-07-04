@@ -17,43 +17,33 @@ public class Game : MonoBehaviour
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject chessBg;
 
+    [Header("")]
     [Header("Other Variables")]
     public GameObject chesspiece;
     public GameObject movePlate;
-
-
     public GameObject Board, RotatedBoardSpriteObject;
     public List<BoardPosition> boardPositions = new List<BoardPosition>();
     [SerializeField] private GameObject[,] positions = new GameObject[8, 8];
     [SerializeField] private Chessman[] playerBlack = new Chessman[10];
     [SerializeField] private Chessman[] playerWhite = new Chessman[10];
-
     [SerializeField] private GameObject[,] Fpositions = new GameObject[8, 8];
-
     private string currentPlayer = "white";
-
     public bool isLocalPlayerTurn;
     public GameObject ChessCanvas;
     public GameObject PVPCanvas;
     private PhotonView photonView;
-
     private bool gameOver = false;
     private static Game game;
     public CharacterData defChar;
-
     public GameObject ColorPlate, ColorPlateIndicator;
     public GameObject[,] plates = new GameObject[8, 8];
     public GameObject[,] platesIndicator = new GameObject[8, 8];
     public Color BoardBlack, BoardWhite;
     public GameObject board;
-
     public GameObject RematchPopUp, RematchYesNo;
     public Text RematchTxt;
-
     public bool RestartButtonClicked;
-
     public static bool setUpCalled;
-
     public GameObject PlayerTurnScreen;
     public Text PlayerTurnScreenText;
     public string LastAttackerColor = "";
@@ -63,16 +53,13 @@ public class Game : MonoBehaviour
     public int BetAmount = 0;
     public int localBetAmount = 0;
     public PlayerAction lastAction = PlayerAction.idle;
-
     [System.Serializable]
     public class PlayerTrunName
     {
         public Player _player;
         public bool _isTurn;
     }
-
     public List<PlayerTrunName> _playerTurnList = new List<PlayerTrunName>();
-
     public Player _currnetTurnPlayer;
     public List<int> PlayerStrengths = new List<int>(2);
     public List<string> PokerHandResults = new List<string>(2) { "", "" };
@@ -80,22 +67,15 @@ public class Game : MonoBehaviour
     public List<int> MyHighCardList = new List<int>() { -1, -1, -1, -1, -1 };
     public List<int> OpponentHighCardList = new List<int>() { -1, -1, -1, -1, -1 };
     public GameObject loadingScreen;
-
     public List<Chessman> DestroyedObjects = new List<Chessman>();
     public List<Chessman> DestroyedObjectsOppo = new List<Chessman>();
-
     public PlayerType MyType, OppoType;
-
     public Text WinnerTxT;
     public Text RestartTxT;
-
     public GameObject NewBoard;
-
     public int MyStamina, OppoStamina;
-
     public Transform myPieces, OppoPieces;
     public GameObject DeadPieceImage;
-
     public TMPro.TextMeshProUGUI playerName, opponentName;
     public Image playerProfileImage, opponentProfileImage;
     public void IncreaseStamina()
@@ -731,7 +711,10 @@ public class Game : MonoBehaviour
         StartCoroutine("LeaveRoom");
 
     }
-
+    public void GetExit()
+    {
+        StartCoroutine("LeaveRoom");
+    }
     IEnumerator LeaveRoom()
     {
         yield return new WaitForSeconds(2f);
@@ -1180,7 +1163,7 @@ public class Game : MonoBehaviour
             }
             ChessCanvas.SetActive(false);
             chessBg.SetActive(false);
-            Game.Get().Board.SetActive(false);
+            Board.SetActive(false);
             PVPCanvas.SetActive(true);
             background.SetActive(true);
         }
@@ -1191,7 +1174,7 @@ public class Game : MonoBehaviour
             ChessCanvas.SetActive(true);
             chessBg.SetActive(true);
             // GameManager.instace.isFristMovePawn = true;
-            Game.Get().Board.SetActive(true);
+            Board.SetActive(true);
 
             if (PhotonNetwork.IsMasterClient)
             {
