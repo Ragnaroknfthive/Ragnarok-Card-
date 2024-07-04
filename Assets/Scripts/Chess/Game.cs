@@ -16,6 +16,8 @@ public class Game : MonoBehaviour
     [Header("Cesar's Variables")]
     [SerializeField] private GameObject background;
     [SerializeField] private GameObject chessBg;
+    [SerializeField] private GameObject ScrollView;
+    [SerializeField] private GameObject ChatPanel;
 
     [Header("")]
     [Header("Other Variables")]
@@ -46,6 +48,8 @@ public class Game : MonoBehaviour
     public static bool setUpCalled;
     public GameObject PlayerTurnScreen;
     public Text PlayerTurnScreenText;
+    [Header(" ")]
+    [Header("Poker Variables")]
     public string LastAttackerColor = "";
     public bool IsDefender = false;
     public int turn = 0;
@@ -96,18 +100,12 @@ public class Game : MonoBehaviour
         return game;
     }
 
-    private void Awake()
+    public void Awake()
     {
         game = this;
     }
 
-    public int GetMaxY()
-    {
-        return positions.GetLength(1);
-    }
-
-    // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
         foreach (var item in PhotonNetwork.PlayerList)
         {
@@ -222,21 +220,14 @@ public class Game : MonoBehaviour
         photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
         if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-
             //Camera Settings
+            //ScrollView.transform.Rotate(Vector3.forward, 180f);
             Camera.main.transform.Rotate(Vector3.forward, 180f);
             RotatedBoardSpriteObject.transform.Rotate(Vector3.forward, -180);
             background.transform.Rotate(Vector3.forward, 180f);
             chessBg.transform.Rotate(Vector3.forward, 180f);
             RotatedBoardSpriteObject.gameObject.SetActive(true);
-            if (NewBoard)
-                NewBoard.transform.Rotate(Vector3.forward, 180f);
-            // foreach (Transform item in Board.transform)
-            // {
-            //     item.Rotate(Vector3.forward, 180f);
-            // }
-
-
+            if (NewBoard) NewBoard.transform.Rotate(Vector3.forward, 180f);
         }
         SetPVPMode(false);
 
@@ -252,11 +243,37 @@ public class Game : MonoBehaviour
         gameOver = false;
         MyStamina = 10;
         OppoStamina = 10;
-        // foreach (var item in positions)
-        // {
-        //     Debug.Log(item);
-        // }
     }
+
+    public void Update()
+    {
+        if (gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked)
+        {
+            RestartClicked();
+        }
+        if (PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
+        {
+            if (GameObject.FindObjectsOfType<MovePlate>() != null)
+            {
+
+                MovePlate[] movePlates = GameObject.FindObjectsOfType<MovePlate>();
+                foreach (var item in movePlates)
+                {
+                    item.GetComponent<SpriteRenderer>().enabled = false;
+                }
+
+            }
+        }
+
+    }
+
+    public int GetMaxY()
+    {
+        return positions.GetLength(1);
+    }
+
+    // Start is called before the first frame update
+
     public IEnumerator SetLoadingScreenOnOff(bool isOn, float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -562,8 +579,6 @@ public class Game : MonoBehaviour
     }
 
 
-
-
     public string GetCurrentPlayer()
     {
         return currentPlayer;
@@ -663,27 +678,6 @@ public class Game : MonoBehaviour
         }
     }
     //Allow Moveplate display only for local player
-    public void Update()
-    {
-        if (gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked)
-        {
-            RestartClicked();
-        }
-        if (PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
-        {
-            if (GameObject.FindObjectsOfType<MovePlate>() != null)
-            {
-
-                MovePlate[] movePlates = GameObject.FindObjectsOfType<MovePlate>();
-                foreach (var item in movePlates)
-                {
-                    item.GetComponent<SpriteRenderer>().enabled = false;
-                }
-
-            }
-        }
-
-    }
 
     public void RestartClicked()
     {
@@ -1145,6 +1139,11 @@ public class Game : MonoBehaviour
             NextTurn();
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// PVP Mode
 
     [PunRPC]
     public void SetPVPModeRPC(bool b)
@@ -1161,6 +1160,7 @@ public class Game : MonoBehaviour
                 PVPManager.Get().player1.GetComponent<Text>().text = PhotonNetwork.PlayerList[1].NickName;
                 PVPManager.Get().player2.GetComponent<Text>().text = PhotonNetwork.PlayerList[0].NickName;
             }
+            //ChatPanel.transform.position = new Vector3(-700, 35, 0);
             ChessCanvas.SetActive(false);
             chessBg.SetActive(false);
             Board.SetActive(false);
@@ -1169,6 +1169,7 @@ public class Game : MonoBehaviour
         }
         else
         {
+            //ChatPanel.transform.position = new Vector3(685, -250, 0);
             PVPCanvas.SetActive(false);
             background.SetActive(false);
             ChessCanvas.SetActive(true);
