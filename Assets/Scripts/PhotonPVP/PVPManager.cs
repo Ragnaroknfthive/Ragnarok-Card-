@@ -224,7 +224,14 @@ public class PVPManager : MonoBehaviour
         Debug.Log("a is " + a);
         Debug.Log("<color=yellow> pvp manager start  </color>");
     }
-
+    /// <summary>
+    /// Not in use but kept to avoid any issues
+    /// </summary>
+    public void ShowSpeedAttackSlider()
+    {
+        //AttackChoices.SetActive(false);
+        //speedAttackChoices.SetActive(true);
+    }
     /// <summary>
     /// Show Location choices and set respective text for "Attack/Defence" location selection
     /// </summary>
@@ -1308,15 +1315,7 @@ public class PVPManager : MonoBehaviour
         UpdateHMTxt();
         // isCheck = false;
     }
-    /// <summary>
-    /// Not used now
-    /// </summary>
-    /// <param name="_Last_color"></param>
-    [PunRPC]
-    public void RPC_SetLastAttackerColor(string _Last_color)
-    {
-        Game.Get().LastAttackerColor = _Last_color;
-    }
+    
     /// <summary>
     /// RPC- Set player's  attack choice on network
     /// </summary>
@@ -2278,13 +2277,7 @@ public class PVPManager : MonoBehaviour
         }
     }
 
-    //Not used now
-    [PunRPC]
-    public void RPC_SetOthersAsDefenders(float damageVal,bool isDefender = false)
-    {
-        Game.Get().IsDefender = isDefender;
-        Game.Get().HealthDemage = damageVal;
-    }
+    
     /// <summary>
     /// RPC to set other player strength of poker hand
     /// </summary>

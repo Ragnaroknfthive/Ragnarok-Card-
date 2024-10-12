@@ -1,3 +1,8 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: Game.cs
+//FileType: C# Source file
+//Description : This script is used to handles chess board setup and other logic related to game
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,140 +14,150 @@ using System.Linq;
 using UnityEngine.Networking;
 using System;
 
+/// <summary>
+///  Player actions in poker game
+/// </summary>
 public enum PlayerAction { idle, attack, counterAttack, defend, engage, brace }
+/// <summary>
+/// Spell card position types
+/// </summary>
 public enum SpellCardPosition { None, petHomePlayer, petHomeOppoent, petBattlePlayer, perBattleOpponent }
 public class Game : MonoBehaviour
 {
-    public GameObject chesspiece;
-    public GameObject movePlate;
+    public GameObject chesspiece;           //Chess piece prefab
+    public GameObject movePlate;            //Sqare object used to display available moves for player's piece
 
 
-    public GameObject Board,RotatedBoardSpriteObject;
-    public List<BoardPosition> boardPositions = new List<BoardPosition>();
-    [SerializeField] private GameObject[,] positions = new GameObject[8,8];
-    [SerializeField] private Chessman[] playerBlack = new Chessman[10];
-    [SerializeField] private Chessman[] playerWhite = new Chessman[10];
+    public GameObject Board,RotatedBoardSpriteObject;                               //Chess board gameobject, Rotated baord(for opponent view)
+    public List<BoardPosition> boardPositions = new List<BoardPosition>();          //Chess board board positions class list which holds details of x and y coordinate and transform reference for that board position
+    [SerializeField] private GameObject[,] positions = new GameObject[8,8];         //Position objects
+    [SerializeField] private Chessman[] playerBlack = new Chessman[10];             //Black player pieces
+    [SerializeField] private Chessman[] playerWhite = new Chessman[10];             //White player pieces
 
-    [SerializeField] private GameObject[,] Fpositions = new GameObject[8,8];
+    [SerializeField] private GameObject[,] Fpositions = new GameObject[8,8];        //Used for chess game functionality 
 
-    private string currentPlayer = "white";
+    private string currentPlayer = "white";                                         //current player type string- white / black
 
-    public bool isLocalPlayerTurn;
-    public GameObject ChessCanvas;
-    public GameObject PVPCanvas;
-    private PhotonView photonView;
+    public bool isLocalPlayerTurn;                                                  //Used to check if it is local player turn or not in chess game
+    public GameObject ChessCanvas;                                                  //Chess game UI canvas
+    public GameObject PVPCanvas;                                                    //Poker game UI canvas 
+    private PhotonView photonView;                                                  //Photon view on this object
 
-    private bool gameOver = false;
+    private bool gameOver = false;                                                  //Used to check game over for chess game
     private static Game game;
     public CharacterData defChar;
 
-    public GameObject ColorPlate,ColorPlateIndicator;
-    public GameObject[,] plates = new GameObject[8,8];
-    public GameObject[,] platesIndicator = new GameObject[8,8];
-    public Color BoardBlack, BoardWhite;
-    public GameObject board;
+    public GameObject ColorPlate,ColorPlateIndicator;                               //Chess board box prefab and highlight object prefab            
+    public GameObject[,] plates = new GameObject[8,8];                              //List of plates objects on board                          
+    public GameObject[,] platesIndicator = new GameObject[8,8];                     //Highlight object for box
+    public Color BoardBlack, BoardWhite;                                            //Board colors
+    public GameObject board;                                                        //Chess board reference
 
-    public GameObject RematchPopUp, RematchYesNo;
-    public Text RematchTxt;
+    public GameObject RematchPopUp, RematchYesNo;                                   //Rematch popup gameobject and Rematch confirmation popup game object
+    public Text RematchTxt;                                                         //Rematch text
 
-    public bool RestartButtonClicked;
+    public bool RestartButtonClicked;                                              //Used to check if restart button click for chess board
 
-    public static bool setUpCalled;
+    public static bool setUpCalled;                                                //Booleand used to make sure that setup functionality should be called once
 
-    public GameObject PlayerTurnScreen;
-    public Text PlayerTurnScreenText;
-    public string LastAttackerColor = "";
-    public bool IsDefender = false;
+    public GameObject PlayerTurnScreen;                                             //Player turn display canvas 
+    public Text PlayerTurnScreenText;                                               //Player turn screen text object
+                                                  
+    public bool IsDefender = false;                                                 //Used to decide if player is defender or not
     public int turn = 0;
-    public float HealthDemage = 0;
-    public int BetAmount = 0;
-    public int localBetAmount = 0;
-    public PlayerAction lastAction = PlayerAction.idle;
+    
+    public int BetAmount = 0;                                                       
+    public int localBetAmount = 0;                                                  //Used to set hold reference of player bet amount value
+    public PlayerAction lastAction = PlayerAction.idle;                             //Player's last action
 
+    /// <summary>
+    /// Not used in logic now
+    /// </summary>
     [System.Serializable]
-    public class PlayerTrunName
+    public class PlayerTrunName                                                     
     {
         public Player _player;
         public bool _isTurn;
     }
 
-    public List<PlayerTrunName> _playerTurnList = new List<PlayerTrunName>();
+    public List<PlayerTrunName> _playerTurnList = new List<PlayerTrunName>(); //Not in use now
 
-    public Player _currnetTurnPlayer;
-    public List<int> PlayerStrengths = new List<int>(2);
-    public List<string> PokerHandResults = new List<string>(2) { "","" };
+    public Player _currnetTurnPlayer;                                         //Turn player reference - Photon network player
+    public List<int> PlayerStrengths = new List<int>(2);                      //Used to hold player strength (Poker hand strength) list (player and opponent)
+    public List<string> PokerHandResults = new List<string>(2) { "","" };    //Pokerhand result string..
     public int MyHighCardValue = 0, OpponentHighCardValue = 0, MySecondHighCardValue = -1, OpponentSecondHighCardValue = -1;
+    //Player and Oppoent's  highest and second highest card values
     public List<int> MyHighCardList = new List<int>() { -1,-1,-1,-1,-1 };
+    //List of high value cards in player hand
     public List<int> OpponentHighCardList = new List<int>() { -1,-1,-1,-1,-1 };
-    public GameObject loadingScreen;
+    //List of high value cards in opponent hand
+    public GameObject loadingScreen;                                       //Loading screen object reference
 
-    public List<Chessman> DestroyedObjects = new List<Chessman>();
-    public List<Chessman> DestroyedObjectsOppo = new List<Chessman>();
+    public List<Chessman> DestroyedObjects = new List<Chessman>();         //Destroyed/beaten chess pieces of player
+    public List<Chessman> DestroyedObjectsOppo = new List<Chessman>();     //Destroyed/beaten chess pieces of opponent
 
-    public PlayerType MyType, OppoType;
+    public PlayerType MyType, OppoType;                                    //Player's chess piece type black/ white
 
-    public Text WinnerTxT;
-    public Text RestartTxT;
+    public Text WinnerTxT;                                                 //Winner text object reference for chess game
+    public Text RestartTxT;                                                //Restart game text
 
     public GameObject NewBoard;
 
-    public int MyStamina, OppoStamina;
+    public int MyStamina, OppoStamina;                                      //Player amd Opponent stamina                                
 
-    public Transform myPieces, OppoPieces;
-    public GameObject DeadPieceImage;
+    public Transform myPieces, OppoPieces;                                  //Player and Oppoent beaten pieces position parent transform
+    public GameObject DeadPieceImage;                                       //Dead piece prefab
 
-    public TMPro.TextMeshProUGUI playerName, opponentName;
-    public Image playerProfileImage, opponentProfileImage;
-    public void IncreaseStamina()
+    public TMPro.TextMeshProUGUI playerName, opponentName;                  //Player and Opponent name text object reference for chess game screem
+    public Image playerProfileImage, opponentProfileImage;                  //Player and Oppoent profile image in chess game
+    public void IncreaseStamina()                                           //Increase player stamina
     {
         MyStamina++;
         MyStamina = Mathf.Clamp(MyStamina,0,10);
         photonView.RPC("IncreaseStaminaRPC",RpcTarget.Others);
     }
+    /// <summary>
+    /// RPC- stamina increase 
+    /// </summary>
     [PunRPC]
     public void IncreaseStaminaRPC()
     {
         OppoStamina++;
         OppoStamina = Mathf.Clamp(OppoStamina,0,10);
     }
-
+    /// <summary>
+    /// Get Game script instance
+    /// </summary>
+    /// <returns></returns>
     public static Game Get()
     {
         return game;
     }
-
+    /// <summary>
+    /// Set instance
+    /// </summary>
     private void Awake()
     {
         game = this;
     }
-
+    /// <summary>
+    /// Get last Y position on chess board
+    /// </summary>
+    /// <returns>Max Y position on board</returns>
     public int GetMaxY()
     {
         return positions.GetLength(1);
     }
 
-    // Start is called before the first frame update
+    // Setup chessboard and start chess game
     void Start()
     {
-        foreach(var item in PhotonNetwork.PlayerList)
-        {
-
-        }
         MyType = PhotonNetwork.LocalPlayer.IsMasterClient ? PlayerType.White : PlayerType.Black;
         OppoType = MyType == PlayerType.White ? PlayerType.Black : PlayerType.White;
         //PhotonNetwork.AutomaticallySyncScene = true;
         PlayerStrengths.Add(0);
         PlayerStrengths.Add(0);
-        //if(PhotonNetwork.IsMasterClient) 
-        //{
-        //    playerName.text = PhotonNetwork.PlayerList[0].NickName;
-        //    opponentName.text = PhotonNetwork.PlayerList[1].NickName;
-        //}
-        //else 
-        //{
-        //    playerName.text = PhotonNetwork.PlayerList[1].NickName;
-        //    opponentName.text = PhotonNetwork.PlayerList[0].NickName;
-        //}
+        
         // Get board width and height
         Renderer boardRenderer = board.GetComponent<Renderer>();
         float boardWidth = boardRenderer.bounds.size.x;
@@ -165,14 +180,11 @@ public class Game : MonoBehaviour
                 {
                     Debug.LogError("COLOR PLATE + X pos " + plateX + "Y pos " + plateY);
                 }
-                //float plateX = ((i * plateWidth-.150f) - (boardWidth / 2) + (plateWidth - .150f / 2) + board.transform.position.x);// - 0.150f);  ;//-0.200f;
-                //float plateY = ((j * plateHeight-0.300f) - (boardHeight / 2) + (plateHeight - 0.300f / 2) + board.transform.position.y) ;//- 0.300f); ;//-0.500f;
-                //if(i == 0 && j < 4)
-               // {
+               
                     Vector3 pos1 = Game.Get().boardPositions.Find(x => x.xBoard == i && x.yboard == j).boardPoint.position;
                     plateX = pos1.x;
                     plateY = pos1.y;
-                //}
+               
                 plates[i,j] = Instantiate(ColorPlate,new Vector3(plateX,plateY,-0.1f),Quaternion.identity);
                 plates[i,j].transform.SetParent(board.transform);
                // plates[i, j].transform.localScale = new Vector3(plateWidth, plateHeight, 1f);
@@ -244,12 +256,6 @@ public class Game : MonoBehaviour
             RotatedBoardSpriteObject.gameObject.SetActive(true);
             if(NewBoard)
             NewBoard.transform.Rotate(Vector3.forward,180f);
-            // foreach (Transform item in Board.transform)
-            // {
-            //     item.Rotate(Vector3.forward, 180f);
-            // }
-          
-
         }
         SetPVPMode(false);
 
@@ -265,11 +271,14 @@ public class Game : MonoBehaviour
         gameOver = false;
         MyStamina = 10;
         OppoStamina = 10;
-        // foreach (var item in positions)
-        // {
-        //     Debug.Log(item);
-        // }
+        
     }
+    /// <summary>
+    /// Enable/Disable loading screen
+    /// </summary>
+    /// <param name="isOn">True- enable loaing screen, False- Disable loading screen</param>
+    /// <param name="delay">waiting time to execute this function</param>
+    /// <returns></returns>
     public IEnumerator SetLoadingScreenOnOff(bool isOn,float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -369,14 +378,14 @@ public class Game : MonoBehaviour
             Create("white_pawn",PieceType.Pawn,PlayerType.White, 1, 2,36),
             Create("white_pawn",PieceType.Pawn,PlayerType.White, 1, 3,37)
         };
-        //Create("white_pawn",PieceType.Pawn,PlayerType.White, 5, 1,12), Create("white_pawn",PieceType.Pawn,PlayerType.White, 4, 1,13), Create("white_pawn",PieceType.Pawn,PlayerType.White, 3, 1,14),
-        //Create("white_pawn",PieceType.Pawn,PlayerType.White, 6, 1,16), Create("white_pawn",PieceType.Pawn,PlayerType.White, 7, 1,15)};
-        //}
+        
         yield return new WaitForSeconds(0.2f);
 
         photonView.RPC("SetPosRPC",RpcTarget.All);
     }
-
+    /// <summary>
+    /// RPC- Set positiong of chess pieces 
+    /// </summary>
     [PunRPC]
     void SetPosRPC()
     {
@@ -396,7 +405,6 @@ public class Game : MonoBehaviour
             }
             foreach(var item in playerWhite)
             {
-                //      Debug.LogError("name : "+item.name);
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f,0f,180f));
                 //item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
@@ -408,11 +416,13 @@ public class Game : MonoBehaviour
         {
             SetPosition(playerBlack[i]);
             SetPosition(playerWhite[i]);
-
-            //Debug.Log(playerWhite[i].GetXboard());
         }
     }
-
+    /// <summary>
+    /// Get character id from chess piece type
+    /// </summary>
+    /// <param name="type">Chess piece type</param>
+    /// <returns>id</returns>
     string getCharId(PieceType type)
     {
         switch(type)
@@ -434,31 +444,29 @@ public class Game : MonoBehaviour
                 return "Human";
         }
     }
-
+    /// <summary>
+    /// Create chess piece
+    /// </summary>
+    /// <param name="name">Piece name</param>
+    /// <param name="type">Piece type</param>
+    /// <param name="ptype">Player type(Black/White)</param>
+    /// <param name="x">X position on board</param>
+    /// <param name="y">Y position on board</param>
+    /// <param name="id">piece id</param>
+    /// <param name="cid">character id</param>
+    /// <returns></returns>
     public Chessman Create(string name,PieceType type,PlayerType ptype,int x,int y,int id,string cid = null)
     {
         cid = getCharId(type);
         object[] cinit = new object[] { name,type,ptype,x,y,id,cid };
-        //photonView.RPC("CreateObj",RpcTarget.All,cinit);
         GameObject obj = PhotonNetwork.Instantiate("chesspiece",new Vector3(0,0,-1),Quaternion.identity,0,cinit) as GameObject;
-        // obj.transform.SetParent(Board.transform);
-        // Chessman cm = obj.GetComponent<Chessman>();
-        // cm.name = name;
-        // cm.type = type;
-        // cm.playerType = ptype;
-        // cm.SetXBoard(x);
-        // cm.SetYBoard(y);
-        // cm.Activate();
         return null;
     }
 
-    [PunRPC]
-    public void CreateObj(object[] cinit)
-    {
-        GameObject ob = Instantiate(chesspiece,new Vector3(0f,0f,-1f),Quaternion.identity);
-        ob.GetComponent<Chessman>().OnInstantiate(cinit);
-    }
-
+   /// <summary>
+   /// Set chess piece position
+   /// </summary>
+   /// <param name="obj">Chess piece script</param>
     public void SetPosition(Chessman obj)
     {
         positions[obj.GetXboard(),obj.GetYboard()] = obj.gameObject;
@@ -482,7 +490,11 @@ public class Game : MonoBehaviour
      //   }
 
     }
-
+    /// <summary>
+    /// Set empty position without chess piece
+    /// </summary>
+    /// <param name="x">X position</param>
+    /// <param name="y">Y position</param>
     public void SetPositionsEmpty(int x,int y)
     {
         positions[x,y] = null;
@@ -497,17 +509,28 @@ public class Game : MonoBehaviour
             srIndicator.color = c;
         }
     }
-
+    /// <summary>
+    /// Get object for the given coordinates on board
+    /// </summary>
+    /// <param name="x">X position</param>
+    /// <param name="y">Y position</param>
+    /// <returns></returns>
     public GameObject GetPosition(int x,int y)
     {
         return positions[x,y];
     }
+    /// <summary>
+    /// Check if position exists onboard or not
+    /// </summary>
     public bool PositionOnBoard(int x,int y)
     {
         if(x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
         return true;
     }
-
+    /// <summary>
+    /// Set present objects on positions
+    /// </summary>
+    /// <param name="data">Gameobjects on board</param>
     public void SetPresent(GameObject[,] data)
     {
         positions = new GameObject[data.GetLength(0),data.GetLength(1)];
@@ -519,7 +542,10 @@ public class Game : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// Get present objects on oboard
+    /// </summary>
+    /// <returns>Array of objects</returns>
     public GameObject[,] GetPresent()
     {
         GameObject[,] data = new GameObject[positions.GetLength(0),positions.GetLength(1)];
@@ -532,7 +558,10 @@ public class Game : MonoBehaviour
         }
         return data;
     }
-
+    /// <summary>
+    /// Get future object list
+    /// </summary>
+    /// <returns></returns>
     public GameObject[,] GetFuture()
     {
         GameObject[,] data = new GameObject[Fpositions.GetLength(0),Fpositions.GetLength(1)];
@@ -545,6 +574,10 @@ public class Game : MonoBehaviour
         }
         return data;
     }
+    /// <summary>
+    /// Set future object list for chess board
+    /// </summary>
+    /// <param name="data"></param>
     public void SetFuture(GameObject[,] data)
     {
         Fpositions = new GameObject[data.GetLength(0),data.GetLength(1)];
@@ -556,37 +589,58 @@ public class Game : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Set future positions for given chess piece
+    /// </summary>
+    /// <param name="obj">Chess piece</param>
+    /// <param name="x">current x position</param>
+    /// <param name="y">current y position</param>
     public void SetFuturePosition(Chessman obj,int x,int y)
     {
         Fpositions[x,y] = obj?.gameObject;
     }
+    /// <summary>
+    /// Set future x position empty for given x and y
+    /// </summary>
     public void SetFuturePositionsEmpty(int x,int y)
     {
         Fpositions[x,y] = null;
     }
+    /// <summary>
+    /// Get single future position object with respect to given x and y position
+    /// </summary>
     public GameObject GetFuturePosition(int x,int y)
     {
         return Fpositions[x,y];
     }
+    /// <summary>
+    /// Returns true if future position exists on board for the given x and y
+    /// </summary>
     public bool FuturePositionOnBoard(int x,int y)
     {
         if(x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
         return true;
     }
 
-
-
-
+    /// <summary>
+    /// Get current player name string
+    /// </summary>
+    /// <returns>Player name</returns>
     public string GetCurrentPlayer()
     {
         return currentPlayer;
     }
-
+    /// <summary>
+    /// Get chess game over boolean value
+    /// </summary>
+    /// <returns></returns>
     public bool IsGameOver()
     {
         return gameOver;
     }
-
+    /// <summary>
+    /// Change turn in Chess game
+    /// </summary>
     public void NextTurn()
     {
         if(IsGameOver())
@@ -631,6 +685,9 @@ public class Game : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Continue same player turn in chess game
+    /// </summary>
     public void  NextTurnContinue()
     {
         if(IsGameOver())
@@ -697,13 +754,18 @@ public class Game : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Restart Chess game functionality 
+    /// </summary>
     public void RestartClicked()
     {
         RestartButtonClicked = true;
         photonView.RPC("ShowRematch",RpcTarget.AllBuffered,PhotonNetwork.LocalPlayer.NickName);
     }
-
+    /// <summary>
+    /// Rematch choice RPC trigger
+    /// </summary>
+    /// <param name="i">Confirmation choice 0- Rejected in case of Reject rematch</param>
     public void RematchChoice(int i)
     {
         if(i == 0)
@@ -715,7 +777,10 @@ public class Game : MonoBehaviour
             photonView.RPC("RestartRPC",RpcTarget.AllBuffered);
         }
     }
-
+    /// <summary>
+    /// RPC: Leave room Rematch rejected for chess game
+    /// </summary>
+    /// <param name="HeWhoGoes"></param>
     [PunRPC]
     void RematchRejected(Player HeWhoGoes)
     {
@@ -724,7 +789,10 @@ public class Game : MonoBehaviour
         StartCoroutine("LeaveRoom");
 
     }
-
+    /// <summary>
+    /// Leave room coroutine
+    /// </summary>
+    /// <returns></returns>
     IEnumerator LeaveRoom()
     {
         yield return new WaitForSeconds(2f);
@@ -732,7 +800,10 @@ public class Game : MonoBehaviour
         PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("MainMenu");
     }
-
+    /// <summary>
+    /// Show rematch popup
+    /// </summary>
+    /// <param name="name"></param>
     [PunRPC]
     public void ShowRematch(string name)
     {
@@ -751,20 +822,12 @@ public class Game : MonoBehaviour
         RestartButtonClicked = true;
     }
 
-
+    /// <summary>
+    /// RPC : Restart game
+    /// </summary>
     [PunRPC]
     void RestartRPC()
     {
-        // foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
-        // {
-
-        // }
-
-        // foreach (var item in plates)
-        // {
-        //    Destroy(item);
-        // }
-
         if(gameOver == true)
         {
             gameOver = false;
@@ -775,34 +838,42 @@ public class Game : MonoBehaviour
             SceneManager.LoadScene("Game");
         }
     }
-
+    /// <summary>
+    /// Set winner text for player in chess game
+    /// </summary>
+    /// <param name="playerWinner">player name</param>
     public void Winner(string playerWinner)
     {
         gameOver = true;
-
         WinnerTxT.enabled = true;
         WinnerTxT.text = playerWinner + " is the winner";
-
         RestartTxT.enabled = true;
-
         PVPManager.manager.TimerObject.SetActive(false);
-
-
     }
-
+    /// <summary>
+    /// RPC :Setup pvp mode - poker game setup
+    /// </summary>
+    /// <param name="b">True :Set Poker mode, False: Set chess mode</param>
     public void SetPVPMode(bool b)
     {
         photonView.RPC("SetPVPModeRPC",RpcTarget.All,b);
     }
-
+    /// <summary>
+    /// Trigger Chess mode winner RPC
+    /// </summary>
+    /// <param name="attackerWon">Is attacker won match</param>
+    /// <param name="isAttackerMaster">If attacker is masterclient</param>
+    /// <param name="p1Pos">player position</param>
+    /// <param name="p2Pos">opponent position</param>
     public void HandleWin(bool attackerWon,bool isAttackerMaster,Vector2 p1Pos,Vector2 p2Pos)
     {
         if(PhotonNetwork.LocalPlayer.IsMasterClient)
             photonView.RPC("HandleWinRPC",RpcTarget.All,attackerWon,isAttackerMaster,p1Pos,p2Pos);
     }
 
-
-
+    /// <summary>
+    /// Close button click event (Leave room and show main menu)
+    /// </summary>
     public void CloseClick()
     {
         PhotonNetwork.LeaveRoom();
@@ -811,7 +882,13 @@ public class Game : MonoBehaviour
 
 
     #region RPC Calls
-
+    /// <summary>
+    /// RPC for Handle win/lose condition in chess
+    /// </summary>
+    /// <param name="attackerWon">Is attacker won match</param>
+    /// <param name="isAttackerMaster">If attacker is masterclient</param>
+    /// <param name="p1Pos">player position</param>
+    /// <param name="p2Pos">opponent position</param>
     [PunRPC]
     public void HandleWinRPC(bool attackerWon,bool isAttackerMaster,Vector2 p1Pos,Vector2 p2Pos)
     {
@@ -880,8 +957,10 @@ public class Game : MonoBehaviour
         //         NextTurn();
 
     }
-
-
+    /// <summary>
+    /// Destroy beaten piece object
+    /// </summary>
+    /// <param name="man">chess piece</param>
     public void DestroyPieceObject(Chessman man)
     {
         //  Debug.LogError("Adding : "+man.type+" to "+MyType);
@@ -924,6 +1003,10 @@ public class Game : MonoBehaviour
 
         UpdateDeadPieces();
     }
+    /// <summary>
+    /// Destroy piece object in case of pawn taken
+    /// </summary>
+    /// <param name="man">chess piece</param>
     public void DestroyPieceObjectForPawnTaken(Chessman man)
     {
         if(PhotonNetwork.LocalPlayer!=_currnetTurnPlayer)
@@ -982,7 +1065,9 @@ public class Game : MonoBehaviour
        UpdateOtherPlayerDeadPieces();
        // UpdateDeadPieces();
     }
-
+    /// <summary>
+    /// Update beaten chess pieces
+    /// </summary>
     public void UpdateDeadPieces()
     {
         foreach(Transform item in myPieces)
@@ -996,6 +1081,9 @@ public class Game : MonoBehaviour
         }
         photonView.RPC("UpdateDeadPiecesRPC",RpcTarget.Others);
     }
+    /// <summary>
+    /// Update other player beaten pieces
+    /// </summary>
     public void UpdateOtherPlayerDeadPieces()
     {
         foreach(Transform item in OppoPieces)
@@ -1010,7 +1098,9 @@ public class Game : MonoBehaviour
         photonView.RPC("UpdateDeadPiecesMyRPC",RpcTarget.Others);
     }
 
-
+    /// <summary>
+    /// RPC : Update dead piece in network device
+    /// </summary>
     [PunRPC]
     public void UpdateDeadPiecesRPC()
     {
@@ -1024,6 +1114,9 @@ public class Game : MonoBehaviour
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
     }
+    /// <summary>
+    /// Update dead piece in player's device
+    /// </summary>
     [PunRPC]
     public void UpdateDeadPiecesMyRPC()
     {
@@ -1038,13 +1131,16 @@ public class Game : MonoBehaviour
         }
     }
 
-    public bool IsGameComplete = false;
+    public bool IsGameComplete = false;     // Used in chess game
 
-    Chessman pawntobeRenewed;
+    Chessman pawntobeRenewed;               //Pawn object reference for revive functionality
     public Transform revivePr;
-    public GameObject reviveLisItem;
-    public GameObject PieceSelectionPanel;
-
+    public GameObject reviveLisItem;        //Revive item
+    public GameObject PieceSelectionPanel;  // Chess piece selection panel
+    /// <summary>
+    /// Show revive option for given chess piece
+    /// </summary>
+    /// <param name="pawn">Chess piece</param>
     public void ShowReviveOption(Chessman pawn)
     {
         pawntobeRenewed = pawn;
@@ -1063,7 +1159,10 @@ public class Game : MonoBehaviour
         PieceSelectionPanel.SetActive(true);
 
     }
-
+    /// <summary>
+    /// Change pawn to new item in case or revive functionality
+    /// </summary>
+    /// <param name="i">int piece id</param>
     public void ChangePawnToNewPiece(int i)
     {
         Chessman pawn = pawntobeRenewed;
@@ -1081,7 +1180,10 @@ public class Game : MonoBehaviour
             Game.Get().NextTurn();
         }
     }
-
+    /// <summary>
+    /// Destroy chess piece with ginve index
+    /// </summary>
+    /// <param name="PieceIndex">Index of chess piece</param>
     [PunRPC]
     public void DestroyPiece(int PieceIndex)
     {
@@ -1100,12 +1202,16 @@ public class Game : MonoBehaviour
             PhotonNetwork.Destroy(piece.GetComponent<PhotonView>());
 
     }
-
+    /// <summary>
+    /// Not in use . but not removed to avoid any errors
+    /// </summary>
     public void CheckWinner()
     {
         //StartCoroutine(CheckChessWin());
     }
-
+    /// <summary>
+    /// Not in use . but not removed to avoid any errors
+    /// </summary>
     void CheckChessWin()
     {
         //yield return new WaitForSeconds(0.2f);
@@ -1132,20 +1238,16 @@ public class Game : MonoBehaviour
                 break;
             }
         }
-        // if(playerWhite.ToList().FindAll(x=>x.type== PieceType.King).Count==0 ){
-
-        // }else if(playerBlack.ToList().FindAll(x => x.type == PieceType.King).Count == 0)
-        // {
-
-        // }else{
-        //     NextTurn();
-        // }
+      
         if(!won)
         {
             photonView.RPC("PlayerWon",RpcTarget.Others,-1);
         }
     }
-
+    /// <summary>
+    /// RPC  : winner , not used 
+    /// </summary>
+    /// <param name="i"></param>
     [PunRPC]
     public void PlayerWon(int i)
     {
@@ -1155,7 +1257,10 @@ public class Game : MonoBehaviour
             NextTurn();
     }
 
-
+    /// <summary>
+    /// RPC : setup chess / poker canvas 
+    /// </summary>
+    /// <param name="b">True : show poker canvas,  False: show chess canvas</param>
     [PunRPC]
     public void SetPVPModeRPC(bool b)
     {
@@ -1181,7 +1286,7 @@ public class Game : MonoBehaviour
             ChessCanvas.SetActive(true);
             // GameManager.instace.isFristMovePawn = true;
             Game.Get().Board.SetActive(true);
-           
+
             if(PhotonNetwork.IsMasterClient)
             {
                 playerName.text = PhotonNetwork.PlayerList[0].NickName;
@@ -1198,6 +1303,11 @@ public class Game : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    ///  Set profile image in chess UI 
+    /// </summary>
+    /// <param name="isplayer">True : for local player, False: opponent</param>
+    /// <param name="player">Photon player</param>
     public void SetProfileImageForPlayer(bool isplayer,Player player) 
     {
         ExitGames.Client.Photon.Hashtable _playerCustomProperties = player.CustomProperties;
@@ -1242,14 +1352,18 @@ public class Game : MonoBehaviour
                     opponentProfileImage.sprite = GameData.Get().DummyProfile[dummypicIndex];
                 }
             }
-
         }
-        //
-
     }
+    /// <summary>
+    /// Not in use
+    /// </summary>
     public void SwitchPlayerTurn_RPCCall()
     {
     }
+    /// <summary>
+    /// Switch current player in chess game
+    /// </summary>
+    /// <param name="player">player name string</param>
     [PunRPC]
     public void SwitchCurrentPlayer(string player)
     {
@@ -1288,6 +1402,10 @@ public class Game : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// RPC  : Switch current player
+    /// </summary>
+    /// <param name="player">player name</param>
     [PunRPC]
     public void SwitchCurrentPlayer(string player,bool continueTurn)
     {
@@ -1330,11 +1448,11 @@ public class Game : MonoBehaviour
             }
         }
     }
-
-
+    /// <summary>
+    /// Check for  king piece 
+    /// </summary>
     public bool checkForKing()
     {
-
         List<Chessman> OppoPieces = Chessman.GetPiecesOfPlayer(OppoType);
         bool isCheck = false;
         foreach(var item in OppoPieces)
@@ -1344,7 +1462,10 @@ public class Game : MonoBehaviour
         }
         return isCheck;
     }
-
+    /// <summary>
+    /// Used to check checkmate
+    /// </summary>
+    /// <returns>True in case for checkmate</returns>
     public bool IsCheckmateForKing()
     {
         bool KingLives = true;
@@ -1358,12 +1479,21 @@ public class Game : MonoBehaviour
         }
         return !KingLives;
     }
-
+    /// <summary>
+    /// Used to decide if it's localplayer turn in chess game
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
     public bool isMyTurn(string player)
     {
         return Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn;
     }
-
+    /// <summary>
+    /// Coroutine to show turn player name
+    /// </summary>
+    /// <param name="namePlayer">Player name</param>
+    /// <param name="_player">Photon player</param>
+    /// <returns></returns>
     private IEnumerator COR_playerTurnNameShow(string namePlayer,Player _player)
     {
         PieceSelectionPanel.SetActive(false);
@@ -1395,25 +1525,37 @@ public class Game : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// Not in use
+    /// </summary>
     [PunRPC]
     public void InitiateMovePlatesRPC()
     {
 
     }
+    /// <summary>
+    /// Update last selected action by layer
+    /// </summary>
     public void UpdateLastAction(PlayerAction action)
     {
         PVPManager.Get().updatePlayerAction(action.ToString());
         PVPManager.Get().LastActionUpdated = true;
         photonView.RPC("UpdateLastAction_RPC",RpcTarget.All,(byte)action);
     }
+    /// <summary>
+    /// RPC : Update action
+    /// </summary>
+    /// <param name="action"></param>
     [PunRPC]
     public void UpdateLastAction_RPC(byte action)
     {
         lastAction = (PlayerAction)action;
     }
     #endregion
-
+    /// <summary>
+    /// Fetch profile picture from Url and create sprite
+    /// </summary>
+    /// <param name="url">image url</param>
     private IEnumerator FetchOpponentProfilePicture(string url)
     {
         Debug.Log("Fetching profile picture from URL: " + url);
@@ -1433,6 +1575,9 @@ public class Game : MonoBehaviour
         }
     }
 }
+/// <summary>
+/// Board position class
+/// </summary>
 [System.Serializable]
 public class BoardPosition 
 {

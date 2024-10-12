@@ -708,8 +708,6 @@ public class DemoManager : MonoBehaviour
         // Debug.LogError("*** CompareHand end ======= " + pk.printResult());
         return pk;
         //  return pk.strength;
-
-
     }
 
     public void HighLightWinnerHand(bool isPlayerWin)

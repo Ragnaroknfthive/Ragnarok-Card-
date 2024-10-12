@@ -1,28 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: MovePlate.cs
+//FileType: C# Source file
+//Description : This script is used to handles chess board moves
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 
 public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
 {
-    public GameObject controller;
+    Chessman reference = null;                  //Chess piece reference 
 
-    Chessman reference = null;
-
-    int matrixX;
-    int matrixY;
-    private PhotonView photonView;
+    int matrixX;                                //X coordinate on board
+    int matrixY;                                //Y coordinate on board
+    private PhotonView photonView;              //Photon view - used for network sync
     
-    public bool attack = false;
+    public bool attack = false;                 //True : Incase if this attacked position
     [SerializeField]
-    Sprite selectedMove;
+    Sprite selectedMove;                        //Sprite for selected move
     [SerializeField]
-    Sprite attackSprite;
+    Sprite attackSprite;                       //Attacked move sprite
     [SerializeField]
-    SpriteRenderer spriteRenderer;
-    Sprite NormalSprite;
-
+    SpriteRenderer spriteRenderer;             //Sprite renderer reference
+    Sprite NormalSprite;                       //Sprite for normal moveplate 
+    /// <summary>
+    /// Get piece type located on the current moveplate
+    /// </summary>
+    /// <returns></returns>
     public PieceType GetPieceTypeOnThisPlate()
     {
         PieceType type = PieceType.Pawn;
@@ -34,6 +37,9 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         }
         return type;
     }
+    /// <summary>
+    /// Set moveplate sprite and set photonview reference
+    /// </summary>
     public void Start()
     {
         NormalSprite = spriteRenderer.sprite;
@@ -44,14 +50,23 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         }
         photonView = GetComponent<PhotonView>();
     }
+    /// <summary>
+    /// Set noraml sprite in moveplate
+    /// </summary>
     public void SetNormalSprite() 
     {
         spriteRenderer.sprite = NormalSprite;
     }
+    /// <summary>
+    /// Set selected move sprite for current move plate
+    /// </summary>
     public void SetSelectedSprite()
     {
         spriteRenderer.sprite = selectedMove;
     }
+    /// <summary>
+    /// Select  current move plate when user click on move plate
+    /// </summary>
     public void OnMouseUp()
     {
         if (Game.Get().isLocalPlayerTurn)
@@ -64,70 +79,49 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             }
             PVPManager.manager.selectedMove = GetComponent<MovePlate>();
         }
-        //if(Game.Get().isLocalPlayerTurn)
-        //    photonView.RPC("OnClickRPC",RpcTarget.AllBuffered);
-        // controller = GameObject.FindGameObjectWithTag("GameController");
-
-        // if(attack)
-        // {
-        //     Game.Get().SetPVPMode(true);
-        //     reference.DestroyMovePlates();
-        //     // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
-
-        //     // if (cp.name == "white_king") Game.Get().Winner("black");
-        //     // if (cp.name == "black_king") Game.Get().Winner("white");
-
-        //     // Destroy(cp);
-
-        //     //Handle the aftereffect of PVP
-        // }else{
-        //     Game.Get().SetPositionsEmpty(reference.GetXboard(),
-        //     reference.GetYboard());
-
-        //     reference.SetXBoard(matrixX);
-        //     reference.SetYBoard(matrixY);
-        //     reference.SetCoords();
-
-        //     Game.Get().SetPosition(reference);
-
-        //     Game.Get().NextTurn();
-
-        //     reference.DestroyMovePlates();
-        // }
-
-
-
-
     }
-
+    /// <summary>
+    /// Move piece to this move plate
+    /// </summary>
     public void MovePiece()
     {
         if (Game.Get().isLocalPlayerTurn){
             Game.Get().IncreaseStamina();
             photonView.RPC("OnClickRPC", RpcTarget.AllBuffered);
             
-        }
-            
+        }       
     }
 
-    
-
-
+    /// <summary>
+    /// Set  coordinates for this plate
+    /// </summary>
+    /// <param name="x">x position</param>
+    /// <param name="y">y position</param>
     public void SetCoords(int x, int y)
     {
         matrixX = x;
         matrixY = y;
     }
-
+    /// <summary>
+    /// Set chess piece reference on this plate
+    /// </summary>
+    /// <param name="obj">chess piece</param>
     public void SetReference(Chessman obj)
     {
         reference = obj;
     }
-
+    /// <summary>
+    /// Get chess piece reference on this move plate
+    /// </summary>
+    /// <returns>Chess piece </returns>
     public Chessman GetReference()
     {
         return reference;
     }
+    /// <summary>
+    /// This functiona is called when move plate is instantiated on photon netwrok . After instantiate data set for this moveplate
+    /// </summary>
+    /// <param name="info">Photon information / data for instantiation</param>
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         object[] data = info.photonView.InstantiationData;
@@ -137,18 +131,17 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         SetCoords((int)data[2], (int)data[3]);
 
         reference = Chessman.GetPiece(ptype, type, (int)data[5]);
-
-
-
         //Debug.Log("OnPhotonInstantiate is false here");
     }
 
     #region Pun calls
-
+    /// <summary>
+    /// RPC : called when user click on this Move plate. It triggers' piece movement in chess game.
+    /// </summary>
     [PunRPC]
     public void OnClickRPC()
     {
-        if (attack)
+        if (attack)  //If this click is for attack on the chess piece located on this moveplate
         {
             //    Debug.LogError("******Piece Type  " + reference.type);
            
@@ -207,45 +200,9 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
                 Debug.Log("================================== pvp start here =============================");
                 Debug.Log("*****White Kings " + Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x => x.type == PieceType.King).Count);
                 Debug.Log("*****Black Kings " + Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count);
-
-
-                //if (Chessman.GetPiecesOfPlayer(PlayerType.White).FindAll(x=>x.type==PieceType.King).Count==0 || Chessman.GetPiecesOfPlayer(PlayerType.Black).FindAll(x => x.type == PieceType.King).Count == 0) 
-                //{
-
-                //    Game.Get().CheckWinner();
-                //}
-                //else 
-                //{
-                //    //reference.DestroyMovePlates();
-                //    Game.Get().SetPVPMode(true);
-
-
-
-                //    bool localplayerTurn = Game.Get().isLocalPlayerTurn;
-                //    if (reference.playerType == PlayerType.White)
-                //    {
-                //        PVPManager.Get().SetData(new Vector2(reference.GetXboard(), reference.GetYboard()), new Vector2(matrixX, matrixY), localplayerTurn);
-                //        //Debug.Log("if --------- if");
-                //    }
-                //    else
-                //    {
-                //        PVPManager.Get().SetData(new Vector2(matrixX, matrixY), new Vector2(reference.GetXboard(), reference.GetYboard()), localplayerTurn);
-                //        Debug.Log("else --------- else");
-                //    }
-                //    // GameObject cp = Game.Get().GetPosition(matrixX, matrixY);
-
-                //    // if (cp.name == "white_king") Game.Get().Winner("black");
-                //    // if (cp.name == "black_king") Game.Get().Winner("white");
-
-                //    // Destroy(cp);
-
-                //    //Handle the aftereffect of PVP
-
-                //    Debug.Log("================================== pvp start here =============================");
-                //}
             }
-        }
-        else
+        } 
+        else  //Normal move
         {
             if (FindObjectOfType<Game>()._currnetTurnPlayer == PhotonNetwork.LocalPlayer && reference.type == PieceType.Pawn)
             {
@@ -289,8 +246,5 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             reference.DestroyMovePlates();
         }
     }
-
-
-
     #endregion
 }
