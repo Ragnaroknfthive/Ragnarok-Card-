@@ -142,6 +142,11 @@ public class PVPManager : MonoBehaviour
     public bool StartHandTurn;
     private readonly bool EndTurnInvokedByClick = false;
     public List<LocationObject> locationObjects = new List<LocationObject>();
+    private void Awake()
+    {
+        manager = this;
+    }
+
     public MovePlate selectedMove;
 
     public PieceType myPiece, opponentpiece, tempPiece, opponentPieceAttack, tempPieceOpp;
@@ -175,11 +180,6 @@ public class PVPManager : MonoBehaviour
     public TextMeshProUGUI P1LastAction, P2LastAction;
     public GameObject P1StaminPopup;
 
-    private void Awake()
-    {
-        manager = this;
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -195,74 +195,6 @@ public class PVPManager : MonoBehaviour
         //UpdateHMTxt();
 
 
-    }
-    private void Update()
-    {
-        if (DemoManager.instance._pokerButtons.activeSelf)
-        {
-            //if(p1Speed>0)
-            //speedAttackButton.SetActive(true);
-            if (P1RageBar.value > 50)
-                SpecialAttackButton.SetActive(true);
-        }
-        else
-        {
-            SpecialAttackButton.SetActive(false);
-            // speedAttackChoices.SetActive(false);
-            //speedAttackButton.SetActive(false);
-        }
-
-        if (starttimer)
-        {
-            timer -= Time.unscaledDeltaTime;
-            if (timer < 0)
-            {
-                timer = 0;
-            }
-            EndTurnTimerText.text = Mathf.RoundToInt(timer).ToString();
-            if (timer <= 0f)
-            {
-                if (!endTurn)
-                {
-                    OnClickEndTurn();
-
-                    EndTurnTimer = 30;
-                    timer = 30;
-                    starttimer = false;
-                    endTurnTimeStarted = false;
-
-                }
-            }
-        }
-
-        if (startChesstimer)
-        {
-            timerStarted = true;
-            ChessTimer -= Time.unscaledDeltaTime;
-            if (ChessTimer < 0)
-            {
-                ChessTimer = 0;
-            }
-            ChessTurnTimerText.text = Mathf.RoundToInt(ChessTimer).ToString();
-
-            if (ChessTimer <= 0)
-            {
-                if (!endChessTurn)
-                {
-                    if (Game.Get().ChessCanvas.activeSelf)
-                    {
-                        Game.Get().NextTurn();
-                    }
-                    //StopCoroutine(UpdateChessTurnTimer());
-                    ChessTurnTimer = 30;
-                    ChessTimer = 30;
-                    endChessTurn = true;
-                    startChesstimer = false;
-                    timerStarted = false;
-                }
-            }
-
-        }
     }
 
     public void UpdateLocationChoices()
@@ -376,7 +308,74 @@ public class PVPManager : MonoBehaviour
     public float ChessTimer;
     bool startChesstimer;
 
+    private void Update()
+    {
+        if (DemoManager.instance._pokerButtons.activeSelf)
+        {
+            //if(p1Speed>0)
+            //speedAttackButton.SetActive(true);
+            if (P1RageBar.value > 50)
+                SpecialAttackButton.SetActive(true);
+        }
+        else
+        {
+            SpecialAttackButton.SetActive(false);
+            // speedAttackChoices.SetActive(false);
+            //speedAttackButton.SetActive(false);
+        }
 
+        if (starttimer)
+        {
+            timer -= Time.unscaledDeltaTime;
+            if (timer < 0)
+            {
+                timer = 0;
+            }
+            EndTurnTimerText.text = Mathf.RoundToInt(timer).ToString();
+            if (timer <= 0f)
+            {
+                if (!endTurn)
+                {
+                    OnClickEndTurn();
+
+                    EndTurnTimer = 30;
+                    timer = 30;
+                    starttimer = false;
+                    endTurnTimeStarted = false;
+
+                }
+            }
+        }
+
+        if (startChesstimer)
+        {
+            timerStarted = true;
+            ChessTimer -= Time.unscaledDeltaTime;
+            if (ChessTimer < 0)
+            {
+                ChessTimer = 0;
+            }
+            ChessTurnTimerText.text = Mathf.RoundToInt(ChessTimer).ToString();
+
+            if (ChessTimer <= 0)
+            {
+                if (!endChessTurn)
+                {
+                    if (Game.Get().ChessCanvas.activeSelf)
+                    {
+                        Game.Get().NextTurn();
+                    }
+                    //StopCoroutine(UpdateChessTurnTimer());
+                    ChessTurnTimer = 30;
+                    ChessTimer = 30;
+                    endChessTurn = true;
+                    startChesstimer = false;
+                    timerStarted = false;
+                }
+            }
+
+        }
+    }
     public IEnumerator UpdateEndTurnTimer()
     {
 
@@ -466,6 +465,7 @@ public class PVPManager : MonoBehaviour
             Debug.Log("SELECTED MOVE TYPE " + selectedMove.GetReference().type);
             selectedMove.SetNormalSprite();
             selectedMove.GetPieceTypeOnThisPlate();
+            // SetLastPieceInfo(tempPiece,tempPieceOpp);
             selectedMove.MovePiece();
 
             selectedMove = null;
@@ -473,6 +473,7 @@ public class PVPManager : MonoBehaviour
             PVPManager.manager.endChessTurn = true;
             StopCoroutine(UpdateChessTurnTimer());
             timerStarted = false;
+            //  Invoke("SetChessSpriteForPVP",0.5f);
         }
 
     }
@@ -3269,6 +3270,16 @@ public class PVPManager : MonoBehaviour
     public bool isCheck = false;
     public bool isReraiseAfterOnce = false;
     public bool isLocationChoose = false;
+    // public void StartTimer() 
+    // {
+    //     if(endTurnTimeStarted)
+    //         return;
+    //     endTurn = false;
+    //     EndTurnTimer = OriginalTimerVal;
+    //     StopCoroutine(UpdateEndTurnTimer());
+    //     //Debug.LogError("Timer STARTED FROM HERE");
+    //     StartCoroutine(UpdateEndTurnTimer());
+    // }
     bool endTurn = false;
     public bool endChessTurn = false;
 
@@ -3467,6 +3478,7 @@ public class PVPManager : MonoBehaviour
         LastActionUpdated = false;
         SpellManager.PetAlreadyAttacked = false;
     }
+
 
     [PunRPC]
     public void UpdateSpeedPoints(float points)
