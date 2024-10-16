@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: PhotonCallback.cs
+//FileType: C# Source file
+//Description : This is a c# script used to handle photon network callbacks
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -9,33 +14,38 @@ using UnityEngine.SceneManagement;
 public class PhotonCallback : MonoBehaviourPunCallbacks
 {
     [SerializeField]
-    private byte maxPlayers = 2; 
-static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
+    private byte maxPlayers = 2;                                                    //Max number of players allowed in room
+static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";                       //Photon App Id 
 
-    public bool ConnectToCustomRegion = false;
-    public bool ConnetToMenualRegion = false;
-    public bool autoReconnect;
+    public bool ConnectToCustomRegion = false;                                      //Used to check reguib selection mode- auto or menual
+    public bool ConnetToMenualRegion = false;                                       //True in case user selects cloud region manually
+    public bool autoReconnect;                                                      //If true automatically reconnects to photon network
     public PlayButtonController playButtonController;
-    public DisplayOpponentProfile displayOpponentProfile;
-    private Coroutine network_routine;
-    public bool isReadyToFindMatch = false;
-
+    public DisplayOpponentProfile displayOpponentProfile;                           //Opponent profile display script reference
+    private Coroutine network_routine;                                              //coroutine reference
+    public bool isReadyToFindMatch = false;                                         //True if player is ready for match making
+    /// <summary>
+    /// Trigger Network connection logic
+    /// </summary>
     private void Awake()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
-	 // Start is called before the first frame update
+
+    /// <summary>
+    /// Trigger coroutine for auto reconnect
+    /// </summary>
     void Start()
     {
-
-        
         autoReconnect = true;
         if (network_routine != null)
             network_routine = StartCoroutine(Reconnection());
 
     }
-	  // Update is called once per frame
+	/// <summary>
+    /// Connect to selected cloud region in case player is already connected to a region
+    /// </summary>
     void Update()
     {
         if (PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady)
@@ -49,8 +59,10 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
 
     }
-
-    // This will automatically connect the client to the server every 2 seconds if not connected:
+    /// <summary>
+    /// Automatically connect the client to the server every 2 seconds if not connected:
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Reconnection()
     {
         while (autoReconnect)
@@ -65,7 +77,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             }
         }
     }
-
+    /// <summary>
+    ///  This callback is triggered when user is connected to master server
+    /// </summary>
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to Master " + PhotonNetwork.CloudRegion);
@@ -75,7 +89,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
       RegionController.Get().SetRegion( RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
         isReadyToFindMatch = true;
     }
-
+    /// <summary>
+    ///  This callback is triggered when user joins lobby on photon network
+    /// </summary>
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
@@ -125,7 +141,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         //PhotonNetwork.LocalPlayer.SetCustomProperties=playerProperties;
         Debug.Log("Joined Lobby"+ DisplayAccount.HiveProfileName);
     }
-
+    /// <summary>
+    /// Join random room available for playing
+    /// </summary>
     public void QuickMatch()
     {
         if(DeckManager.instance.playerDeck.Count < 33)
@@ -147,20 +165,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
 
     }
-    //public override void OnConnectedToMaster()
-    //{
-    //    Debug.Log("Connected to Master " + PhotonNetwork.CloudRegion);
-    //    PhotonNetwork.JoinLobby();
-    //    isReadyToFindMatch = true;
-    //}
-
-    //public override void OnJoinedLobby()
-    //{
-    //    base.OnJoinedLobby();
-    //    isReadyToFindMatch = true;
-    //    Debug.Log("Joined Lobby");
-    //}
-
+    /// <summary>
+    /// Join any random room available or create new
+    /// </summary>
     public void JoinRandomRoom()
     {
         if (isReadyToFindMatch)
@@ -173,32 +180,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
     }
 
-    //public override void OnJoinRandomFailed(short returnCode, string message)
-    //{
-    //    RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers, CleanupCacheOnLeave = false };
-    //    PhotonNetwork.CreateRoom(null, roomOptions, null);
-    //}
-
-    //public override void OnJoinedRoom()
-    //{
-    //    Debug.Log("OnJoinedRoom() called");
-
-    //    if (PhotonNetwork.PlayerList.Length == maxPlayers)
-    //    {
-    //        StartGame();
-    //    }
-    //}
-
-    //public override void OnPlayerEnteredRoom(Player newPlayer)
-    //{
-    //    Debug.Log("OnPlayerEnteredRoom() called");
-
-    //    if (PhotonNetwork.PlayerList.Length == maxPlayers)
-    //    {
-    //        StartGame();
-    //    }
-    //}
-
+    /// <summary>
+    /// Update room status text 
+    /// </summary>
     private void StartGame()
     {
         playButtonController.statusText.text = "Room created";
@@ -210,7 +194,10 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
         PhotonNetwork.LoadLevel("Game");
     }
-
+    /// <summary>
+    /// Hive : Get opponent player's hive account information
+    /// </summary>
+    /// <returns></returns>
     private string GetOpponentAccount()
     {
         foreach (Player player in PhotonNetwork.PlayerList)
@@ -227,6 +214,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
         return null;
     }
+    /// <summary>
+    /// Create new room
+    /// </summary>
     private void CreateRoom()
     {
         if(DeckManager.instance.playerDeck.Count < 33)
@@ -241,6 +231,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         PhotonNetwork.CreateRoom(null,roomOptions,null);
         MenuUI.Get().ShowMsg("Room created waiting for players...",true);
     }
+    /// <summary>
+    ///  This callback is triggered when user failed to join random room
+    /// </summary>
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
       //  RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers,CleanupCacheOnLeave = false };
@@ -267,7 +260,9 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         }
 
     }
-
+    /// <summary>
+    ///  This callback is triggered when user joins random room
+    /// </summary>
     public override void OnJoinedRoom()
     {
         if (PhotonNetwork.PlayerList.Length == maxPlayers)
@@ -290,13 +285,17 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             MenuUI.Get().ShowMsg("Waiting for other players..", true);
         }
     }
-
+    /// <summary>
+    /// Leave photon room
+    /// </summary>
     public void CancelMatch()
     {
         PhotonNetwork.LeaveRoom();
         MenuUI.Get().ErrorDisp.SetActive(false);
     }
-
+    /// <summary>
+    ///  This callback is triggered to players devices which are already in room and new user joins a room 
+    /// </summary>
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.PlayerList.Length == maxPlayers)

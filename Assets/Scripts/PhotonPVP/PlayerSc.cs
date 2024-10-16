@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: PlayerSc.cs
+//FileType: C# Source file
+//Description : This is a c# script reference used for Player UI (Not used now)
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,24 +10,13 @@ using UnityEngine.UI;
 public class PlayerSc : MonoBehaviour
 {
 
-    public Image CharIm;
-    public Image ProfIm;
+    public Image CharIm; //character sprite
+    public Image ProfIm; //Profile image sprite
 
-    public CharacterData Char;
+    public CharacterData Char;      //character scriptable
 
-    public PlayerChoice choice;
+    public PlayerChoice choice;     //player's location choice
 
-    public List<PlayerChoice> extraChoices;
+    public List<PlayerChoice> extraChoices; 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

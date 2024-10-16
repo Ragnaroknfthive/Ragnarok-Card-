@@ -1,8 +1,15 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: AttackSlider.cs
+//FileType: C# Source file
+//Description : This script is used to manage attack done in poker game
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
-
+/// <summary>
+/// Attack type in poker- Light, Medium or Heavy
+/// </summary>
 [System.Serializable]
 public enum SliderAttack
 {
@@ -14,32 +21,40 @@ public enum SliderAttack
 
 public class AttackSlider : MonoBehaviour
 {
-    public static AttackSlider instance;
+    public static AttackSlider instance;                //Script instance
 
-    public Slider _slider;
-    [SerializeField] private Text _attackText;
-    [SerializeField] private Image _fillImage;
-    [SerializeField] private Text _attackValueText;
+    public Slider _slider;                              //Attack slider reference
+    [SerializeField] private Text _attackText;          //Attack text object
+    [SerializeField] private Image _fillImage;          //Image used to display fill percentage in for attack slider
+    [SerializeField] private Text _attackValueText;     //Attack value text object
 
-    public SliderAttack _sliderAttack;
-    public GameObject UseSpeedObj;
-    public RectTransform SpeedFill;
-    public RectTransform AttackFill;
-    float ExtraSpeedAmt;
-    public TextMeshProUGUI speedTx;
-    public TextMeshProUGUI UsedSpeedTx;
-    public GameObject UsedSpeedButton;
-    private PlayerAction action;
+    public SliderAttack _sliderAttack;                  //Attack type
+    public GameObject UseSpeedObj;                      //Speed object reference
+    public RectTransform SpeedFill;                     //Rectransform used to adjust fill percentage object for speed
+    public RectTransform AttackFill;                    //Rectransform used to adjust fill percentage object for attack
+    float ExtraSpeedAmt;                                //Extra speed amount allowed
+    public TextMeshProUGUI speedTx;                     //Speed text object
+    public TextMeshProUGUI UsedSpeedTx;                 //Used speed text object
+    public GameObject UsedSpeedButton;                  //Speed button
+    private PlayerAction action;                        //Player action in poker
 
+    /// <summary>
+    /// Set action reference
+    /// </summary>
     public void setAction(PlayerAction action)
     {
         this.action = action;
     }
-
+    /// <summary>
+    /// Used to calculate differentiate heavy, medium and light attack
+    /// </summary>
     float difference = 0;
 
-    bool SpeedCanceled, SpeedFixed;
+    bool SpeedCanceled, SpeedFixed;                                     //Boolean used for speed related logic
   
+    /// <summary>
+    /// Set instance
+    /// </summary>
     private void Awake()
     {
         if(instance == null)
@@ -48,17 +63,16 @@ public class AttackSlider : MonoBehaviour
         }
         instance.gameObject.transform.parent.gameObject.SetActive(false);
     }
+    /// <summary>
+    /// Setup slider value and speed realted logic
+    /// </summary>
     void OnEnable()
     {
         if(PVPManager.manager.P1StaVal < 10f) 
         {
             PVPManager.manager.ShowLowStaminaPopup();
         }
-        //Allow Maxminum attack value which is Minimum from both player's health
-
-        // _slider.maxValue = Mathf.Min(PVPManager.manager.P1HealthBar.value,PVPManager.manager.P2HealthBar.value);
-        //Debug.LogError("P2 LATEST REMAINING HEALTH " + PVPManager.manager.P2RemainingHandHealth);
-        //_slider.minValue = action == PlayerAction.counterAttack ? Game.Get().BetAmount : 1;
+       
         _slider.maxValue = (Mathf.Min(PVPManager.manager.P1StaVal * 10f,Mathf.Min(PVPManager.manager.P1RemainingHandHealth,PVPManager.manager.P2RemainingHandHealth))) / 2;
         if(action == PlayerAction.counterAttack)
         {
@@ -71,18 +85,7 @@ public class AttackSlider : MonoBehaviour
         {
             _slider.maxValue =Mathf.RoundToInt( PVPManager.manager.P1RemainingHandHealth / 2);
         }
-        // if(Game.Get().turn == 2 || Game.Get().turn == 4 || Game.Get().turn == 6 || Game.Get().turn == 8)
-        // {
-        //     _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount;
-        // }
-        // else
-        // {
-        //     _slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack ? Game.Get().BetAmount : Game.Get().BetAmount; //change 20-4
-        // }
-
-        //   Debug.LogError("Bet amt = " + PVPManager.manager.AttackFor + " - " + (Game.Get().lastAction == PlayerAction.counterAttack));
-        //_slider.minValue = (Game.Get().lastAction == PlayerAction.counterAttack) ? PVPManager.manager.AttackFor : 1;
-        //_slider.minValue = Game.Get().lastAction == PlayerAction.counterAttack? Game.Get().BetAmount * 2:Game.Get().BetAmount;
+       
         difference = (_slider.maxValue / 2) - (_slider.minValue / 2);
         _slider.minValue = Game.Get().lastAction == PlayerAction.attack || Game.Get().lastAction == PlayerAction.counterAttack ? (int)(PVPManager.manager.LastAtkAmt / 2) : 1;
         //_slider.minValue = action == PlayerAction.counterAttack ? ((int)(PVPManager.manager.LastAtkAmt / 2)) + 1 : _slider.minValue;
@@ -100,48 +103,25 @@ public class AttackSlider : MonoBehaviour
         Debug.LogError("Slider Max Val" + _slider.maxValue);
        
     }
-
+    /// <summary>
+    /// Remove event listner
+    /// </summary>
     void OnDisable()
     {
         _slider.onValueChanged.RemoveListener(delegate { UpdateAttackValueText(); });
     }
+    /// <summary>
+    /// Set slider reference
+    /// </summary>
     private void Start()
     {
         _slider = GetComponent<Slider>();
     }
-
-    // Update is called once per frame
+    /// <summary>
+    /// Attack type decided from here when user changes slider value
+    /// </summary>
     void Update()
     {
-
-        //if (_slider.value<=(_slider.maxValue*.33))
-        //{
-        //    _attackText.text = "Light Attack ";
-        //    _attackText.color = Color.green;
-        //    _fillImage.color = Color.green;
-        //    _sliderAttack = SliderAttack.LightAttack;
-        //}
-        //else if (_slider.value>= (_slider.maxValue * .34) && _slider.value <= (_slider.maxValue * .66))
-        //{
-        //    _attackText.text = "Medium Attack";
-        //    _attackText.color = Color.yellow;
-        //    _fillImage.color = Color.yellow;
-        //    _sliderAttack = SliderAttack.MediumAttack;
-        //}
-        //else if (_slider.value>= (_slider.maxValue * .67))
-        //{
-        //    _attackText.text = "Heavy Attack";
-        //    _attackText.color = Color.red;
-        //    _fillImage.color = Color.red;
-        //    _sliderAttack = SliderAttack.HeavyAttack;
-        //}
-        //else
-        //{
-        //    _attackText.text = "nun";
-        //    _sliderAttack = SliderAttack.nun;
-
-        //}      
-
 
         if(_slider.value <= (_slider.minValue + (difference * .33)))
         {
@@ -164,31 +144,22 @@ public class AttackSlider : MonoBehaviour
             _fillImage.color = Color.red;
             _sliderAttack = SliderAttack.HeavyAttack;
         }
-
-
-
-        //else
-        //{
-        //    _attackText.text = "nun";
-        //    _sliderAttack = SliderAttack.nun;
-
-        //}
     }
-
+    //Not in use
     public void UpdateUI(int value)
     {
 
     }
 
+    /// <summary>
+    ///  Extra speed use decision execution logic- User choose to use extra speed or not and then this function is executed
+    /// </summary>
+    /// <param name="ans">Answer string - Use extra speed or not to use extra speed</param>
     public void SpeedDecision(string ans)
     {
         ExtraSpeedAmt = ans == "Use" ? MathF.Min(PVPManager.Get().p1Speed * 10f,(_slider.value * 2)) : 0;
         if(ExtraSpeedAmt <= 0)
         {
-
-            // SpeedFill.anchorMax =  Vector2.zero;
-            //  _slider.fillRect = AttackFill;
-
             SpeedCanceled = true;
             UsedSpeedButton.SetActive(false);
         }
@@ -206,8 +177,9 @@ public class AttackSlider : MonoBehaviour
         UseSpeedObj.SetActive(false);
     }
 
-
-
+    /// <summary>
+    /// Attack button click functionality
+    /// </summary>
     public void btn_SliderComplete()
     {
         if(_slider.value > 0)
@@ -228,6 +200,9 @@ public class AttackSlider : MonoBehaviour
         PVPManager.Get().AttackChoices.SetActive(false);
         PVPManager.Get().speedAttackChoices.SetActive(false);
     }
+    /// <summary>
+    /// Attack value text update at runtime
+    /// </summary>
     public void UpdateAttackValueText()
     {
 
