@@ -1,12 +1,15 @@
-using System.Collections; // Namespace for collections and enumerators
-using System.Collections.Generic; // Namespace for generic collections
-using UnityEngine; // Core Unity namespace
-using UnityEngine.SceneManagement; // Namespace for scene management
-using UnityEngine.UI; // Namespace for UI elements
+////////////////////////////////////////////////////////////////////////////////
+///ThreeButtonController.cs
+///
+///This script manages UI interactions for a three-button interface in Unity.
+///It includes methods to change the scene, open a panel, and close a panel.
+///The script is attached to a GameObject with the UI elements to be controlled.
 
-/// <summary>
-/// Manages UI interactions for a three-button interface in Unity.
-/// </summary>
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 public class ThreeButtonController : MonoBehaviour
 {
     // UI Button references
@@ -16,9 +19,6 @@ public class ThreeButtonController : MonoBehaviour
     public Button closePanelButton; // Button to close the UI panel
     public GameObject panel; // The UI panel to be shown or hidden
 
-    /// <summary>
-    /// Initializes the button listeners when the script starts.
-    /// </summary>
     void Start()
     {
         // Add listener to change scene when the sceneButton is clicked
@@ -33,29 +33,22 @@ public class ThreeButtonController : MonoBehaviour
         // Add listener to close the panel when the closePanelButton is clicked
         closePanelButton.onClick.AddListener(ClosePanel);
     }
-
-    /// <summary>
     /// Changes the current scene to the "HiveLogin" scene.
-    /// </summary>
     void ChangeScene()
     {
         SceneManager.LoadScene("HiveLogin");
     }
 
-    /// <summary>
     /// Opens the specified panel by setting it to active.
-    /// </summary>
     void OpenPanel()
     {
         panel.SetActive(true);
     }
 
-    /// <summary>
     /// Closes the specified panel by setting it to inactive.
-    /// </summary>
     void ClosePanel()
     {
-        panel.SetActive(false);
+        panel.SetActive(false);// Set the panel to inactive
     }
 }
 

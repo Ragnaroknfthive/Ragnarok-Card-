@@ -1,3 +1,9 @@
+///////////////////////////////////
+/// MenuUI.cs
+/// 
+/// This script manages the user interface for the main menu,
+/// including region selection, connecting to Photon servers, and navigating between different menu options.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +13,6 @@ using Photon.Realtime;
 using TMPro;
 using Photon.Pun.UtilityScripts;
 
-/// <summary>
-/// This class manages the user interface for the main menu,
-/// including region selection, connecting to Photon servers, and navigating between different menu options.
-/// </summary>
 public class MenuUI : MonoBehaviour
 {
     // Singleton instance of the MenuUI
@@ -48,9 +50,7 @@ public class MenuUI : MonoBehaviour
     // Sprites for UI elements
     public Sprite deckCardHoverSprite, deckHoverSprite;
 
-    /// <summary>
     /// Initializes the MenuUI instance and sets up the initial state of the UI.
-    /// </summary>
     private void Awake()
     {
         mui = this;
@@ -63,9 +63,7 @@ public class MenuUI : MonoBehaviour
         InitOptions();
     }
 
-    /// <summary>
     /// Initializes the dropdown options with the available regions.
-    /// </summary>
     public void InitOptions()
     {
         if (!dropdown) return;
@@ -79,20 +77,16 @@ public class MenuUI : MonoBehaviour
         dropdown.value = PlayerPrefs.GetInt("pun_region", 0); // Set the default selected region from PlayerPrefs
     }
 
-    /// <summary>
     /// Gets the currently selected region code.
-    /// </summary>
-    /// <returns>Region code as a string.</returns>
+    /// <returns>Region code as a string.
     public string getSelectedRegion()
     {
         return GetRegionCode(PlayerPrefs.GetInt("pun_region", 0));
     }
 
-    /// <summary>
     /// Maps the dropdown selection index to the corresponding region code.
-    /// </summary>
-    /// <param name="s">Index of the selected region.</param>
-    /// <returns>Region code as a string.</returns>
+    /// Index of the selected region.
+    /// Region code as a string.
     public string GetRegionCode(int s)
     {
         string region = "us"; // Default region is US
@@ -116,10 +110,8 @@ public class MenuUI : MonoBehaviour
         return region;
     }
 
-    /// <summary>
     /// Called when a new region is selected from the dropdown.
     /// Updates the UI and initiates a connection to the selected region.
-    /// </summary>
     public void OnSelectRegion()
     {
         string region = GetRegionCode(dropdown.value); // Get region code based on selected dropdown value
@@ -137,11 +129,9 @@ public class MenuUI : MonoBehaviour
             StartCoroutine(ConnnectToNewRegion(region));
     }
 
-    /// <summary>
     /// Coroutine to handle connecting to a new region.
-    /// </summary>
-    /// <param name="region">The region to connect to.</param>
-    /// <returns>Yield instruction to wait during the connection process.</returns>
+    /// The region to connect to.
+    /// Yield instruction to wait during the connection process.
     IEnumerator ConnnectToNewRegion(string region)
     {
         PhotonNetwork.Disconnect(); // Disconnect from the current server
@@ -152,11 +142,9 @@ public class MenuUI : MonoBehaviour
         PlayerPrefs.SetInt("pun_region", dropdown.value); // Save selected region to PlayerPrefs
     }
 
-    /// <summary>
     /// Initializes the menu UI on start.
     /// Displays the home screen if menu options are available.
     /// Fades in the logo and splash screen.
-    /// </summary>
     void Start()
     {
         if (menuOptions.Count > 0)
@@ -173,29 +161,23 @@ public class MenuUI : MonoBehaviour
         });
     }
 
-    /// <summary>
     /// Hides the error message display.
     /// Leaves the current Photon room and disables the error display.
-    /// </summary>
     public void HideMsg()
     {
         PhotonNetwork.LeaveRoom(); // Leave the room if in one
         ErrorDisp.SetActive(false); // Disable the error display
     }
 
-    /// <summary>
     /// Coroutine to hide the error display after a delay.
-    /// </summary>
-    /// <returns>Yield instruction to wait before hiding the display.</returns>
+    /// Yield instruction to wait before hiding the display.
     IEnumerator Hide()
     {
         yield return new WaitForSeconds(3f); // Wait for 3 seconds
         ErrorDisp.gameObject.SetActive(false); // Disable the error display
     }
 
-    /// <summary>
     /// Updates the play button text and enables the play button and dropdown after connecting.
-    /// </summary>
     public void UpdatePlayButtonText()
     {
         if (!PlayBtn) return;
@@ -205,58 +187,44 @@ public class MenuUI : MonoBehaviour
         PlayBtn.interactable = true; // Enable the play button
     }
 
-    /// <summary>
     /// Quits the application.
-    /// </summary>
     public void Quit()
     {
         Application.Quit(); // Exit the application
     }
 
-    /// <summary>
     /// Displays the home screen by opening the corresponding menu option.
-    /// </summary>
     public void ShowHomeScreen()
     {
         OpenMenuOption(MenuOptionType.Home); // Open the home menu option
     }
 
-    /// <summary>
     /// Displays the play screen by opening the corresponding menu option.
-    /// </summary>
     public void ShowPlayScreen()
     {
         OpenMenuOption(MenuOptionType.Play); // Open the play menu option
     }
 
-    /// <summary>
     /// Displays the profile screen by opening the corresponding menu option.
-    /// </summary>
     public void ShowPRofileScreen()
     {
         OpenMenuOption(MenuOptionType.Profile); // Open the profile menu option
     }
 
-    /// <summary>
     /// Displays the deck screen by opening the corresponding menu option.
-    /// </summary>
     public void ShowDeckScreen()
     {
         OpenMenuOption(MenuOptionType.Decks); // Open the decks menu option
     }
 
-    /// <summary>
     /// Displays the shop screen by opening the corresponding menu option.
-    /// </summary>
     public void ShowShopScreen()
     {
         OpenMenuOption(MenuOptionType.Shop); // Open the shop menu option
     }
 
-    /// <summary>
     /// Opens the specified menu option and hides all others.
-    /// </summary>
-    /// <param name="optionType">The type of menu option to open.</param>
+    /// The type of menu option to open.
     public void OpenMenuOption(MenuOptionType optionType)
     {
         // Iterate through all menu options
@@ -268,15 +236,11 @@ public class MenuUI : MonoBehaviour
     }
 }
 
-/// <summary>
 /// Enum representing different menu option types.
-/// </summary>
 [System.Serializable]
 public enum MenuOptionType { Home, Play, Profile, Decks, Shop }
 
-/// <summary>
 /// Class representing a menu option with its type, screen, and button.
-/// </summary>
 [System.Serializable]
 public class MenuOption
 {

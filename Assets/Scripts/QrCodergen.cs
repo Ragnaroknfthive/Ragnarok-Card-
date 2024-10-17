@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////
+///QrCodergen.cs
+///
+///This script generates a QR code for authentication and connects to a WebSocket server.
+///It includes methods to send and receive messages from the server, process messages,
+///and load the next scene after authentication.
+///The script is attached to a GameObject with the UI elements to be controlled.
+
 using UnityEngine.UI;
 using System;
 using System.Text;

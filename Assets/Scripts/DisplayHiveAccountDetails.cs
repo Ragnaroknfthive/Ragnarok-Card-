@@ -1,21 +1,11 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class DisplayHiveAccountDetails : MonoBehaviour
-//{
-//    // Start is called before the first frame update
-//    void Start()
-//    {
-        
-//    }
-
-//    // Update is called once per frame
-//    void Update()
-//    {
-        
-//    }
-//}
+////////////////////////////////////////////////
+///DisplayHiveAccountDetails.cs
+///
+///This script is used to display the user's Hive account details such as username and profile picture.
+///It fetches the user's profile data from the Hive blockchain using the HiveProfileFetcher script.
+///The user's profile picture is fetched using the FetchProfilePicture coroutine.
+///The user's profile picture is displayed in the RawImage component profileImage.
+///The user's username is displayed in the Text component usernameText.
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,163 +22,124 @@ public class DisplayHiveAccountDetails : MonoBehaviour
     private HiveProfileFetcher profileFetcher;
     public List<Sprite> dummyProfileimages = new List<Sprite>();
 
-    //void Start()
-    //{
-    //    profileFetcher = GetComponent<HiveProfileFetcher>();
-
-    //    // Fetch the user profile data
-    //    StartCoroutine(profileFetcher.FetchProfile((error,profileData) => {
-    //        if(string.IsNullOrEmpty(error))
-    //        {
-    //            // Successfully fetched the profile data, now display it
-    //            JObject postingJsonMetadata = JObject.Parse((string)profileData["posting_json_metadata"]);
-    //            Debug.Log("posting_json_metadata: " + postingJsonMetadata);
-    //            usernameText.text = (string)profileData["name"];
-    //            string profileImageUrl = (string)postingJsonMetadata["profile"]["profile_image"];
-    //            Debug.Log("Profile image URL: " + profileImageUrl);
-    //            StartCoroutine(FetchProfilePicture(profileImageUrl));
-    //        }
-    //        else
-    //        {
-    //            // Failed to fetch the profile data, log an error
-    //            Debug.LogError("Failed to fetch profile: " + error);
-    //        }
-    //    }));
-    //}
-
 
     void Start()
     {
-        profileFetcher = GetComponent<HiveProfileFetcher>();
-        string account = "";
-        if(PlayerPrefs.HasKey("account"))
-        { 
-            account = PlayerPrefs.GetString("account");
+        profileFetcher = GetComponent<HiveProfileFetcher>();//This is a HiveProfileFetcher variable that stores the HiveProfileFetcher component.
+        string account = "";//This is a string variable that stores the user's Hive account name.
+        if (PlayerPrefs.HasKey("account"))//This is a condition that checks if the PlayerPrefs contains the key "account".
+        {
+            account = PlayerPrefs.GetString("account");//This is a string variable that stores the value of the key "account".
         }
 
-        Debug.LogError("Account "+account);
-        // Fetch the user profile data
-        StartCoroutine(profileFetcher.FetchProfile((error,profileData) => {
-            if(string.IsNullOrEmpty(error))
+        Debug.LogError("Account " + account);//This is an error message that is displayed in the console when the account is fetched from the PlayerPrefs.
+        StartCoroutine(profileFetcher.FetchProfile((error, profileData) =>
+        {
+            if (string.IsNullOrEmpty(error))//This is a condition that checks if the error message is empty.
             {
-                // Check if profileData contains the key "posting_json_metadata"
-                if(profileData.ContainsKey("posting_json_metadata"))
+                if (profileData.ContainsKey("posting_json_metadata"))//This is a condition that checks if the profileData contains the key "posting_json_metadata".
                 {
-                    string postingJsonMetadataStr = (string)profileData["posting_json_metadata"];
-
-                    // Check if postingJsonMetadataStr is not null or empty
-                    if(!string.IsNullOrEmpty(postingJsonMetadataStr))
+                    string postingJsonMetadataStr = (string)profileData["posting_json_metadata"];//This is a string variable that stores the value of the key "posting_json_metadata".
+                    if (!string.IsNullOrEmpty(postingJsonMetadataStr))//This is a condition that checks if the postingJsonMetadataStr is not empty.
                     {
                         try
                         {
-                            JObject postingJsonMetadata = JObject.Parse(postingJsonMetadataStr);
-                           // Debug.Log("posting_json_metadata: " + postingJsonMetadata);
-                            usernameText.text = (string)profileData["name"];
-                            string profileImageUrl = (string)postingJsonMetadata["profile"]["profile_image"];
-                           // Debug.Log("Profile image URL: " + profileImageUrl);
-                            GameData.hasProfileImage = true;
-                            StartCoroutine(FetchProfilePicture(profileImageUrl));
+                            JObject postingJsonMetadata = JObject.Parse(postingJsonMetadataStr);//This is a JObject variable that stores the parsed postingJsonMetadataStr.
+                            usernameText.text = (string)profileData["name"];//This sets the username in the Text component usernameText.
+                            string profileImageUrl = (string)postingJsonMetadata["profile"]["profile_image"];//This is a string variable that stores the URL of the profile picture.
+                            GameData.hasProfileImage = true;//This is a boolean variable that is set to true when the profile picture is successfully downloaded.
+                            StartCoroutine(FetchProfilePicture(profileImageUrl));//This is a coroutine that fetches the profile picture using the FetchProfilePicture coroutine.
                         }
-                        catch(System.Exception ex)
+                        catch (System.Exception ex)//This is a catch statement that catches any exception that occurs during the parsing of the posting_json_metadata.
                         {
-                            if(string.IsNullOrEmpty(account))
+                            if (string.IsNullOrEmpty(account))//This is a condition that checks if the account is empty.
                             {
-                               // Debug.LogError("Account not found");
-                                GameData.hasProfileImage = false;
-                                int randomprofileImageIndex = Random.Range(0,GameData.Get().DummyProfile.Count);
-                                GameData.dummyProfileIndex = randomprofileImageIndex;
+                                GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+                                int randomprofileImageIndex = Random.Range(0, GameData.Get().DummyProfile.Count);//This is an integer variable that stores a random number between 0 and the number of dummy profile images.
+                                GameData.dummyProfileIndex = randomprofileImageIndex;//This sets the dummy profile index to the randomprofileImageIndex.
 
-                                if(dummyProfileimages[randomprofileImageIndex])
-                                    profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];
+                                if (dummyProfileimages[randomprofileImageIndex])//This is a condition that checks if the dummyProfileimages contains the randomprofileImageIndex.
+                                    profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];//This sets the profile picture in the Image component profileImageRegular.
 
-                                usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;
+                                usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;//This sets the username in the Text component usernameText.
                             }
-                            Debug.LogError("Error parsing posting_json_metadata: " + ex.Message);
+                            Debug.LogError("Error parsing posting_json_metadata: " + ex.Message);//This is an error message that is displayed in the console when there is an error parsing the posting_json_metadata.
                         }
                     }
                     else
                     {
 
-                        GameData.hasProfileImage = false;
-                        if(string.IsNullOrEmpty(account))
+                        GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+                        if (string.IsNullOrEmpty(account))//This is a condition that checks if the account is empty.
                         {
-                            //Debug.LogError("Account not found");
-                            GameData.hasProfileImage = false;
-                            int randomprofileImageIndex = Random.Range(0,GameData.Get().DummyProfile.Count);
-                            GameData.dummyProfileIndex = randomprofileImageIndex;
+                            GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+                            int randomprofileImageIndex = Random.Range(0, GameData.Get().DummyProfile.Count);//This is an integer variable that stores a random number between 0 and the number of dummy profile images.
+                            GameData.dummyProfileIndex = randomprofileImageIndex;//This sets the dummy profile index to the randomprofileImageIndex.
 
-                            if(dummyProfileimages[randomprofileImageIndex])
-                                profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];
+                            if (dummyProfileimages[randomprofileImageIndex])//This is a condition that checks if the dummyProfileimages contains the randomprofileImageIndex.
+                                profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];//This sets the profile picture in the Image component profileImageRegular.
 
 
-                            usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;
+                            usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;//This sets the username in the Text component usernameText.
                         }
-                        //Debug.LogError("posting_json_metadata is empty or null.");
                     }
                 }
                 else
                 {
-                    if(string.IsNullOrEmpty(account))
+                    if (string.IsNullOrEmpty(account))//This is a condition that checks if the account is empty.
                     {
-                      //  Debug.LogError("Account not found");
-                        GameData.hasProfileImage = false;
-                        int randomprofileImageIndex = Random.Range(0,GameData.Get().DummyProfile.Count);
-                        GameData.dummyProfileIndex = randomprofileImageIndex;
+                        GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+                        int randomprofileImageIndex = Random.Range(0, GameData.Get().DummyProfile.Count);//This is an integer variable that stores a random number between 0 and the number of dummy profile images.
+                        GameData.dummyProfileIndex = randomprofileImageIndex;//This sets the dummy profile index to the randomprofileImageIndex.
 
-                        if(dummyProfileimages[randomprofileImageIndex])
-                            profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];
+                        if (dummyProfileimages[randomprofileImageIndex])//This is a condition that checks if the dummyProfileimages contains the randomprofileImageIndex.
+                            profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];//This sets the profile picture in the Image component profileImageRegular.
 
-                        usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;
+                        usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;//This sets the username in the Text component usernameText.
                     }
-                   // Debug.LogError("profileData does not contain the key 'posting_json_metadata'.");
                 }
             }
             else
             {
-                if(string.IsNullOrEmpty(account)) 
+                if (string.IsNullOrEmpty(account)) //This is a condition that checks if the account is empty.
                 {
-                   // Debug.LogError("Account not found");
-                    GameData.hasProfileImage = false;
-                    int randomprofileImageIndex = Random.Range(0,GameData.Get().DummyProfile.Count);
-                    GameData.dummyProfileIndex = randomprofileImageIndex;
+                    GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+                    int randomprofileImageIndex = Random.Range(0, GameData.Get().DummyProfile.Count);//This is an integer variable that stores a random number between 0 and the number of dummy profile images.
+                    GameData.dummyProfileIndex = randomprofileImageIndex;//This sets the dummy profile index to the randomprofileImageIndex.
 
-                    if(dummyProfileimages[randomprofileImageIndex])
-                        profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];
+                    if (dummyProfileimages[randomprofileImageIndex])//This is a condition that checks if the dummyProfileimages contains the randomprofileImageIndex.
+                        profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];//This sets the profile picture in the Image component profileImageRegular.
 
-                    usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;
+                    usernameText.text = Photon.Pun.PhotonNetwork.LocalPlayer.NickName;//This sets the username in the Text component usernameText.
                 }
-                // Failed to fetch the profile data, log an error
-              //  Debug.LogError("Failed to fetch profile: " + error);
             }
         }));
     }
 
-    private IEnumerator FetchProfilePicture(string url)
+    private IEnumerator FetchProfilePicture(string url)//This is a coroutine that fetches the profile picture using the URL of the profile picture.
     {
-       // Debug.Log("Fetching profile picture from URL: " + url);
-        GameData.playerProfileUrl = url;
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
-        yield return www.SendWebRequest();
-        if(www.result != UnityWebRequest.Result.Success)
+        GameData.playerProfileUrl = url;//This is a string variable that stores the URL of the profile picture.
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);//This is a UnityWebRequest variable that gets the texture of the profile picture using the URL.
+        yield return www.SendWebRequest();//This is a yield statement that waits for the UnityWebRequest to send the request.
+        if (www.result != UnityWebRequest.Result.Success)//This is a condition that checks if the UnityWebRequest result is not successful.
         {
-            GameData.hasProfileImage = false;
-            int randomprofileImageIndex = Random.Range(0,GameData.Get().DummyProfile.Count);
-            GameData.dummyProfileIndex = randomprofileImageIndex;
-            if(dummyProfileimages[randomprofileImageIndex])
-            profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];
-            //  Debug.Log("Failed to download profile picture: " + www.error);
+            GameData.hasProfileImage = false;//This is a boolean variable that is set to false when the profile picture is not successfully downloaded.
+            int randomprofileImageIndex = Random.Range(0, GameData.Get().DummyProfile.Count);//This is an integer variable that stores a random number between 0 and the number of dummy profile images.
+            GameData.dummyProfileIndex = randomprofileImageIndex;//This sets the dummy profile index to the randomprofileImageIndex.
+            if (dummyProfileimages[randomprofileImageIndex])//This is a condition that checks if the dummyProfileimages contains the randomprofileImageIndex.
+                profileImageRegular.sprite = dummyProfileimages[randomprofileImageIndex];//This sets the profile picture in the Image component profileImageRegular.
         }
         else
         {
-            Debug.Log("Successfully downloaded profile picture.");
+            //Debug.Log("Successfully downloaded profile picture.");//This is a log message that is displayed in the console when the profile picture is successfully downloaded.
 
-            GameData.hasProfileImage = true;
-            GameData.playerProfileUrl = url;
-            Texture2D texture2D = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            GameData.playerProfileTexture = texture2D;
-            profileImage.texture = texture2D; //((DownloadHandlerTexture)www.downloadHandler).texture;
-           GameData.playerSprite= GameData.SpriteFromTexture2D(texture2D);
-            profileImageRegular.sprite = GameData.playerSprite;
+            GameData.hasProfileImage = true;//This is a boolean variable that is set to true when the profile picture is successfully downloaded.
+            GameData.playerProfileUrl = url;//This is a string variable that stores the URL of the profile picture.
+            Texture2D texture2D = ((DownloadHandlerTexture)www.downloadHandler).texture;//This is a Texture2D variable that stores the downloaded profile picture.
+            GameData.playerProfileTexture = texture2D;//This is a Texture2D variable that stores the downloaded profile picture.
+            profileImage.texture = texture2D; //This sets the profile picture in the RawImage component profileImage.
+            GameData.playerSprite = GameData.SpriteFromTexture2D(texture2D);//This is a Sprite variable that stores the profile picture as a Sprite.
+            profileImageRegular.sprite = GameData.playerSprite;//This sets the profile picture in the Image component profileImageRegular.
         }
     }
 }

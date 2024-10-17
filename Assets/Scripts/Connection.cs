@@ -1,3 +1,8 @@
+////////////////////////////////////////////////////
+/// ConnectionManager.cs
+/// 
+/// This script is responsible for creating a WebSocket connection to the Hive blockchain.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.WebSockets;
@@ -8,66 +13,61 @@ using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
 {
-    public static ConnectionManager instance;
+    public static ConnectionManager instance;//Instance of the ConnectionManager class
 
-    private ClientWebSocket socket;
+    private ClientWebSocket socket;//WebSocket connection
 
-    public ConnectionManager() { }
+    public ConnectionManager() { }//Constructor
 
-    // string hostName = connectManager.GetHostName();
-    public static ConnectionManager Instance
+    public static ConnectionManager Instance//Instance property
     {
-        get
+        get//Get the instance
         {
             if (instance == null)
             {
-                instance = new ConnectionManager();
+                instance = new ConnectionManager();//Create a new instance of the ConnectionManager class
             }
-            return instance;
+            return instance;//Return the instance
         }
     }
 
     private async void Awake()
     {
-        // Make sure there is only one instance of ConnectionManager
-        if (instance == null)
+        if (instance == null)//If the instance is null
         {
-            instance = this;
+            instance = this;//Set the instance to this
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(gameObject);//Destroy the game object
         }
-
-        // Create a WebSocket connection if it doesn't exist yet
-        if (socket == null)
+        if (socket == null)//If the socket is null
         {
-            // DontDestroyOnLoad(this.gameObject);
-            socket = await Connect("wss://hive-auth.arcange.eu");
-            Debug.Log("WebSocket connection established.");
+            socket = await Connect("wss://hive-auth.arcange.eu");//Connect to the Hive blockchain
+            Debug.Log("WebSocket connection established.");//Log the connection status
         }
     }
 
-    public async Task<ClientWebSocket> Connect(string host)
+    public async Task<ClientWebSocket> Connect(string host)//Connect to the Hive blockchain
     {
-        ClientWebSocket socket = new ClientWebSocket();
-        Uri serverUri = new Uri(host);
-        await socket.ConnectAsync(serverUri, CancellationToken.None);
-        return socket;
+        ClientWebSocket socket = new ClientWebSocket();//Create a new WebSocket connection
+        Uri serverUri = new Uri(host);//Create a new URI
+        await socket.ConnectAsync(serverUri, CancellationToken.None);//Connect to the server
+        return socket;//Return the socket
     }
 
 
-    public ClientWebSocket GetSocket()
+    public ClientWebSocket GetSocket()//Get the WebSocket connection
     {
-        return socket;
+        return socket;//Return the socket
     }
 
-    public async Task Disconnect()
+    public async Task Disconnect()//Disconnect from the server
     {
-        if (socket != null)
+        if (socket != null)//If the socket is not null
         {
-            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing connection", CancellationToken.None);
-            socket = null;
+            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing connection", CancellationToken.None);//Close the connection
+            socket = null;//Set the socket to null
         }
     }
 

@@ -1,3 +1,8 @@
+/////////////////////////////////////////////////////////////////////
+///DisplayAccount.cs
+///
+///This script is responsible for displaying the account name and profile image of the user.
+
 using System.Diagnostics;
 using System.Collections;
 using UnityEngine;
@@ -13,116 +18,86 @@ using Newtonsoft.Json;
 
 public class DisplayAccount : MonoBehaviour
 {
-    public Text profileName;
-    public RawImage profileImage;
-    public static string HiveProfileName="";
-    private string account;
-
-    private HiveProfileFetcher hiveProfileFetcher;
-    public HiveProfileData hiveProfile;
+    public Text profileName;//Text to display the profile name
+    public RawImage profileImage;//Raw image to display the profile image
+    public static string HiveProfileName = "";//Static string to store the profile name
+    private string account;//String to store the account name
+    private HiveProfileFetcher hiveProfileFetcher;//HiveProfileFetcher object to fetch the profile data
+    public HiveProfileData hiveProfile;//HiveProfileData object to store the profile data
     private void Start()
     {
-        hiveProfileFetcher = FindObjectOfType<HiveProfileFetcher>();
-        account = PlayerPrefs.GetString("account");
-        Debug.LogError(account);
-        StartCoroutine(hiveProfileFetcher.FetchProfile(account, HandleProfileData));
+        hiveProfileFetcher = FindObjectOfType<HiveProfileFetcher>();//Find the HiveProfileFetcher object
+        account = PlayerPrefs.GetString("account");//Get the account name from the player prefs
+        //Debug.LogError(account);//Log the account name
+        StartCoroutine(hiveProfileFetcher.FetchProfile(account, HandleProfileData));//Fetch the profile data
     }
 
-    private void HandleProfileData(string error, JObject profileData)
+    private void HandleProfileData(string error, JObject profileData)//Handle the profile data
     {
         if (error != null)
         {
-            Debug.LogError("Failed to fetch profile data: " + error);
+            Debug.LogError("Failed to fetch profile data: " + error);//Log the error
             return;
         }
 
         if (profileData == null)
         {
-            Debug.LogError("Profile data is null.");
+            Debug.LogError("Profile data is null.");//Log the error
             return;
         }
-        Debug.LogError(profileData.ToString());
-      // hiveProfile = JsonUtility.FromJson<HiveProfileData>(profileData.ToString());
-        JObject jsonMetadata = null;
-        JObject parsedProfileData = null;
-      hiveProfile=  JsonConvert.DeserializeObject<HiveProfileData>(profileData.ToString());
-        //if(profileData["json_metadata"] != null)
-        //{
-        //    jsonMetadata = JObject.Parse((string)profileData["json_metadata"]);
-        //    parsedProfileData = jsonMetadata["profile"] as JObject;
-        //}
-
-        //if(parsedProfileData == null && profileData["posting_json_metadata"] != null)
-        //{
-        //    jsonMetadata = JObject.Parse((string)profileData["posting_json_metadata"]);
-        //    parsedProfileData = jsonMetadata["profile"] as JObject;
-        //}
-
-        //if(parsedProfileData == null)
-        //{
-        //    Debug.LogError("JSON metadata is missing 'profile' property.");
-        //    return;
-        //}
-
-        //account = (string)parsedProfileData["account"];
-        //profileName.text = (string)parsedProfileData["name"];
-        Debug.LogError(hiveProfile.name);
-        account = hiveProfile.id.ToString();
-        profileName.text = hiveProfile.name.ToString(); //(string)parsedProfileData["name"];
-        PlayerPrefs.SetString("HiveProfileName",profileName.text.ToString());
-       
-        HiveProfileName = profileName.text.ToString();
-        
-        //StartCoroutine(LoadProfileImage((string)parsedProfileData["profile_image"]));
+        Debug.LogError(profileData.ToString());//Log the profile data
+        hiveProfile = JsonConvert.DeserializeObject<HiveProfileData>(profileData.ToString());//Deserialize the profile data
+        Debug.LogError(hiveProfile.name);//Log the profile name
+        account = hiveProfile.id.ToString();//Get the account name
+        profileName.text = hiveProfile.name.ToString();//Set the profile name text
+        PlayerPrefs.SetString("HiveProfileName", profileName.text.ToString());//Set the profile name in the player prefs
+        HiveProfileName = profileName.text.ToString();//Set the profile name
     }
 
-    private IEnumerator LoadProfileImage(string url)
+    private IEnumerator LoadProfileImage(string url)//Load the profile image
     {
-        yield return LoadImage(url, (error, texture) =>
+        yield return LoadImage(url, (error, texture) =>//Load the image
         {
             if (error == null)
             {
-                profileImage.texture = texture;
+                profileImage.texture = texture;//Set the profile image texture
             }
             else
             {
-                Debug.LogError("Failed to load profile image: " + error);
+                Debug.LogError("Failed to load profile image: " + error);//Log the error
             }
         });
     }
 
     private IEnumerator LoadImage(string url, Action<string, Texture2D> onCompleted)
     {
-        if (string.IsNullOrEmpty(url))
+        if (string.IsNullOrEmpty(url))//Check if the URL is empty
         {
             yield break;
         }
 
-        Debug.Log("Loading image from URL: " + url);
+        Debug.Log("Loading image from URL: " + url);//Log the URL
 
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))//Load the image
         {
-            yield return www.SendWebRequest();
+            yield return www.SendWebRequest();//Send the request
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result != UnityWebRequest.Result.Success)//Check if the request is successful
             {
-                Debug.LogError("Failed to load image: " + www.error);
-                onCompleted?.Invoke(www.error, null);
+                Debug.LogError("Failed to load image: " + www.error);//Log the error
+                onCompleted?.Invoke(www.error, null);//Invoke the callback
             }
             else
             {
-                Texture2D texture = DownloadHandlerTexture.GetContent(www);
-                onCompleted?.Invoke(null, texture);
+                Texture2D texture = DownloadHandlerTexture.GetContent(www);//Get the texture
+                onCompleted?.Invoke(null, texture);//Invoke the callback
             }
         }
     }
 }
-//Hive profile class
-
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
 
 [System.Serializable]
-public class Active
+public class Active//Here we define the Active class which contains the properties of the active data.
 {
     public int weight_threshold { get; set; }
     public List<object> account_auths { get; set; }
@@ -130,14 +105,14 @@ public class Active
 }
 
 [System.Serializable]
-public class DownvoteManabar
+public class DownvoteManabar//Here we define the DownvoteManabar class which contains the properties
 {
     public int current_mana { get; set; }
     public int last_update_time { get; set; }
 }
 
 [System.Serializable]
-public class Owner
+public class Owner//Here we define the Owner class which contains the properties of the owner data.
 {
     public int weight_threshold { get; set; }
     public List<object> account_auths { get; set; }
@@ -145,7 +120,7 @@ public class Owner
 }
 
 [System.Serializable]
-public class Posting
+public class Posting//Here we define the Posting class which contains the properties of the posting data.
 {
     public int weight_threshold { get; set; }
     public List<object> account_auths { get; set; }
@@ -153,7 +128,7 @@ public class Posting
 }
 
 [System.Serializable]
-public class HiveProfileData
+public class HiveProfileData//Here we define the HiveProfileData class which contains the properties of the Hive profile data.
 {
     public int id { get; set; }
     public string name { get; set; }
@@ -229,7 +204,7 @@ public class HiveProfileData
 }
 
 [System.Serializable]
-public class VotingManabar
+public class VotingManabar//Here we define the VotingManabar class which contains the properties of the voting manabar.
 {
     public int current_mana { get; set; }
     public int last_update_time { get; set; }

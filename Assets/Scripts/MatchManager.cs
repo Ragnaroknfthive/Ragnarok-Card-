@@ -1,3 +1,10 @@
+////////////////////////////
+///MatchManager.cs
+///
+///Here we have the MatchManager class, which is responsible for managing the match.
+///It has a QuickMatch method that calls the QuickMatch method from the PhotonCallback class.
+////////////////////////////
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,20 +12,14 @@ using UnityEngine;
 public class MatchManager : MonoBehaviour
 {
     [SerializeField]
-    PhotonCallback photonCallback;
-    // Start is called before the first frame update
+    PhotonCallback photonCallback;//Reference to the PhotonCallback class
+
     void Start()
     {
-       photonCallback= FindObjectOfType<PhotonCallback>();
+        photonCallback = FindObjectOfType<PhotonCallback>();//Find the PhotonCallback object in the scene
     }
-
-    // Update is called once per frame
-    void Update()
+    public void QuickMatch()//Method to call the QuickMatch method from the PhotonCallback class
     {
-        
-    }
-    public void QuickMatch() 
-    {
-        photonCallback.QuickMatch();
+        photonCallback.QuickMatch();//Call the QuickMatch method from the PhotonCallback class
     }
 }

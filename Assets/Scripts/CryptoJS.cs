@@ -1,3 +1,8 @@
+//////////////////////////////////////////////////
+/// CryptoJS.cs
+/// 
+/// This script is used to encrypt and decrypt strings using the CryptoJS library.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -270,7 +275,7 @@ public static class CryptoJS
 
             return new UTF8Encoding(false).GetString(decryptionStream.ToArray());
         }
-        catch (CryptographicException ex)
+        catch (CryptographicException)
         {
             return string.Empty;
         }

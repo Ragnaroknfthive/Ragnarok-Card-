@@ -1,3 +1,8 @@
+/////////////////////////////////////////////////////////////
+///Projectile.cs
+///
+///This script is responsible for moving the projectile towards the target and dealing damage to the target if enabled.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,7 +76,7 @@ public class Projectile : MonoBehaviour
             // If the lifetime exceeds 1 second, log an error and destroy the projectile
             if (lifetime > 1f)
             {
-                Debug.LogError("Projectile Destroyed");
+                //Debug.LogError("Projectile Destroyed");//Log an error message of the projectile being destroyed
                 Destroy(gameObject);
             }
         }
