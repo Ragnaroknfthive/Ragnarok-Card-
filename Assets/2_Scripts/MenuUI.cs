@@ -129,6 +129,11 @@ public class MenuUI : MonoBehaviour
             StartCoroutine(ConnnectToNewRegion(region));
     }
 
+    public static MenuUI Get()
+    {
+        return mui;
+    }
+
     /// Coroutine to handle connecting to a new region.
     /// The region to connect to.
     /// Yield instruction to wait during the connection process.
