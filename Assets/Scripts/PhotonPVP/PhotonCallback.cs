@@ -9,8 +9,8 @@ using UnityEngine.SceneManagement;
 public class PhotonCallback : MonoBehaviourPunCallbacks
 {
     [SerializeField]
-    private byte maxPlayers = 2; 
-static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
+    private byte maxPlayers = 2;
+    static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
 
     public bool ConnectToCustomRegion = false;
     public bool ConnetToMenualRegion = false;
@@ -25,17 +25,17 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings();
     }
-	 // Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
 
-        
+
         autoReconnect = true;
         if (network_routine != null)
             network_routine = StartCoroutine(Reconnection());
 
     }
-	  // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         if (PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady)
@@ -71,8 +71,8 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
         Debug.Log("Connected to Master " + PhotonNetwork.CloudRegion);
         PhotonNetwork.JoinLobby();
         PhotonNetwork.AutomaticallySyncScene = true;
-       // Debug.Log(RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
-      RegionController.Get().SetRegion( RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
+        // Debug.Log(RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
+        RegionController.Get().SetRegion(RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
         isReadyToFindMatch = true;
     }
 
@@ -85,56 +85,56 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             UI.UpdatePlayButtonText();
         }
         isReadyToFindMatch = true;
-        if(string.IsNullOrEmpty(DisplayAccount.HiveProfileName)==false) 
+        if (string.IsNullOrEmpty(DisplayAccount.HiveProfileName) == false)
         {
-            PhotonNetwork.LocalPlayer.NickName = DisplayAccount.HiveProfileName+"_"+Random.Range(99,199);
+            PhotonNetwork.LocalPlayer.NickName = DisplayAccount.HiveProfileName + "_" + Random.Range(99, 199);
         }
-        else if(PlayerPrefs.HasKey("HiveProfileName"))
+        else if (PlayerPrefs.HasKey("HiveProfileName"))
         {
             DisplayAccount.HiveProfileName = PlayerPrefs.GetString("HiveProfileName");
-            PhotonNetwork.LocalPlayer.NickName = DisplayAccount.HiveProfileName + "_" + Random.Range(99,199);
+            PhotonNetwork.LocalPlayer.NickName = DisplayAccount.HiveProfileName + "_" + Random.Range(99, 199);
         }
-        else 
+        else
         {
-            PhotonNetwork.LocalPlayer.NickName = "Player_" + Random.Range(99,199);
+            PhotonNetwork.LocalPlayer.NickName = "Player_" + Random.Range(99, 199);
         }
         ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
-        if(!playerProperties.ContainsKey(GameData.hasProfileConst))
-        { playerProperties.Add(GameData.hasProfileConst,GameData.hasProfileImage ? 1 : 0); }
+        if (!playerProperties.ContainsKey(GameData.hasProfileConst))
+        { playerProperties.Add(GameData.hasProfileConst, GameData.hasProfileImage ? 1 : 0); }
         else
         {
             playerProperties[GameData.hasProfileConst] = GameData.hasProfileImage ? 1 : 0;
-           
+
         }
 
-        if(!playerProperties.ContainsKey(GameData.profileUrl))
-        { playerProperties.Add(GameData.profileUrl,GameData.playerProfileUrl); }
+        if (!playerProperties.ContainsKey(GameData.profileUrl))
+        { playerProperties.Add(GameData.profileUrl, GameData.playerProfileUrl); }
         else
         {
-            playerProperties[GameData.profileUrl]=GameData.playerProfileUrl;
-            Debug.LogError(playerProperties[GameData.profileUrl]);
+            playerProperties[GameData.profileUrl] = GameData.playerProfileUrl;
+            //Debug.LogError(playerProperties[GameData.profileUrl]);
         }
 
-        if(!playerProperties.ContainsKey(GameData.dummyProfileImageIndex))
-        { playerProperties.Add(GameData.dummyProfileImageIndex,GameData.hasProfileImage ? -1 : GameData.dummyProfileIndex); }
+        if (!playerProperties.ContainsKey(GameData.dummyProfileImageIndex))
+        { playerProperties.Add(GameData.dummyProfileImageIndex, GameData.hasProfileImage ? -1 : GameData.dummyProfileIndex); }
         else
         {
             playerProperties[GameData.dummyProfileImageIndex] = GameData.dummyProfileIndex;
-           
+
         }
         //PhotonNetwork.LocalPlayer.SetCustomProperties=playerProperties;
-        Debug.Log("Joined Lobby"+ DisplayAccount.HiveProfileName);
+        Debug.Log("Joined Lobby" + DisplayAccount.HiveProfileName);
     }
 
     public void QuickMatch()
     {
-        if(DeckManager.instance.playerDeck.Count < 33)
+        if (DeckManager.instance.playerDeck.Count < 33)
         {
             DeckManager.instance.AddAll();
             // MenuUI.Get().ShowMsg("Please complete your deck...",true,true);
             // return;
         }
-        if(PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady)
+        if (PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady)
         {
 
             PhotonNetwork.JoinRandomRoom();
@@ -220,7 +220,7 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
                 if (player.CustomProperties.TryGetValue("hive_account", out object account))
                 {
                     string accountInfo = account.ToString();
-                   // Debug.Log("Player" + accountInfo);
+                    // Debug.Log("Player" + accountInfo);
                     return accountInfo;
                 }
             }
@@ -229,40 +229,40 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
     }
     private void CreateRoom()
     {
-        if(DeckManager.instance.playerDeck.Count < 33)
+        if (DeckManager.instance.playerDeck.Count < 33)
         {
-           // MenuUI.Get().ShowMsg("Please complete your deck...",true,true);
+            // MenuUI.Get().ShowMsg("Please complete your deck...",true,true);
             //return;
         }
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = maxPlayers;
         roomOptions.CleanupCacheOnLeave = false;
-        PhotonNetwork.CreateRoom(null,roomOptions,null);
-        MenuUI.Get().ShowMsg("Room created waiting for players...",true);
+        PhotonNetwork.CreateRoom(null, roomOptions, null);
+        MenuUI.Get().ShowMsg("Room created waiting for players...", true);
     }
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-      //  RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers,CleanupCacheOnLeave = false };
-      //  PhotonNetwork.CreateRoom(null,roomOptions,null);
+        //  RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers,CleanupCacheOnLeave = false };
+        //  PhotonNetwork.CreateRoom(null,roomOptions,null);
         if (PhotonNetwork.IsConnected && PhotonNetwork.IsConnectedAndReady)
         {
             CreateRoom();
 
-            if(FindObjectOfType<PlayButtonController>() != null)
+            if (FindObjectOfType<PlayButtonController>() != null)
             {
                 FindObjectOfType<PlayButtonController>().statusText.text = "New Room Created";
             }
         }
         else
         {
-            if(FindObjectOfType<PlayButtonController>() != null)
+            if (FindObjectOfType<PlayButtonController>() != null)
             {
                 FindObjectOfType<PlayButtonController>().statusText.text = "Connection Lost..";
             }
             PhotonNetwork.ConnectUsingSettings();
 
-          
+
             //PhotonNetwork.ConnectToRegion(PlayerPrefs.HasKey("pun_region") ? MenuUI.Get().getSelectedRegion() : "us");
         }
 
@@ -277,13 +277,13 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             playButtonController.statusText.text = "Room created";
 
             string opponentAccount = GetOpponentAccount();
-            if(!string.IsNullOrEmpty(opponentAccount))
+            if (!string.IsNullOrEmpty(opponentAccount))
             {
                 displayOpponentProfile.DisplayOpponent(opponentAccount);
             }
             DeckManager.instance.SetOpponentDeck();
             PhotonNetwork.LoadLevel("Game");
-            
+
         }
         else
         {
@@ -304,12 +304,12 @@ static string AppID = "b155e53a-8156-43d7-ab29-461afb3885bb";
             playButtonController.statusText.text = "Room created";
 
             string opponentAccount = GetOpponentAccount();
-            if(!string.IsNullOrEmpty(opponentAccount))
+            if (!string.IsNullOrEmpty(opponentAccount))
             {
                 displayOpponentProfile.DisplayOpponent(opponentAccount);
             }
-           // PhotonNetwork.PlayerList[0].NickName = "Player 1";
-           // PhotonNetwork.PlayerList[1].NickName = "Player 2";
+            // PhotonNetwork.PlayerList[0].NickName = "Player 1";
+            // PhotonNetwork.PlayerList[1].NickName = "Player 2";
             DeckManager.instance.SetDeck();
             PhotonNetwork.LoadLevel("Game");
 

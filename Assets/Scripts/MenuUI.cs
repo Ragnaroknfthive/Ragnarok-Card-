@@ -191,6 +191,18 @@ public class MenuUI : MonoBehaviour
         regionTXT.text = "Connected to"; // Update text to show connection status
         PlayBtn.interactable = true; // Enable the play button
     }
+    public void ShowMsg(string msg, bool Cancellable = false, bool AutoDistruct = false)
+    {
+        //MsgTxt.text = msg;
+        //ErrorDisp.SetActive(true);
+
+        //if(ErrorDisp.GetComponentInChildren<Button>() != null)
+        //    ErrorDisp.GetComponentInChildren<Button>().gameObject.SetActive(Cancellable);
+        //if(AutoDistruct)
+        //{
+        //    StartCoroutine(Hide());
+        //}
+    }
 
     /// Quits the application.
     public void Quit()

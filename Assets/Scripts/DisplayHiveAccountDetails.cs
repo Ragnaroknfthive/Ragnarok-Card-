@@ -32,7 +32,7 @@ public class DisplayHiveAccountDetails : MonoBehaviour
             account = PlayerPrefs.GetString("account");//This is a string variable that stores the value of the key "account".
         }
 
-        Debug.LogError("Account " + account);//This is an error message that is displayed in the console when the account is fetched from the PlayerPrefs.
+        //Debug.LogError("Account " + account);//This is an error message that is displayed in the console when the account is fetched from the PlayerPrefs, in other words, when the account is not empty.
         StartCoroutine(profileFetcher.FetchProfile((error, profileData) =>
         {
             if (string.IsNullOrEmpty(error))//This is a condition that checks if the error message is empty.
