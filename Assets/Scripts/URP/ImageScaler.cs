@@ -1,3 +1,8 @@
+// Code for scaling an image to fit the camera's size.
+// The image is a child of the object that has this script attached.
+// The script will adjust the image's scale to fit the camera's size.
+// The script also adjusts the image's position to center it in the camera.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,18 +19,18 @@ public class ImageScaler : MonoBehaviour
 
     private void Update()
     {
-        // Obtiene el tamaño de la cámara en unidades del mundo
+        //Get the camera size in world units
         float cameraHeight = 2f * mainCamera.orthographicSize;
         float cameraWidth = cameraHeight * mainCamera.aspect;
 
-        // Calcula la escala necesaria para ajustar la imagen al tamaño de la cámara
+        //Calculate the scale needed to adjust the image to the camera size
         float scaleX = cameraWidth / imageResize.rectTransform.sizeDelta.x;
         float scaleY = cameraHeight / imageResize.rectTransform.sizeDelta.y;
 
-        // Aplica la escala al objeto Image
+        //Apply the scale to the Image object
         imageResize.rectTransform.localScale = new Vector3(scaleX + ajusteX, scaleY + ajusteY, 1f);
 
-        // Ajusta la posición para centrarla en la cámara
+        //Adjust the position to center it in the camera
         Vector3 cameraPosition = mainCamera.transform.position;
         transform.position = new Vector3(cameraPosition.x, cameraPosition.y, transform.position.z);
     }

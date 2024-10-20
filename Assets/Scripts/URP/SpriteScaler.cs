@@ -1,3 +1,8 @@
+// Code for scaling a sprite to fit the camera view.
+// The script resizes the sprite to fit the camera view by adjusting the scale of the SpriteRenderer component.
+// The script calculates the scale based on the size of the camera and the original sprite size.
+// The script also centers the sprite in the camera view by adjusting its position.
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,22 +19,22 @@ public class SpriteScaler : MonoBehaviour
 
     private void Update()
     {
-        // Obtiene el tama�o de la c�mara en unidades del mundo
+        //Get the size of the camera in world units
         float cameraHeight = 2f * mainCamera.orthographicSize;
         float cameraWidth = cameraHeight * mainCamera.aspect;
 
-        // Obtiene el tama�o original del sprite
+        //Get the original size of the sprite
         float spriteHeight = imageResize.sprite.bounds.size.y;
         float spriteWidth = imageResize.sprite.bounds.size.x;
 
-        // Calcula la escala necesaria para ajustar el sprite al tama�o de la c�mara
+        //Calculate the scale needed to fit the sprite to the camera size
         float scaleX = cameraWidth / spriteWidth;
         float scaleY = cameraHeight / spriteHeight;
 
-        // Aplica la escala al objeto SpriteRenderer
+        //Apply the scale to the SpriteRenderer object
         imageResize.transform.localScale = new Vector3(scaleX + ajusteX, scaleY + ajusteY, 1f);
 
-        // Ajusta la posici�n para centrarla en la c�mara
+        //Adjust the position to center it in the camera
         Vector3 cameraPosition = mainCamera.transform.position;
         transform.position = new Vector3(cameraPosition.x, cameraPosition.y, transform.position.z);
 
