@@ -1,3 +1,8 @@
+///////////////////////////////////////////////
+/// DeckManager.cs
+/// 
+/// This script is used to manage the player's deck.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,133 +13,116 @@ using System.Linq;
 public class DeckManager : MonoBehaviour
 {
 
-    public List<SpellCard> playerDeck;
-    public List<SpellCard> PetInventory;
-    public static DeckManager instance;
-
-    public Transform deck_parent;
-    public GameObject deckDispPref;
-
-    public Transform inventory_parent;
-    public GameObject inventoryDispPref;
-    public TextMeshProUGUI count;
-    public TextMeshProUGUI title;
-    public UI_panel PetPanel;
-
-    public string currentScreen;
-    public string GameUpdatesLink = "https://peakd.com/@ragnarok.game/posts";
-    public bool isPetOpen
+    public List<SpellCard> playerDeck;//The player's deck
+    public List<SpellCard> PetInventory;//The player's pet inventory
+    public static DeckManager instance;//The instance of the DeckManager
+    public Transform deck_parent;//The deck parent
+    public GameObject deckDispPref;//The deck display prefab
+    public Transform inventory_parent;//The inventory parent
+    public GameObject inventoryDispPref;//The inventory display prefab
+    public TextMeshProUGUI count;//The count text
+    public TextMeshProUGUI title;//The title text
+    public UI_panel PetPanel;//The pet panel
+    public string currentScreen;//The current screen
+    public string GameUpdatesLink = "https://peakd.com/@ragnarok.game/posts";//The game updates link
+    public bool isPetOpen//Is the pet open
     {
-        get
+        get//Get the value
         {
-            return currentScreen == "Pet";
+            return currentScreen == "Pet";//Return the value
         }
     }
 
-    /// <summary>
-    /// Awake is called when the script instance is being loaded.
-    /// </summary>
     void Awake()
     {
-        instance = this;
+        instance = this;//Set the instance to this
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        string deck_str = PlayerPrefs.GetString("player_deck","");
-        if(deck_str != "")
+        string deck_str = PlayerPrefs.GetString("player_deck", "");//Get the player deck string
+        if (deck_str != "")//If the deck string is not empty
         {
-            foreach(var item in deck_str.Split('_'))
+            foreach (var item in deck_str.Split('_'))//Loop through the deck string
             {
-                if(!playerDeck.Contains(GetCard(System.Convert.ToInt32(item))))
-                    playerDeck.Add(GetCard(System.Convert.ToInt32(item)));
+                if (!playerDeck.Contains(GetCard(System.Convert.ToInt32(item)))) playerDeck.Add(GetCard(System.Convert.ToInt32(item)));//Add the card to the player deck
             }
         }
-
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddCard(SpellCard card)//Method to add a card to the deck
     {
-
+        playerDeck.Add(card);//Add the card to the deck
+        UpdateDeckPreview(currentScreen);//Update the deck preview
     }
-
-    public void AddCard(SpellCard card)
+    public void RemoveCard(SpellCard card)//Method to remove a card from the deck
     {
-        playerDeck.Add(card);
-        UpdateDeckPreview(currentScreen);
-    }
-    public void RemoveCard(SpellCard card)
-    {
-
-        playerDeck.Remove(card);
-        UpdateDeckPreview(currentScreen);
+        playerDeck.Remove(card);//Remove the card from the deck
+        UpdateDeckPreview(currentScreen);//Update the deck preview
     }
 
     public void UpdateDeckPreview(string s)
     {
-        foreach(Transform item in inventory_parent)
+        foreach (Transform item in inventory_parent)//Loop through the inventory parent
         {
-            Destroy(item.gameObject);
+            Destroy(item.gameObject);//Destroy the item
         }
-        foreach(Transform item in deck_parent)
+        foreach (Transform item in deck_parent)//Loop through the deck parent
         {
-            Destroy(item.gameObject);
+            Destroy(item.gameObject);//Destroy the item
         }
-        int i = 0;
-        foreach(var item in playerDeck.Where(i => i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell)))
+        int i = 0;//Set the i value to 0
+        foreach (var item in playerDeck.Where(i => i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell)))//Loop through the player deck
         {
-            GameObject obj = Instantiate(deckDispPref,deck_parent);
-            obj.GetComponent<DeckDisplay>().Set(item);
-            i++;
-        }
-
-        i = 0;
-        foreach(var item in PetInventory)
-        {
-            if(item.cardType == (isPetOpen ? CardType.Spell : CardType.Pet))
-                continue;
-            if(playerDeck.Contains(item))
-                continue;
-            GameObject obj = Instantiate(inventoryDispPref,inventory_parent);
-            obj.GetComponent<SpellCardDisplay>().card = item;
-            obj.transform.localPosition = Vector3.zero;
-            obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;
-            obj.GetComponent<SpellCardDisplay>().index = i;
-            obj.transform.localScale = Vector3.one * 0.7f;
-            obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = 7;
-            obj.GetComponent<SpellCardDisplay>().IsPreview = true;
-            i++;
+            GameObject obj = Instantiate(deckDispPref, deck_parent);//Instantiate the deck display prefab
+            obj.GetComponent<DeckDisplay>().Set(item);//Set the card data
+            i++;//Increment i
         }
 
-        count.text = isPetOpen ? playerDeck.Where(i => i.cardType == (CardType.Pet)).Count() + " / 33" : playerDeck.Where(i => i.cardType == (CardType.Spell)).Count() + "";
+        i = 0;//Set i to 0
+        foreach (var item in PetInventory)//Loop through the pet inventory
+        {
+            if (item.cardType == (isPetOpen ? CardType.Spell : CardType.Pet))//If the card type is equal to the pet or spell
+                continue;
+            if (playerDeck.Contains(item))//If the player deck contains the item
+                continue;
+            GameObject obj = Instantiate(inventoryDispPref, inventory_parent);//Instantiate the inventory display prefab
+            obj.GetComponent<SpellCardDisplay>().card = item;//Set the card data
+            obj.transform.localPosition = Vector3.zero;//Set the local position to zero
+            obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;//Set the card position
+            obj.GetComponent<SpellCardDisplay>().index = i;//Set the index
+            obj.transform.localScale = Vector3.one * 0.7f;//Set the local scale
+            obj.GetComponent<SpellCardDisplay>().canvas.sortingOrder = 7;//Set the sorting order
+            obj.GetComponent<SpellCardDisplay>().IsPreview = true;//Set the is preview value
+            i++;//Increment i
+        }
+        count.text = isPetOpen ? playerDeck.Where(i => i.cardType == (CardType.Pet)).Count() + " / 33" : playerDeck.Where(i => i.cardType == (CardType.Spell)).Count() + "";//Set the count text
     }
 
-    public SpellCard GetCard(int id)
+    public SpellCard GetCard(int id)//Method to get the card by id
     {
-        foreach(var item in PetInventory)
+        foreach (var item in PetInventory)//Loop through the pet inventory
         {
-            if(item.cardId == id)
-                return item;
+            if (item.cardId == id)//If the card id is equal to the id
+                return item;//Return the item
         }
         return null;
     }
 
-    public void confirm()
+    public void confirm()//Method to confirm the deck
     {
-        if(isPetOpen)
+        if (isPetOpen)//If the pet is open
         {
-            if(playerDeck.Where(item => item.cardType == CardType.Pet).Count() >0)
+            if (playerDeck.Where(item => item.cardType == CardType.Pet).Count() > 0)//If the player deck contains the pet
             {
-                SetDeck();
-                PetPanel.Close();
+                SetDeck();//Set the deck
+                PetPanel.Close();//Close the pet panel
             }
         }
         else
         {
-            SetDeck();
-            PetPanel.Close();
+            SetDeck();//Set the deck
+            PetPanel.Close();//Close the pet panel
         }
     }
 
@@ -151,16 +139,16 @@ public class DeckManager : MonoBehaviour
         //             playerDeck.Remove(playerDeck[i]);
         //     }
         // }
-        playerDeck.RemoveAll((i) => i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell));
-        UpdateDeckPreview(currentScreen);
+        playerDeck.RemoveAll((i) => i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell));//Remove all the cards
+        UpdateDeckPreview(currentScreen);//Update the deck preview
     }
-    public void AddAll()
+    public void AddAll()//Method to add all the cards
     {
         //playerDeck.Clear();
-        if(isPetOpen)
+        if (isPetOpen)//If the pet is open
         {
             //int i = 0;
-            playerDeck.AddRange(PetInventory.Where((i) => i.cardType == CardType.Pet && !playerDeck.Contains(i)));
+            playerDeck.AddRange(PetInventory.Where((i) => i.cardType == CardType.Pet && !playerDeck.Contains(i)));//Add all the pets
             // while(playerDeck.Where(item=>item.cardType == CardType.Pet).Count() < 33)
             // {
             //     if(PetInventory[i].cardType == CardType.Pet){
@@ -171,110 +159,91 @@ public class DeckManager : MonoBehaviour
         }
         else
         {
-            for(int i = 0 ; i < PetInventory.Count ; i++)
+            for (int i = 0; i < PetInventory.Count; i++)//Loop through the pet inventory
             {
-                if(PetInventory[i].cardType == CardType.Spell)
-                    playerDeck.Add(PetInventory[i]);
+                if (PetInventory[i].cardType == CardType.Spell) playerDeck.Add(PetInventory[i]);//Add the spell to the player deck
             }
         }
-
-        UpdateDeckPreview(currentScreen);
+        UpdateDeckPreview(currentScreen);//Update the deck preview
     }
 
-    public void SetDeck()
+    public void SetDeck()//Method to set the deck
     {
-        List<int> deckIds = new List<int>();
-        foreach(var item in playerDeck)
+        List<int> deckIds = new List<int>();//List of deck ids
+        foreach (var item in playerDeck)//Loop through the player deck
         {
-            deckIds.Add(item.cardId);
+            deckIds.Add(item.cardId);//Add the card id
         }
-        string deckStr = string.Join('_',deckIds);
-        ExitGames.Client.Photon.Hashtable data = PhotonNetwork.LocalPlayer.CustomProperties;
-        if(data.ContainsKey("PlayerDeck"))
-            data["PlayerDeck"] = deckStr;
-        else
-            data.Add("PlayerDeck",deckStr);
-        PhotonNetwork.LocalPlayer.CustomProperties = data;
+        string deckStr = string.Join('_', deckIds);//Join the deck ids
+        ExitGames.Client.Photon.Hashtable data = PhotonNetwork.LocalPlayer.CustomProperties;//Get the custom properties
+        if (data.ContainsKey("PlayerDeck")) data["PlayerDeck"] = deckStr;//If the data contains the player deck, set the player deck
+        else data.Add("PlayerDeck", deckStr);//Add the player deck
+        PhotonNetwork.LocalPlayer.CustomProperties = data;//Set the custom properties
+        PlayerPrefs.SetString("player_deck", deckStr);//Set the player deck
 
-        PlayerPrefs.SetString("player_deck",deckStr);
-        
         //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
         //Invoke("StarGame",0.3f);
     }
 
-    
-   
-    public void SetOpponentDeck()
+
+
+    public void SetOpponentDeck()//Method to set the opponent deck
     {
-        for(int i = 0 ; i < PhotonNetwork.PlayerList.Length ; i++)
+        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)//Loop through the player list
         {
-            if(!PhotonNetwork.PlayerList[i].IsMasterClient) 
+            if (!PhotonNetwork.PlayerList[i].IsMasterClient) //If the player is not the master client
             {
 
-                Debug.LogError("Opponent Deck set");
-                List<int> deckIds = new List<int>();
-                foreach(var item in playerDeck)
+                //Debug.LogError("Opponent Deck set");//Log the opponent deck set
+                List<int> deckIds = new List<int>();//List of deck ids
+                foreach (var item in playerDeck)//Loop through the player deck
                 {
-                    deckIds.Add(item.cardId);
+                    deckIds.Add(item.cardId);//Add the card id
                 }
-                string deckStr = string.Join('_',deckIds);
-                ExitGames.Client.Photon.Hashtable data = PhotonNetwork.LocalPlayer.CustomProperties;
-                if(data.ContainsKey("PlayerDeck"))
-                    data["PlayerDeck"] = deckStr;
-                else
-                    data.Add("PlayerDeck",deckStr);
-                PhotonNetwork.LocalPlayer.CustomProperties = data;
-
-                PlayerPrefs.SetString("player_deck",deckStr);
-
+                string deckStr = string.Join('_', deckIds);//Join the deck ids
+                ExitGames.Client.Photon.Hashtable data = PhotonNetwork.LocalPlayer.CustomProperties;//Get the custom properties
+                if (data.ContainsKey("PlayerDeck")) data["PlayerDeck"] = deckStr;//If the data contains the player deck, set the player deck
+                else data.Add("PlayerDeck", deckStr);//Add the player deck
+                PhotonNetwork.LocalPlayer.CustomProperties = data;//Set the custom properties
+                PlayerPrefs.SetString("player_deck", deckStr);//Set the player deck
             }
         }
-        
+
         //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
         //Invoke("StarGame",0.3f);
     }
-    public const string DeckCounter = "DeckCounter";
-    public int GetNewDeckCounter() 
+    public const string DeckCounter = "DeckCounter";//Deck counter
+    public int GetNewDeckCounter()//Method to get the new deck counter
     {
-        int counterValue = 0;
-        if(PlayerPrefs.HasKey(DeckCounter)) 
-        {
-            counterValue = PlayerPrefs.GetInt(DeckCounter);
-        }
-        counterValue += 1;
-        PlayerPrefs.SetInt(DeckCounter,counterValue);
-        return counterValue;
-
+        int counterValue = 0;//Counter value
+        if (PlayerPrefs.HasKey(DeckCounter)) counterValue = PlayerPrefs.GetInt(DeckCounter);//If the player prefs has the deck counter, get the deck counter
+        counterValue += 1;//Increment the counter value
+        PlayerPrefs.SetInt(DeckCounter, counterValue);//Set the deck counter
+        return counterValue;//Return the counter value
     }
-    public void Open(string s)
+    public void Open(string s)//Method to open the pet or spell
     {
-        currentScreen = s;
-        if(currentScreen == "Pet")
-        {
-            title.text = "Pets";
-        }
-        else
-        {
-            title.text = "Spells";
-        }
-        PetPanel.Open(true);
-        UpdateDeckPreview(s);
+        currentScreen = s;//Set the current screen
+        if (currentScreen == "Pet") title.text = "Pets";//If the current screen is pet, set the title to pets
+        else title.text = "Spells";//Set the title to spells
+        PetPanel.Open(true);//Open the pet panel
+        UpdateDeckPreview(s);//Update the deck preview
     }
 
-    void StarGame()
+    void StarGame()//Method to start the game
     {
-        PhotonNetwork.LoadLevel("Game");
+        PhotonNetwork.LoadLevel("Game");//Load the game scene
     }
-    public void ShowUpdatesPage() 
+    public void ShowUpdatesPage()//Method to show the updates page
     {
-        Application.OpenURL(GameUpdatesLink);
+        Application.OpenURL(GameUpdatesLink);//Open the game updates link
     }
 }
 [System.Serializable]
-public class DeckDetails 
+public class DeckDetails//Deck details
 {
-    public int deckId;
-    public string deckName;
-    public string deckString;
+    public int deckId;//Deck id
+    public string deckName;//Deck name
+    public string deckString;//Deck string
 }
 
