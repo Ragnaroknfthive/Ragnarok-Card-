@@ -1,3 +1,8 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: ImageSwitchController.cs
+//FileType: C# Source file
+//Description : This script is used for news UI panel in match making scene . But not used now and not important
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,9 +10,9 @@ using UnityEngine.EventSystems;
 
 public class ImageSwitchController : MonoBehaviour
 {
-    public List<GameObject> imagePanels;
-    public List<Button> ellipsisButtons;
-    public List<GameObject> clickedStates;
+    public List<GameObject> imagePanels;            
+    public List<Button> ellipsisButtons;          
+    public List<GameObject> clickedStates;           
 
     private int currentIndex;
     private GameObject currentClickedState;

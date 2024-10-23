@@ -1,16 +1,24 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: ButtonScrollbarController.cs
+//FileType: C# Source file
+//Description : This script is used for scroll bar and button click handle in match scene
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ButtonScrollbarController : MonoBehaviour, IPointerClickHandler
 {
-    public Scrollbar scrollbar;
-    public float targetValue;
+    public Scrollbar scrollbar;                 //Scrollbar related to button
+    public float targetValue;                   //Target movement value of scrollbar
 
-    private bool isClicked;
+    private bool isClicked;                     //True if clicked
 
-    private static ButtonScrollbarController currentClickedButton;
+    private static ButtonScrollbarController currentClickedButton ;     //Script instance
 
+    /// <summary>
+    /// Move scrollbar to target value if button is clicked
+    /// </summary>
     private void Update()
     {
         if (isClicked)
@@ -22,7 +30,9 @@ public class ButtonScrollbarController : MonoBehaviour, IPointerClickHandler
             }
         }
     }
-
+    /// <summary>
+    /// Toggle click 
+    /// </summary>
     public void OnPointerClick(PointerEventData eventData)
     {
         if (currentClickedButton != null && currentClickedButton != this)

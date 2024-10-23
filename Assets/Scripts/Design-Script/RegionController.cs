@@ -1,3 +1,8 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: RegionController.cs
+//FileType: C# Source file
+//Description : This script is used to select manual photon network region for PVP mode
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,18 +12,24 @@ using Photon.Realtime;
 
 public class RegionController : MonoBehaviour
 {
-    private static RegionController rc;
+    private static RegionController rc;                 //Script instance                
 
-    public Dropdown dropdown;
+    public Dropdown dropdown;                           //Region list dropdown
     public List<string> regions = new List<string>() { "Asia", "Australia", "Canada, East", "Europe", "India", "Japan", "Russia", "South America", "South Korea", "USA, East", "USA, West", "Russia, East", "South Africa", "Turkey" };
+    //Photon network regions
 
+    /// <summary>
+    /// Set instance and initialize region options
+    /// </summary>
     private void Awake()
     {
         rc = this;
         dropdown.interactable = true;
         InitOptions();
     }
-
+    /// <summary>
+    /// Fill region dropdown list and set current selected region
+    /// </summary>
     public void InitOptions()
     {
         List<Dropdown.OptionData> optionDatas = new List<Dropdown.OptionData>();
@@ -30,12 +41,20 @@ public class RegionController : MonoBehaviour
         dropdown.value = PlayerPrefs.GetInt("pun_region", 0);
         UpdateDropdownText();
     }
-
+    /// <summary>
+    /// Get string value for current selected photon region
+    /// </summary>
+    /// <returns></returns>
     public string getSelectedRegion()
     {
         return GetRegionCode(PlayerPrefs.GetInt("pun_region", 0));
     }
 
+    /// <summary>
+    /// This function returns string code for given intpu regoin as interger value
+    /// </summary>
+    /// <param name="s">Region integer value</param>
+    /// <returns>Strign code text for region</returns>
     public static string GetRegionCode(int s)
     {
         string region = "us";
@@ -58,7 +77,10 @@ public class RegionController : MonoBehaviour
         }
         return region;
     }
-
+    /// <summary>
+    /// Set region with respect to index
+    /// </summary>
+    /// <param name="regionIndex">Region index</param>
     public void SetRegion(int regionIndex)
     {
         if (regionIndex >= 0 && regionIndex < regions.Count)
@@ -73,6 +95,11 @@ public class RegionController : MonoBehaviour
             UpdateDropdownText();
         }
     }
+    /// <summary>
+    /// Get index of region using input string value of region
+    /// </summary>
+    /// <param name="_region">region code</param>
+    /// <returns>region index</returns>
     public static  int GetIndexOfRegion(string _region) 
     {
         int index = -1;
@@ -96,7 +123,9 @@ public class RegionController : MonoBehaviour
         }
         return index;
     }
-
+    /// <summary>
+    /// Update dropdown selected text;
+    /// </summary>
     public void UpdateDropdownText()
     {
         int selectedIndex = dropdown.value;
@@ -106,13 +135,18 @@ public class RegionController : MonoBehaviour
             dropdown.captionText.text = regions[selectedIndex];
         }
     }
-
+    /// <summary>
+    /// Trigger new region connection on photon network
+    /// </summary>
     public void OnSelectRegion()
     {
         string region = getSelectedRegion();
         StartCoroutine(ConnnectToNewRegion(region));
     }
-
+    /// <summary>
+    /// Disconnect from photon network and connect to new region
+    /// </summary>
+    /// <param name="region">new region code</param>
     public static IEnumerator ConnnectToNewRegion(string region)
 {
     PhotonNetwork.Disconnect();
@@ -120,7 +154,10 @@ public class RegionController : MonoBehaviour
     PhotonNetwork.ConnectToRegion(region);
     PlayerPrefs.SetInt("pun_region", rc.dropdown.value);
 }
-
+    /// <summary>
+    /// Get region conntroller instnace
+    /// </summary>
+    /// <returns></returns>
     public static RegionController Get()
     {
         return rc;
