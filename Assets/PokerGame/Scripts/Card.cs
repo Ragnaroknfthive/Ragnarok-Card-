@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: Card.cs
+//FileType: C# Source file
+//Description : This is a c# script used to handle poker card comparision
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
-using System.Linq;
 using System;
 
 
@@ -10,10 +12,8 @@ using System;
 public class Card : MonoBehaviour, IComparable
 {
 
-
-
-    public CardValue cardValue;
-    public CardColor cardColor;
+    public CardValue cardValue;                     //Value of card
+    public CardColor cardColor;                     //Card type
 
     /// <summary>
     /// Icomparable interface

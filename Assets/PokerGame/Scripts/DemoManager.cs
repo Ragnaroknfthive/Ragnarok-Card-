@@ -1,49 +1,55 @@
-﻿using System.Collections;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: DemoManager.cs
+//FileType: C# Source file
+//Description : This is a c# script which generate deck cards and handles deck cards logic for pvp game
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Linq;
-using System.Data;
 
 
 public class DemoManager : MonoBehaviour
 {
-    public static DemoManager instance;
+    public static DemoManager instance;                                 //Script instance
 
-    public List<Card_SO> deck;
+    public List<Card_SO> deck;                                          //List of scriptable card objects- Original deck
 
-    public GameObject cardPrefab;
-    public List<Card_SO> listofCards;
+    public GameObject cardPrefab;                                       //Card UI object prefab
+    public List<Card_SO> listofCards;                                   //Reference list of all cards
 
-    public int offset_card = 0;//50
+    public int offset_card = 0;//50                                    //Position offset used for placing cards (x- position related offset)
 
     #region placeholders variables
-    public GameObject placeholderBoard;
-    public GameObject placeholderHand;
+    public GameObject placeholderBoard;                                //Board reference
+    public GameObject placeholderHand;                                 //Player hand reference
 
-    public GameObject[] placeholderPlayerHands;
-    public GameObject[] compare_Buttons;
+    public GameObject[] placeholderPlayerHands;                        //Player hand card reference objects
+    public GameObject[] compare_Buttons;                               //Used for comparing hands
     #endregion
 
-    public List<Card> board_cards;
+    public List<Card> board_cards;                                     //Cards on board (common for both players)
 
-    public List<Card>[] player_cards = new List<Card>[4];
+    public List<Card>[] player_cards = new List<Card>[4];              //List of player cards
 
-    public List<RectTransform> _playerCardPosition = new List<RectTransform>();
+    public List<RectTransform> _playerCardPosition = new List<RectTransform>();     //Player card position list
 
-    public GameObject _pokerButtons;
-    public bool _isFristTimeCard = true;
+    public GameObject _pokerButtons;                                    //Poker button object
+    public bool _isFristTimeCard = true;                                //Not important
 
-    private GameObject cardTempObj;
+    private GameObject cardTempObj;                                     //Temporary object used to hold reference for card instantiation
 
-    private int num_hand = 1;
-    private int num_cards_board = 0;
-    public List<Card> demoCards = new List<Card>();
-    public Sprite backSprite;
+    private int num_hand = 1;                                           //Not in use
+    private int num_cards_board = 0;                                    //Number of cards in player's hand count
+    public List<Card> demoCards = new List<Card>();                     //Temp demo cards
+    public Sprite backSprite;                                           //Card back sprite
 
-    private PhotonView _photonView;
+    private PhotonView _photonView;                                     //Photon view on this script
+
+    /// <summary>
+    /// Set instance of script
+    /// </summary>
     private void Awake()
     {
         if (instance == null)
@@ -53,6 +59,10 @@ public class DemoManager : MonoBehaviour
 
         //get card from resource
     }
+    /// <summary>
+    /// Reset cards and generate deck
+    /// </summary>
+    /// <param name="_gameOver">True : In case of gameover</param>
     public void ResetnumCards(bool _gameOver)
     {
         isGameOver = _gameOver;
@@ -61,13 +71,7 @@ public class DemoManager : MonoBehaviour
         {
             player_cards[i] = new List<Card>();
         }
-        //SecondTimeShuffle();
-        // deck = listofCards;
-        //foreach(Transform item in PVPManager.manager.BoardCards.transform)
-        //{
-        //    Debug.LogError("***CHILD" + item.name);
-        //    Destroy(item.gameObject);
-        //}
+        
         foreach (Transform item in placeholderHand.transform)
         {
             if (item.gameObject.GetComponent<Card>())
@@ -79,23 +83,24 @@ public class DemoManager : MonoBehaviour
         }
         board_cards.Clear();
         PVPManager.manager.BoardCards = placeholderHand;
-        //  Destroy(PVPManager.manager.BoardCards.gameObject);
-        // Destroy(placeholderHand.gameObject);
-
-        //  GameObject obj = Instantiate(Resources.Load("BoardCardParent") as GameObject,PVPManager.manager.BoardCardParent.transform);
-        //  placeholderHand = obj;
-        //   PVPManager.manager.BoardCards = placeholderHand;
+       
         GenerateDeck();
         PhotonNetwork.SendAllOutgoingCommands();
         //Debug.LogError("SecondTimeSuffleCall"); 
         //Invoke("SecondTimeShuffle",1f);
 
     }
+    /// <summary>
+    /// Trigger shuffle after some delay
+    /// </summary>
     public void SecondTimeShuffleCall()
     {
         //Debug.LogError("SecondTimeSuffleCall");
         Invoke("SecondTimeShuffle", 1f);
     }
+    /// <summary>
+    /// Shuffle cards from master client
+    /// </summary>
     void Start()
     {
         //Initialize the Array
@@ -115,6 +120,9 @@ public class DemoManager : MonoBehaviour
 
 
     }
+    /// <summary>
+    /// Update deck cards in masterclient- shuffle
+    /// </summary>
     public void UpdateCards()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -124,6 +132,9 @@ public class DemoManager : MonoBehaviour
         }
         PhotonNetwork.SendAllOutgoingCommands();
     }
+    /// <summary>
+    /// Sync shuffled cards in all player's deck
+    /// </summary>
     [PunRPC]
     public void GetSuffledIndex()
     {
@@ -145,7 +156,9 @@ public class DemoManager : MonoBehaviour
 
         Invoke("StartWithDelay", 1f);
     }
-
+    /// <summary>
+    /// Set shuffled cards in all player's after resetting data
+    /// </summary>
     [PunRPC]
     public void GetSuffledIndexSedondTime()
     {
@@ -176,6 +189,9 @@ public class DemoManager : MonoBehaviour
 
 
     }
+    /// <summary>
+    /// Shuffle logic
+    /// </summary>
     [PunRPC]
     public void SetSuffledCard(string name, int index)
     {
@@ -190,6 +206,12 @@ public class DemoManager : MonoBehaviour
         }
         // Invoke("StartWithDelay", 5f);
     }
+    /// <summary>
+    /// RPC: used to set card details for oppoent device
+    /// </summary>
+    /// <param name="cardValues">list of card values</param>
+    /// <param name="cardColors">list of card types</param>
+    /// <param name="bestIndex">best card index</param>
     [PunRPC]
     public void setOpponentHandCardValues(int[] cardValues, int[] cardColors, int bestIndex)
     {
@@ -204,6 +226,9 @@ public class DemoManager : MonoBehaviour
             PVPManager.manager.opponetHandCardColors.Add(cardColors[i]);
         }
     }
+    /// <summary>
+    /// RPC : Generate deck 
+    /// </summary>
     [PunRPC]
     public void GenerateDeck()
     {
@@ -217,6 +242,9 @@ public class DemoManager : MonoBehaviour
         listofCards = obj.GetComponent<DackPrefab>().DeckCards;
         // Invoke("StartWithDelay", 5f);
     }
+    /// <summary>
+    /// RPC :Shuffle all cards for second time after a match
+    /// </summary>
     [PunRPC]
     public void SetSuffledCardSedondTime(string name, int index)
     {
@@ -233,19 +261,20 @@ public class DemoManager : MonoBehaviour
 
 
     }
+    /// <summary>
+    /// Swap lits logic
+    /// </summary>
+    /// <typeparam name="T">List type</typeparam>
+    /// <param name="list">List of items</param>
     public static void Swap<T>(IList<T> list, int indexA, int indexB)
     {
         T tmp = list[indexA];
         list[indexA] = list[indexB];
         list[indexB] = tmp;
     }
-    //public static IList<T> Swap<T>(this IList<T> list, int indexA, int indexB)
-    //{
-    //    T tmp = list[indexA];
-    //    list[indexA] = list[indexB];
-    //    list[indexB] = tmp;
-    //    return list;
-    //}
+    /// <summary>
+    /// Copy cards from deck full list after delay
+    /// </summary>
     public void StartWithDelay()
     {
 
@@ -254,7 +283,10 @@ public class DemoManager : MonoBehaviour
         listofCards.CopyTo(PVPManager.manager.deckFullList, 0);
         // Debug.LogError(PVPManager.manager.deckFullList.Length);
     }
-    public bool isGameOver = false;
+    public bool isGameOver = false;     //Boolean used for gameover scenario 
+    /// <summary>
+    /// Generate 3 poker game cards in pvp mode after Resetting data
+    /// </summary>
     public void StartWithDelaySecondTime()
     {
 
@@ -270,13 +302,18 @@ public class DemoManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// RPC : start card list copy with delay
+    /// </summary>
     [PunRPC]
     public void StartWithDealy_RPC()
     {
         Debug.Log("RPC CALLED ");
         Invoke("StartWithDelay", 1);
     }
-
+    /// <summary>
+    /// RPC : Copy deck without delay
+    /// </summary>
     [PunRPC]
     public void StartWithDealySedondTime_RPC()
     {
@@ -284,11 +321,16 @@ public class DemoManager : MonoBehaviour
         Debug.Log("RPC CALLED ");
         // Invoke("StartWithDelaySecondTime", 1);
     }
-
+    /// <summary>
+    /// Generate 3 cards in poker game
+    /// </summary>
     public void Generate3CardsStack()
     {
         Button_DrawFLop();
     }
+    /// <summary>
+    /// RPC : Shuffle second time
+    /// </summary>
     [PunRPC]
     public void SecondTimeShuffle()
     {
@@ -300,6 +342,13 @@ public class DemoManager : MonoBehaviour
         }
 
     }
+    /// <summary>
+    /// RPC: Set same stack of cards in other player device
+    /// </summary>
+    /// <param name="i">Index of card</param>
+    /// <param name="_isBool">True :In case for first three cards, False: 4th and 5th card</param>
+    /// <param name="cardValue">Value of card</param>
+    /// <param name="cardColor">Type of card</param>
     [PunRPC]
     private void RPC_setSameStackToOtherPlayer(int i, bool _isBool, string cardValue, string cardColor)
     {
@@ -349,7 +398,7 @@ public class DemoManager : MonoBehaviour
             deck.Remove(deck[0]);
         }
     }
-    public int count = 0;
+    public int count = 0; //Used for child count reference
     /// <summary>
     /// Button to draw the 3 first cards. Any consecutive call will draw one card till there are 5
     /// </summary>
@@ -423,6 +472,9 @@ public class DemoManager : MonoBehaviour
         _photonView.RPC("RPC_Generate2Cards", RpcTarget.All);
     }
 
+    /// <summary>
+    /// RPC generate 2 cards
+    /// </summary>
     [PunRPC]
     private void RPC_Generate2Cards()
     {
@@ -568,9 +620,14 @@ public class DemoManager : MonoBehaviour
 
         //}
     }
-    int[] opponentCardColor = new int[2] { -1, -1 };
-    int[] opponentCardValue = new int[2] { -1, -1 };
+    int[] opponentCardColor = new int[2] { -1, -1 };  //Opponent card type detail
+    int[] opponentCardValue = new int[2] { -1, -1 };  //Opponent card value detail
 
+    /// <summary>
+    /// Set cards in opponent device in pvp script
+    /// </summary>
+    /// <param name="opponentColor">list of card types</param>
+    /// <param name="opponentValue">list of card values</param>
     [PunRPC]
     public void SetOpponentCard_RPC(int[] opponentColor, int[] opponentValue)
     {
@@ -617,8 +674,13 @@ public class DemoManager : MonoBehaviour
         Debug.Log(" ========== CompareHand end ======= " + pk.printResult());
 
     }
-    public PokerHand pk;
-    public List<Card> handToCompare = new List<Card>();
+    public PokerHand pk;           //Poker hand instance
+    public List<Card> handToCompare = new List<Card>();   //List of cards in a hand to compare
+    /// <summary>
+    /// Compart player hands and return poker hand
+    /// </summary>
+    /// <param name="player_num"></param>
+    /// <returns></returns>
     public PokerHand CompareHandWithStrength(int player_num)
     {
         Debug.Log(" ========== CompareHand start ======= ");
@@ -709,7 +771,10 @@ public class DemoManager : MonoBehaviour
         return pk;
         //  return pk.strength;
     }
-
+    /// <summary>
+    /// Highlight cards of winner (Cards which are used to decide player's win result)
+    /// </summary>
+    /// <param name="isPlayerWin"></param>
     public void HighLightWinnerHand(bool isPlayerWin)
     {
         if (isPlayerWin)
@@ -800,13 +865,12 @@ public class DemoManager : MonoBehaviour
         return cardTempObj;
 
     }
+    /// <summary>
+    /// Instantiate card for opponent
+    /// </summary>
     public GameObject InstantiateCardOpponent(Card_SO sO, Vector3 pos, Transform parent, int num_card)
     {
-
-
         cardTempObj = Instantiate(cardPrefab, new Vector3(pos.x + (offset_card * num_card), pos.y - (2 * offset_card), 0), Quaternion.identity, parent);
-
-
 
         cardTempObj.GetComponent<Card>().cardValue = sO.cardValue;
         cardTempObj.GetComponent<Card>().cardColor = sO.cardColor;
@@ -817,5 +881,4 @@ public class DemoManager : MonoBehaviour
         return cardTempObj;
 
     }
-
 }

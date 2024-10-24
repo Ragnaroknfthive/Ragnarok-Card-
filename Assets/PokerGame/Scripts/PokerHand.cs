@@ -1,4 +1,9 @@
-﻿using System;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: PokerHand.cs
+//FileType: C# Source file
+//Description : This is a c# script which generate deck cards and handles deck cards logic for pvp game
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,20 +13,20 @@ using UnityEngine;
 [System.Serializable]
 public class PokerHand
 {
-    public bool RYL_FLUSH;
-    public bool STRAIGHT_FLUSH;
-    public bool FOUR_A_KIND;
-    public bool FULL_HOUSE;
-    public bool FLUSH;
-    public bool STRAIGHT;
-    public bool THREE_A_KIND;
-    public bool TWO_PAIR;
-    public bool PAIR;
-    public bool HIGH_CARD;
-    public List<Card> highCard;
-    public int strength;
+    public bool RYL_FLUSH;                                  //True if Combination of cards is "Royal Flush"
+    public bool STRAIGHT_FLUSH;                             //True if Combination of cards is "Straight Flush"
+    public bool FOUR_A_KIND;                                //True if Combination of cards is "Four of a kind"
+    public bool FULL_HOUSE;                                 //True if Combination of cards is "Full house"
+    public bool FLUSH;                                      //True if Combination of cards is "Flush"
+    public bool STRAIGHT;                                   //True if Combination of cards is "Straight"
+    public bool THREE_A_KIND;                               //True if Combination of cards is "Three of a kind"
+    public bool TWO_PAIR;                                   //True if Combination of cards is "Two pair"
+    public bool PAIR;                                       //True if Combination of cards is "Pair"
+    public bool HIGH_CARD;                                  //True if high cards
+    public List<Card> highCard;                             //Ordered list with respect to card values
+    public int strength;                                    //Strength of hand
 
-    //Temp Win
+    //Temp Win -Temporary bools used for testing
     public bool RYL_FLUSH_Temp;
     public bool STRAIGHT_FLUSH_Temp;
     public bool FOUR_A_KIND_Temp;
@@ -35,7 +40,9 @@ public class PokerHand
     //
     //Compare two pairs
     public CardValue pairCarValue, twoPairSet1CardValue = CardValue.none, twoPairSet2CardValue = CardValue.none, twoPairHigherCardValue = CardValue.none, straightHighCardValue = CardValue.none, flushHighCardValue = CardValue.none, royalFlushHighCardValue = CardValue.none;
-
+    /// <summary>
+    /// Defailt data
+    /// </summary>
     public PokerHand()
     {
         this.RYL_FLUSH = false;
@@ -51,11 +58,15 @@ public class PokerHand
         this.highCard = new List<Card>();
         this.strength = 0;
     }
-    public int tempstrength = 0;
-    public List<CardCombination> cardCombinations;
-    public List<int> combinationStrengths = new List<int>();
-    public int currentCombinationIndex = 0, bestIndex = 0;
-    public Card match1 = null, match2 = null, match3 = null;
+    public int tempstrength = 0;            //Testing strength variable
+    public List<CardCombination> cardCombinations;      //List of different combination using  cards in hand
+    public List<int> combinationStrengths = new List<int>();    //List of combination strengths
+    public int currentCombinationIndex = 0, bestIndex = 0;      //Used to decide best combination available for the hand
+    public Card match1 = null, match2 = null, match3 = null;    //Used to decide pair matching
+    /// <summary>
+    /// Entire logic to deciding player's hand strength in poker game to decide Result 
+    /// </summary>
+    /// <param name="cardArray">Array of hand cards</param>
     public void setPokerHand(Card[] cardArray)
     {
         SaveCards(cardArray);
@@ -635,7 +646,10 @@ public class PokerHand
         //isHigh(cards);
 
     }
-
+    /// <summary>
+    /// Get result string for current poker hand
+    /// </summary>
+    /// <returns>Result string</returns>
     public String printResult()
     {
 
@@ -682,6 +696,9 @@ public class PokerHand
         else
             return "error setting hand.";
     }
+    /// <summary>
+    /// Check high card condition for RoyalFlush
+    /// </summary>
     public bool CheckHighCardConditionForRoyalFlush(Card max)
     {
         bool isAce = false;
@@ -694,6 +711,11 @@ public class PokerHand
         return isAce;
 
     }
+    /// <summary>
+    /// Used to decide Royalflush
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True: If it is a royal flush</returns>
     private bool isRoyal(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -716,6 +738,9 @@ public class PokerHand
         }
         return this.RYL_FLUSH;
     }
+    /// <summary>
+    /// Resets all temporary variables used for poker result
+    /// </summary>
     public void ResetAllTempItem()
     {
         RYL_FLUSH_Temp = false;
@@ -730,6 +755,11 @@ public class PokerHand
         HIGH_CARD_Temp = false;
 
     }
+    /// <summary>
+    /// Check for StraightFlush
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if it is a Straight flust</returns>
     private bool isStraightFlush(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -751,7 +781,11 @@ public class PokerHand
         }
         return false;
     }
-
+    /// <summary>
+    /// Check if it's Four of a kind  
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination is Four of a kind</returns>
     private bool isFourAKind(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -793,7 +827,11 @@ public class PokerHand
         }
         return false;
     }
-
+    /// <summary>
+    /// Check for Full house combination
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination of cards is a full house</returns>
     private bool isFullHouse(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -858,7 +896,11 @@ public class PokerHand
         }
         return false;
     }
-
+    /// <summary>
+    /// Check for Flush combination
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination is flush</returns>
     private bool isFlush(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -902,7 +944,11 @@ public class PokerHand
         }
         return true;
     }
-
+    /// <summary>
+    /// Check if combination is Straight
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination if Straight</returns>
     private bool isStraight(List<Card> cards)
     {
         // Debug.Log("LENGTH " + cards.Count);
@@ -985,7 +1031,11 @@ public class PokerHand
         }
         return this.STRAIGHT;
     }
-
+    /// <summary>
+    /// Check if combination if Three of a kind
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination is Three of a kind</returns>
     private bool isThreeAKind(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -1028,7 +1078,11 @@ public class PokerHand
         }
         return this.THREE_A_KIND;
     }
-
+    /// <summary>
+    /// Check if combination is a two pair
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination is a Two pair</returns>
     private bool isTwoPair(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -1125,7 +1179,11 @@ public class PokerHand
         }
         return this.TWO_PAIR;
     }
-
+    /// <summary>
+    /// Check if combination is "Pair"
+    /// </summary>
+    /// <param name="cards">List of cards</param>
+    /// <returns>True if combination is a "Pair"</returns>
     private bool isPair(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -1194,7 +1252,10 @@ public class PokerHand
 
         return this.PAIR;
     }
-
+    /// <summary>
+    /// Sets high card value
+    /// </summary>
+    /// <param name="cards">List of cards</param>
     private void isHigh(List<Card> cards)
     {
         cards = cards.OrderBy(x => x.cardValue).ToList();
@@ -1217,6 +1278,10 @@ public class PokerHand
             bestIndex = currentCombinationIndex;
         }
     }
+    /// <summary>
+    /// Clears combinations
+    /// </summary>
+    /// <param name="cards"></param>
     public void SaveCards(Card[] cards)
     {
         combinations.Clear();
@@ -1234,13 +1299,19 @@ public class PokerHand
         //this.highCard = _cardsArray.ToList();
     }
 
-    public static List<CardCombination> combinations = new List<CardCombination>();
+    public static List<CardCombination> combinations = new List<CardCombination>(); //Static list of combinations 
 }
+/// <summary>
+/// A combination that can be creted by placing available cards in different order
+/// </summary>
 [Serializable]
 public class CardCombination
 {
     public int[] items = new int[5];
 }
+/// <summary>
+/// Used to find available comibantion for input data
+/// </summary>
 public class GFG
 {
 
