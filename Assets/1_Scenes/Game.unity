@@ -19305,7 +19305,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570575021}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0000277, y: 0.0000219, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.43991518, y: 0.42373258, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -39908,8 +39908,6 @@ MonoBehaviour:
   p2Pos: {x: 0, y: 0}
   p1Obj: {fileID: 0}
   p2Obj: {fileID: 0}
-  lowestSpeedNeeded: 1.5
-  isattackerMaster: 0
   skipTurn: {fileID: 1810086126}
   LocationChoices: {fileID: 1693282230}
   AttackChoices: {fileID: 118754467}
@@ -39929,6 +39927,7 @@ MonoBehaviour:
   _playersNameInPvP:
   - {fileID: 1738607530}
   - {fileID: 843312154}
+  BatPoints: 0
   p1SliderAttack: 0
   p2SliderAttack: 0
   EndTurnBtn: {fileID: 1934218246}
@@ -39980,6 +39979,15 @@ MonoBehaviour:
   extraDamageMessageP1: {fileID: 2128382362}
   extraDamageMessageP2: {fileID: 1010487667}
   isAttackViaSpeedPoints: 0
+  p1DamageCapacityReducedby: 0
+  p2DamageCapacityReducedby: 0
+  p1StaminRecoveryReducedBy: 0
+  p2StaminaRecovertReducedby: 0
+  p1DamageIncreasedby: 0
+  p2DamageIncreasedby: 0
+  p1SpeedSlowBy: 0
+  opponentAttackWeakPercentageVal: 0
+  p2SpeedSlowedBy: 0
   myExtraDamagePercentage: 0
   my_OpponetSpeedMakeSlowerPercentage: 0
   my_opponentAttackMadeWeakerPerntage: 0
@@ -39998,6 +40006,7 @@ MonoBehaviour:
   p2Weakness: {fileID: 431013246}
   myFoldAmount: 4
   StartHandTurn: 0
+  EndTurnInvokedByClick: 0
   locationObjects:
   - {fileID: 1107048684}
   - {fileID: 527831307}
@@ -40060,7 +40069,6 @@ MonoBehaviour:
   timer: 0
   ChessTimer: 0
   LastAtkAmt: 0
-  criticalHitPercentage: 0
   isResultScreenOn: 0
   isReset: 0
   Proj: {fileID: 5719966673499620764, guid: fbc480ddbcd4a264ebec5e9e9a2ef8fd, type: 3}
@@ -64164,7 +64172,7 @@ MonoBehaviour:
   BackSide: {fileID: 1603903520087056901}
   MainBGOutline: {fileID: 937243702869864853}
   cardPosition: 0
-  photonView: {fileID: 0}
+  phtnView: {fileID: 0}
   index: 0
   canvas: {fileID: 771240948149629074}
   startSortOrder: 0
@@ -64196,7 +64204,7 @@ MonoBehaviour:
   BackSide: {fileID: 1603903520244858733}
   MainBGOutline: {fileID: 937243702768659709}
   cardPosition: 0
-  photonView: {fileID: 0}
+  phtnView: {fileID: 0}
   index: 0
   canvas: {fileID: 771240947975024122}
   startSortOrder: 0
@@ -64228,7 +64236,7 @@ MonoBehaviour:
   BackSide: {fileID: 1603903518210422905}
   MainBGOutline: {fileID: 937243704213662697}
   cardPosition: 0
-  photonView: {fileID: 0}
+  phtnView: {fileID: 0}
   index: 0
   canvas: {fileID: 771240947342535406}
   startSortOrder: 0
@@ -77941,7 +77949,7 @@ GameObject:
   - component: {fileID: 3452979525641166709}
   - component: {fileID: 3452979525641166706}
   m_Layer: 0
-  m_Name: Global Light
+  m_Name: 21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

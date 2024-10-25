@@ -46,9 +46,9 @@ public class PokerButtonManager : MonoBehaviour
         //// PVPManager.manager.StartTimer();
 
         PVPManager.manager.isfold = true;
-        
+
         Game.Get().UpdateLastAction(PlayerAction.brace);
-        
+
     }
 
     public void Bet()
@@ -60,8 +60,8 @@ public class PokerButtonManager : MonoBehaviour
         if (false) //Game.Get().turn < 1
         {
             //  Debug.LogError("Es ist not okay........................");
-            PVPManager.Get().AttackChoices.SetActive(true);
-            PVPManager.Get().speedAttackChoices.SetActive(false);
+            //PVPManager.Get().AttackChoices.SetActive(true);
+            //PVPManager.Get().speedAttackChoices.SetActive(false);
 
 
             // PVPManager.manager.UpdateRemainingHandHealth(PVPManager.manager.P2LastAttackValue);
@@ -69,7 +69,7 @@ public class PokerButtonManager : MonoBehaviour
             // PVPManager.manager.UpdateLocationChoices();
             // PVPManager.manager.isNormalBat = true;
 
-            Game.Get().UpdateLastAction(PlayerAction.attack);
+            //Game.Get().UpdateLastAction(PlayerAction.attack);
         }
         else
         {
@@ -137,8 +137,8 @@ public class PokerButtonManager : MonoBehaviour
                 //Debug.LogError("***Ex:Not Enought Health" + PVPManager.manager.P1HealthBar.value + " - " + PVPManager.manager.P2LastAttackValue);
             }
         }
-            if((PVPManager.manager.isAttackLocationSelected && PVPManager.manager.IsAttacker) || (PVPManager.manager.isDefenceLocationSelected && !PVPManager.manager.IsAttacker))
-                PVPManager.manager.OnClickEndTurn();
+        if ((PVPManager.manager.isAttackLocationSelected && PVPManager.manager.IsAttacker) || (PVPManager.manager.isDefenceLocationSelected && !PVPManager.manager.IsAttacker))
+            PVPManager.manager.OnClickEndTurn();
         // PVPManager.Get().AttackChoices.SetActive(true);
     }
 
@@ -205,11 +205,11 @@ public class PokerButtonManager : MonoBehaviour
             PVPManager.manager.UpdateLocationChoices();
 
         }
-        
+
 
         Game.Get().UpdateLastAction(PlayerAction.defend);
         PVPManager.manager.isCheck = true;
-        
+
         PVPManager.manager.OnClickEndTurn();
         // PVPManager.Get().AttackChoices.SetActive(true);
     }
@@ -248,7 +248,7 @@ public class PokerButtonManager : MonoBehaviour
         //Debug.LogError("Attacks " + PVPManager.manager.P2LastAttackValue + " - " + PVPManager.manager.MyLastAttackAmount);
         if (PhotonNetwork.LocalPlayer.NickName == _player.NickName)
         {
-            if(PVPManager.manager.P2StartHealth <= 0 && PVPManager.manager.P2LastAttackValue > 0)
+            if (PVPManager.manager.P2StartHealth <= 0 && PVPManager.manager.P2LastAttackValue > 0)
                 PVPManager.manager.P2StartHealth += PVPManager.manager.P2LastAttackValue;
             PVPManager.manager.P2HealthBar.value = PVPManager.manager.P2StartHealth; ;// PVPManager.manager.P2LastAttackValue;
             PVPManager.manager.P2RemainingHandHealth = PVPManager.manager.P2StartHealth;//PVPManager.manager.P2LastAttackValue;
@@ -258,14 +258,14 @@ public class PokerButtonManager : MonoBehaviour
                                                                                         //  int loseHP =(int)( Game.Get().BetAmount * 0.1f);
                                                                                         //  int maxlose = (int)(PVPManager.manager.P1HealthBar.maxValue * .5f);
             int finalLoseHealth = PVPManager.Get().myFoldAmount;  //lose 2 health and increase 1 stamina for fold
-                                      //if(loseHP <= maxlose)
-                                      //{
-                                      //    finalLose = loseHP;
-                                      //}
-                                      //else
-                                      //{
-                                      //    finalLose = maxlose;
-                                      //}
+                                                                  //if(loseHP <= maxlose)
+                                                                  //{
+                                                                  //    finalLose = loseHP;
+                                                                  //}
+                                                                  //else
+                                                                  //{
+                                                                  //    finalLose = maxlose;
+                                                                  //}
             float foldCost = 1f;
 
             PVPManager.manager.P1StaBar.value += foldCost;
@@ -281,10 +281,8 @@ public class PokerButtonManager : MonoBehaviour
             // }
             Debug.Log("LOCAL PLAYER BAT AMOUNT " + _localBetAmount + " Final Lose " + finalLoseHealth);
             PVPManager.manager.P1HealthBar.value -= finalLoseHealth;
-            if (PVPManager.manager.P1HealthBar.value < 0)
-            {
-                PVPManager.manager.P1HealthBar.value = 0;
-            }
+            if (PVPManager.manager.P1HealthBar.value < 0) PVPManager.manager.P1HealthBar.value = 0;
+
             PVPManager.manager.P1StartHealth = (int)PVPManager.manager.P1HealthBar.value;
             PVPManager.manager.UpdateHMTxt();
 
@@ -294,10 +292,8 @@ public class PokerButtonManager : MonoBehaviour
             //    PVPManager.manager.P1HealthBar.value -= Game.Get().BetAmount;
             //    PVPManager.manager.UpdateHMTxt();
             //}
-            if (PVPManager.manager.P1HealthBar.value == 0)
-            {
-                isOver = true;
-            }
+            if (PVPManager.manager.P1HealthBar.value == 0) isOver = true;
+
         }
         else
         {
@@ -320,7 +316,7 @@ public class PokerButtonManager : MonoBehaviour
             //{
             //    finalLose = maxlose;
             //}
-            if(PVPManager.manager.P1StartHealth <= 0 && PVPManager.manager.MyLastAttackAmount > 0)
+            if (PVPManager.manager.P1StartHealth <= 0 && PVPManager.manager.MyLastAttackAmount > 0)
                 PVPManager.manager.P1StartHealth += PVPManager.manager.MyLastAttackAmount;
             PVPManager.manager.P1RemainingHandHealth = PVPManager.manager.P1StartHealth;
             PVPManager.manager.P1HealthBar.value = PVPManager.manager.P1StartHealth;
@@ -347,7 +343,7 @@ public class PokerButtonManager : MonoBehaviour
             {
                 isOver = true;
             }
-            PVPManager.Get().myFoldAmount ++;
+            PVPManager.Get().myFoldAmount++;
         }
         if (isOver)
         {
@@ -386,7 +382,7 @@ public class PokerButtonManager : MonoBehaviour
         //// PVPManager.manager.StartTimer();
         PVPManager.manager.isNormalBat = true;
         Game.Get().UpdateLastAction(PlayerAction.engage);
-        PVPManager.manager.selectChoice(UnityEngine.Random.Range(1,5));
+        PVPManager.manager.selectChoice(UnityEngine.Random.Range(1, 5));
 
         //PVPManager.manager.OnClickEndTurn();
         // PVPManager.Get().AttackChoices.SetActive(true);
