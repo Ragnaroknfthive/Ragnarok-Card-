@@ -82,7 +82,6 @@ public class Game : MonoBehaviour
     public Image playerProfileImage, opponentProfileImage;
     public void IncreaseStamina()
     {
-        Debug.Log("DebugLog_1: Stamina incresed");
         MyStamina++;
         MyStamina = Mathf.Clamp(MyStamina, 0, 10);
         photonView.RPC("IncreaseStaminaRPC", RpcTarget.Others);
@@ -90,26 +89,22 @@ public class Game : MonoBehaviour
     [PunRPC]
     public void IncreaseStaminaRPC()
     {
-        Debug.Log("DebugLog_2");
         OppoStamina++;
         OppoStamina = Mathf.Clamp(OppoStamina, 0, 10);
     }
 
     public static Game Get()
     {
-        //Debug.Log("DebugLog_3");
         return game;
     }
 
     public void Awake()
     {
-        Debug.Log("DebugLog_4");
         game = this;
     }
 
     public void Start()
     {
-        Debug.Log("DebugLog_5");
         foreach (var item in PhotonNetwork.PlayerList)
         {
 
@@ -143,15 +138,12 @@ public class Game : MonoBehaviour
 
         for (int i = 0; i < plateRows; i++)
         {
-            Debug.Log("DebugLog_6");
             for (int j = 0; j < plateCols; j++)
             {
-                Debug.Log("DebugLog_7");
                 float plateX = ((i * plateWidth) - (boardWidth / 2) + (plateWidth / 2) + board.transform.position.x) + 0.270f;
                 float plateY = ((j * plateHeight) - (boardHeight / 2) + (plateHeight / 2) + board.transform.position.y) + 0.270f;
                 if (i == 0 && j == 0)
                 {
-                    Debug.Log("DebugLog_8");
                     Debug.LogError("COLOR PLATE + X pos " + plateX + "Y pos " + plateY);
                 }
                 //float plateX = ((i * plateWidth-.150f) - (boardWidth / 2) + (plateWidth - .150f / 2) + board.transform.position.x);// - 0.150f);  ;//-0.200f;
@@ -186,18 +178,15 @@ public class Game : MonoBehaviour
                     c.a = 0;
                     sr.color = c;
                     srIndicator.color = c;
-                    Debug.Log("DebugLog_9");
                 }
                 else
                 {
-                    Debug.Log("DebugLog_10");
                     Color c = sr.color;
                     c.a = .7f;
                     srIndicator.color = c;
                 }
                 if (!PhotonNetwork.LocalPlayer.IsMasterClient)
                 {
-                    Debug.Log("DebugLog_11");
                     Vector3 pos = plates[i, j].transform.position;
                     pos.x = pos.x * (-1);
                     pos.y = pos.y * (-1);
@@ -217,12 +206,10 @@ public class Game : MonoBehaviour
         {
             if (PhotonNetwork.PlayerList[i].IsMasterClient && currentPlayer == "white")
             {
-                Debug.Log("DebugLog_12");
                 _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = true });
             }
             else if (!PhotonNetwork.LocalPlayer.IsMasterClient && currentPlayer != "white")
             {
-                Debug.Log("DebugLog_13");
                 _playerTurnList.Add(new PlayerTrunName { _player = PhotonNetwork.PlayerList[i], _isTurn = false });
             }
         }
@@ -231,7 +218,6 @@ public class Game : MonoBehaviour
         photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer);
         if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Debug.Log("DebugLog_14");
             //Camera Settings
             Camera.main.transform.Rotate(Vector3.forward, 180f);
             RotatedBoardSpriteObject.transform.Rotate(Vector3.forward, -180);
@@ -244,7 +230,6 @@ public class Game : MonoBehaviour
 
         if (!setUpCalled && PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Debug.Log("DebugLog_15");
             StartCoroutine("setPos");
             setUpCalled = true;
         }
@@ -261,18 +246,15 @@ public class Game : MonoBehaviour
     {
         if (gameOver && Input.GetMouseButtonDown(0) && !RestartButtonClicked)
         {
-            Debug.Log("DebugLog_16");
             RestartClicked();
         }
         if (PhotonNetwork.IsConnected && _currnetTurnPlayer != null && PhotonNetwork.LocalPlayer.NickName != _currnetTurnPlayer.NickName)
         {
             if (GameObject.FindObjectsOfType<MovePlate>() != null)
             {
-                Debug.Log("DebugLog_17");
                 MovePlate[] movePlates = GameObject.FindObjectsOfType<MovePlate>();
                 foreach (var item in movePlates)
                 {
-                    Debug.Log("DebugLog_18");
                     item.GetComponent<SpriteRenderer>().enabled = false;
                 }
 
@@ -283,7 +265,6 @@ public class Game : MonoBehaviour
 
     public int GetMaxY()
     {
-        Debug.Log("DebugLog_19");
         return positions.GetLength(1);
     }
 
@@ -291,7 +272,6 @@ public class Game : MonoBehaviour
 
     public IEnumerator SetLoadingScreenOnOff(bool isOn, float delay)
     {
-        Debug.Log("DebugLog_20");
         yield return new WaitForSeconds(delay);
         if (PhotonNetwork.IsMasterClient)
         {
@@ -304,43 +284,35 @@ public class Game : MonoBehaviour
     [PunRPC]
     public void SetLoadingScreenOff_RPC(bool isOn)
     {
-        Debug.Log("DebugLog_22");
         loadingScreen.SetActive(isOn);
     }
 
     public void WinPlayer(int i)
     {
-        Debug.Log("DebugLog_23");
         photonView.RPC("WinMatch", RpcTarget.All, i);
     }
 
     [PunRPC]
     void WinMatch(int i)
     {
-        Debug.Log("DebugLog_24");
         if (i == 1)
         {
-            Debug.Log("DebugLog_25");
             foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.Black))
             {
-                Debug.Log("DebugLog_26");
                 //Destroy(item.gameObject);
                 if (item.GetComponent<PhotonView>().IsMine)
                 {
-                    Debug.Log("DebugLog_27");
                     PhotonNetwork.Destroy(item.gameObject);
                 }
             }
         }
         else if (i == 2)
         {
-            Debug.Log("DebugLog_28");
             foreach (var item in Chessman.GetPiecesOfPlayer(PlayerType.White))
             {
                 //Destroy(item.gameObject);
                 if (item.GetComponent<PhotonView>().IsMine)
                 {
-                    Debug.Log("DebugLog_29");
                     PhotonNetwork.Destroy(item.gameObject);
                 }
             }
@@ -351,7 +323,6 @@ public class Game : MonoBehaviour
 
     IEnumerator setPos()
     {
-        Debug.Log("DebugLog_30");
         //if(!PhotonNetwork.LocalPlayer.IsMasterClient){
         Debug.Log("Spawning Black Pieces");
         playerBlack = new Chessman[] {
@@ -409,7 +380,6 @@ public class Game : MonoBehaviour
     [PunRPC]
     void SetPosRPC()
     {
-        Debug.Log("DebugLog_31");
         playerBlack = Chessman.GetPiecesOfPlayer(PlayerType.Black).ToArray();
         playerWhite = Chessman.GetPiecesOfPlayer(PlayerType.White).ToArray();
         Debug.Log("+++++++++++++++++++++++++++++++++++++++++");
@@ -418,17 +388,14 @@ public class Game : MonoBehaviour
 
         if (!PhotonNetwork.LocalPlayer.IsMasterClient)
         {
-            Debug.Log("DebugLog_32");
             foreach (var item in playerBlack)
             {
-                Debug.Log("DebugLog_33");
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
                 item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
             }
             foreach (var item in playerWhite)
             {
-                Debug.Log("DebugLog_34");
                 //      Debug.LogError("name : "+item.name);
                 //item.gameObject.transform.Rotate(new Vector3(0f,0f,180f));
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
@@ -439,10 +406,8 @@ public class Game : MonoBehaviour
 
         for (int i = 0; i < playerBlack.Length; i++)
         {
-            Debug.Log("DebugLog_35");
             SetPosition(playerBlack[i]);
             SetPosition(playerWhite[i]);
-
             //Debug.Log(playerWhite[i].GetXboard());
         }
     }
@@ -471,7 +436,6 @@ public class Game : MonoBehaviour
 
     public Chessman Create(string name, PieceType type, PlayerType ptype, int x, int y, int id, string cid = null)
     {
-        Debug.Log("DebugLog_36");
         cid = getCharId(type);
         object[] cinit = new object[] { name, type, ptype, x, y, id, cid };
         //photonView.RPC("CreateObj",RpcTarget.All,cinit);
@@ -490,7 +454,6 @@ public class Game : MonoBehaviour
     [PunRPC]
     public void CreateObj(object[] cinit)
     {
-        Debug.Log("DebugLog_37");
         GameObject ob = Instantiate(chesspiece, new Vector3(0f, 0f, -1f), Quaternion.identity);
         ob.GetComponent<Chessman>().OnInstantiate(cinit);
     }
@@ -522,7 +485,6 @@ public class Game : MonoBehaviour
 
     public void SetPositionsEmpty(int x, int y)
     {
-        Debug.Log("DebugLog_40:Color plate change to red");
         positions[x, y] = null;
         plates[x, y].GetComponent<SpriteRenderer>().color = (x + y) % 2 == 0 ? BoardBlack : BoardWhite;
         SpriteRenderer sr = plates[x, y].GetComponent<SpriteRenderer>();
@@ -538,12 +500,10 @@ public class Game : MonoBehaviour
 
     public GameObject GetPosition(int x, int y)
     {
-        //Debug.Log("DebugLog_41");
         return positions[x, y];
     }
     public bool PositionOnBoard(int x, int y)
     {
-        Debug.Log("DebugLog_42");
         if (x < 0 || y < 0 || x >= positions.GetLength(0) || y >= positions.GetLength(1)) return false;
         return true;
     }
@@ -553,7 +513,6 @@ public class Game : MonoBehaviour
         positions = new GameObject[data.GetLength(0), data.GetLength(1)];
         for (int i = 0; i < data.GetLength(0); i++)
         {
-            Debug.Log("DebugLog_44");
             for (int j = 0; j < data.GetLength(1); j++)
             {
                 positions[i, j] = data[i, j];
@@ -563,7 +522,6 @@ public class Game : MonoBehaviour
 
     public GameObject[,] GetPresent()
     {
-        Debug.Log("DebugLog_45");
         GameObject[,] data = new GameObject[positions.GetLength(0), positions.GetLength(1)];
         for (int i = 0; i < positions.GetLength(0); i++)
         {
@@ -577,7 +535,6 @@ public class Game : MonoBehaviour
 
     public GameObject[,] GetFuture()
     {
-        Debug.Log("DebugLog_46");
         GameObject[,] data = new GameObject[Fpositions.GetLength(0), Fpositions.GetLength(1)];
         for (int i = 0; i < Fpositions.GetLength(0); i++)
         {
@@ -593,7 +550,6 @@ public class Game : MonoBehaviour
         Fpositions = new GameObject[data.GetLength(0), data.GetLength(1)];
         for (int i = 0; i < data.GetLength(0); i++)
         {
-            Debug.Log("DebugLog_47");
             for (int j = 0; j < data.GetLength(1); j++)
             {
                 Fpositions[i, j] = data[i, j];
@@ -602,22 +558,18 @@ public class Game : MonoBehaviour
     }
     public void SetFuturePosition(Chessman obj, int x, int y)
     {
-        Debug.Log("DebugLog_48");
         Fpositions[x, y] = obj?.gameObject;
     }
     public void SetFuturePositionsEmpty(int x, int y)
     {
-        Debug.Log("DebugLog_49");
         Fpositions[x, y] = null;
     }
     public GameObject GetFuturePosition(int x, int y)
     {
-        Debug.Log("DebugLog_50");
         return Fpositions[x, y];
     }
     public bool FuturePositionOnBoard(int x, int y)
     {
-        Debug.Log("DebugLog_51");
         if (x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
         return true;
     }
@@ -625,13 +577,11 @@ public class Game : MonoBehaviour
 
     public string GetCurrentPlayer()
     {
-        Debug.Log("DebugLog_52");
         return currentPlayer;
     }
 
     public bool IsGameOver()
     {
-        Debug.Log("DebugLog_53");
         return gameOver;
     }
 
@@ -639,7 +589,6 @@ public class Game : MonoBehaviour
     {
         if (IsGameOver())
         {
-            Debug.Log("DebugLog_56");
             PVPManager.manager.TimerObject.SetActive(false);
             return;
         }
@@ -647,18 +596,15 @@ public class Game : MonoBehaviour
 
         if (currentPlayer == "white")
         {
-            Debug.Log("DebugLog_54");
             currentPlayer = "black";
         }
         else
         {
-            Debug.Log("DebugLog_55");
             currentPlayer = "white";
         }
 
         if (isMyTurn(currentPlayer))
         {
-            Debug.Log("DebugLog_57");
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
@@ -685,10 +631,8 @@ public class Game : MonoBehaviour
     }
     public void NextTurnContinue()
     {
-        Debug.Log("DebugLog_58");
         if (IsGameOver())
         {
-            Debug.Log("DebugLog_59");
             PVPManager.manager.TimerObject.SetActive(false);
             return;
         }
@@ -696,18 +640,15 @@ public class Game : MonoBehaviour
 
         if (currentPlayer == "white")
         {
-            Debug.Log("DebugLog_60");
             currentPlayer = "black";
         }
         else
         {
-            Debug.Log("DebugLog_61");
             currentPlayer = "white";
         }
 
         if (isMyTurn(currentPlayer))
         {
-            Debug.Log("DebugLog_62");
             bool IsKinginCheck = checkForKing();
             bool IsCheckmate = IsKinginCheck ? IsCheckmateForKing() : false;
             Debug.LogError("Checking for Check ================> " + IsKinginCheck);
@@ -717,20 +658,17 @@ public class Game : MonoBehaviour
             {
                 if (MyType == PlayerType.White)
                 {
-                    Debug.Log("DebugLog_63");
                     Winner(PhotonNetwork.PlayerList[1].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 1);
                 }
                 else
                 {
-                    Debug.Log("DebugLog_64");
                     Winner(PhotonNetwork.PlayerList[0].NickName);
                     photonView.RPC("PlayerWon", RpcTarget.Others, 0);
                 }
             }
             else
             {
-                Debug.Log("DebugLog_65");
                 photonView.RPC("SwitchCurrentPlayer", RpcTarget.AllBuffered, currentPlayer, true);
             }
         }
@@ -739,7 +677,6 @@ public class Game : MonoBehaviour
 
     public void RestartClicked()
     {
-        Debug.Log("DebugLog_66");
         RestartButtonClicked = true;
         photonView.RPC("ShowRematch", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer.NickName);
     }
@@ -748,12 +685,10 @@ public class Game : MonoBehaviour
     {
         if (i == 0)
         {
-            Debug.Log("DebugLog_67");
             photonView.RPC("RematchRejected", RpcTarget.AllBuffered, PhotonNetwork.LocalPlayer);
         }
         else
         {
-            Debug.Log("DebugLog_68");
             photonView.RPC("RestartRPC", RpcTarget.AllBuffered);
         }
     }
@@ -816,7 +751,7 @@ public class Game : MonoBehaviour
             setUpCalled = false;
             PhotonNetwork.CleanRpcBufferIfMine(photonView);
             PhotonNetwork.OpRemoveCompleteCache();
-            GameManager.instace.isFristMovePawn = true;
+            //GameManager.instace.isFristMovePawn = true;
             SceneManager.LoadScene("Game");
         }
     }
@@ -929,14 +864,12 @@ public class Game : MonoBehaviour
 
     public void DestroyPieceObject(Chessman man)
     {
-        Debug.Log("DebugLog_69");
         //  Debug.LogError("Adding : "+man.type+" to "+MyType);
         //   Debug.LogError("Adding : "+man.playerType+" to "+MyType);
         man.transform.position = new Vector3(1000f, 1000f, 1000f);
 
         if (man.playerType == MyType)
         {
-            Debug.Log("DebugLog_70");
             DestroyedObjects.Add(man);
 
             bool won = false;
@@ -948,13 +881,11 @@ public class Game : MonoBehaviour
                     won = true;
                     if (item.playerType == PlayerType.White)
                     {
-                        Debug.Log("DebugLog_71");
                         //Winner(PhotonNetwork.PlayerList[1].NickName);
                         photonView.RPC("PlayerWon", RpcTarget.All, 1);
                     }
                     else
                     {
-                        Debug.Log("DebugLog_72");
                         //Winner(PhotonNetwork.PlayerList[0].NickName);
                         photonView.RPC("PlayerWon", RpcTarget.All, 0);
 
@@ -968,7 +899,6 @@ public class Game : MonoBehaviour
         }
         else
         {
-            Debug.Log("DebugLog_73");
             DestroyedObjectsOppo.Add(man);
         }
 
@@ -976,18 +906,14 @@ public class Game : MonoBehaviour
     }
     public void DestroyPieceObjectForPawnTaken(Chessman man)
     {
-        Debug.Log("DebugLog_74");
         if (PhotonNetwork.LocalPlayer != _currnetTurnPlayer)
         {
-            Debug.Log("DebugLog_75");
             if (PVPManager.manager.MyAttackedPiece)
             {
-                Debug.Log("DebugLog_76");
                 man = PVPManager.manager.MyAttackedPiece;
             }
             else
             {
-                Debug.Log("DebugLog_77");
                 Debug.LogError("Man not found");
             }
         }
@@ -998,14 +924,12 @@ public class Game : MonoBehaviour
 
         if (man.playerType == MyType)
         {
-            Debug.Log("DebugLog_78");
             Debug.LogError("This should not be the case for Pawn taken");
             DestroyedObjects.Add(man);
 
             bool won = false;
             foreach (var item in DestroyedObjects)
             {
-                Debug.Log("DebugLog_79");
                 //     Debug.LogError(item.playerType);
                 if (item.type == PieceType.King)
                 {
@@ -1030,7 +954,6 @@ public class Game : MonoBehaviour
         }
         else
         {
-            Debug.Log("DebugLog_80");
             Debug.LogError("Else part");
             NextTurn();
             DestroyedObjectsOppo.Add(man);

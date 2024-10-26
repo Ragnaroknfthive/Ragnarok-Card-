@@ -179,7 +179,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks, IDragHandler, IBeginD
     {
         GameObject tempObj = SpellManager.instance.InstantiateSpellBattleCard(GameData.Get().GetPet(card.cardId), Bg.transform.position, this.gameObject.transform, 0);//Instantiate the spell battle card
         tempObj.GetComponent<BattleCardDisplay>().cardPosition = SpellCardPosition.perBattleOpponent;//Set the card position to pet battle player
-        tempObj.GetComponent<BattleCardDisplay>().id = battleId;//Set the id
+        tempObj.GetComponent<BattleCardDisplay>().id = battleId + 1;//Set the id
 
         if (PhotonNetwork.IsMasterClient == false)//Check if the player is not the master client
             LeanTween.rotate(tempObj, new Vector3(0, 0, -180), 0);//Rotate the card

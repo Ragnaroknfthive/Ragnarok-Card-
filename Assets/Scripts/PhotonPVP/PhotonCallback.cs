@@ -173,32 +173,6 @@ public class PhotonCallback : MonoBehaviourPunCallbacks
         }
     }
 
-    //public override void OnJoinRandomFailed(short returnCode, string message)
-    //{
-    //    RoomOptions roomOptions = new RoomOptions { MaxPlayers = maxPlayers, CleanupCacheOnLeave = false };
-    //    PhotonNetwork.CreateRoom(null, roomOptions, null);
-    //}
-
-    //public override void OnJoinedRoom()
-    //{
-    //    Debug.Log("OnJoinedRoom() called");
-
-    //    if (PhotonNetwork.PlayerList.Length == maxPlayers)
-    //    {
-    //        StartGame();
-    //    }
-    //}
-
-    //public override void OnPlayerEnteredRoom(Player newPlayer)
-    //{
-    //    Debug.Log("OnPlayerEnteredRoom() called");
-
-    //    if (PhotonNetwork.PlayerList.Length == maxPlayers)
-    //    {
-    //        StartGame();
-    //    }
-    //}
-
     private void StartGame()
     {
         playButtonController.statusText.text = "Room created";
