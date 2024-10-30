@@ -104,15 +104,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14fb7066b8f9f864cb568f196b5880b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pawn: 0
   controller: {fileID: 0}
   movePlate: {fileID: 8585813769911255749, guid: 1382b610fa3921a42a0aba78abd64074,
     type: 3}
-  type: 0
-  playerType: 0
+  healthBar: {fileID: 5251841510146595007}
+  pawn: 0
+  AlreadyPlayedPvP: 0
   xBoard: -1
   yBoard: -1
-  player: 
+  PieceIndex: 0
+  high: 0
+  low: 0
+  left: 0
+  right: 0
+  medle: 0
+  scaleValue: 0.07
   black_queen: {fileID: 21300000, guid: 4e2af84aec7c0ab4592293b1cc8e55e9, type: 3}
   black_knight: {fileID: 21300000, guid: e7aa256dd0761c0439d5eb528830ed92, type: 3}
   black_bishop: {fileID: 21300000, guid: c18253b4f7d75b24a903107d38181d84, type: 3}
@@ -125,19 +131,13 @@ MonoBehaviour:
   white_king: {fileID: 21300000, guid: 8956f4424c3e7224e9a90cf48be512ba, type: 3}
   white_rook: {fileID: 21300000, guid: 110ba782c74695c4ea573bcfb1af2618, type: 3}
   white_pawn: {fileID: 21300000, guid: ae641b19244cfa14dbf159ba47454ac6, type: 3}
+  cards: []
+  player: 
   character: {fileID: 0}
-  high: 0
-  low: 0
-  left: 0
-  right: 0
-  medle: 0
-  scaleValue: 0.07
-  PieceIndex: 0
-  healthBar: {fileID: 5251841510146595007}
+  type: 0
+  playerType: 0
   myPiece: 0
   opponentpiece: 0
-  AlreadyPlayedPvP: 0
-  cards: []
 --- !u!114 &7722872110479007392
 MonoBehaviour:
   m_ObjectHideFlags: 0
