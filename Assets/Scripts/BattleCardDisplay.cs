@@ -15,44 +15,31 @@ using ExitGames.Client.Photon;
 
 public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    #region Attributes
     public SpellCard card;
-    [SerializeField] private TMPro.TextMeshProUGUI staminaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI staminaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
     public int Hp;
     public Image Bg, cardImage;
     public Outline MainBGOutline;
     public SpellCardPosition cardPosition;
     public PhotonView photonView;
-    public GameObject DmgPref;
-    public int id;
-    public bool IsAttackedThisRound;
-    public bool IsDead;
-    #endregion
 
-    #region Unity Methods
+    public GameObject DmgPref;
+
+    public int id;
+
+    public bool IsAttackedThisRound;
+
+    public bool IsDead;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();//Get the PhotonView component
     }
+
     void Start()
     {
         UpdateCardData();//Update the card data
     }
-    #endregion
-
-    #region Mouse Events
-    private void OnMouseEnter()
-    {
-        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
-        MainBGOutline.enabled = true;//Enable the main background outline
-    }
-    private void OnMouseExit()
-    {
-        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
-        MainBGOutline.enabled = false;//Disable the main background outline
-    }
-
-    #endregion
 
     public void UpdateCardData()
     {
@@ -63,6 +50,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         UpdateText(healthTxt, card.Health.ToString());//Update the health text
         UpdateText(DescriptionTxt, card.discription.ToString());//Update the description text
         UpdateText(SpeedTxt, card.speed.ToString());//Update the speed text
+
         if (cardPosition == SpellCardPosition.petHomePlayer || cardPosition == SpellCardPosition.petBattlePlayer)//Check if the card position is pet home player or pet battle player
         {
             if (PVPManager.manager.myObj.playerType == PlayerType.Black) UpdateImage(cardImage, card.OppocardSprite);//Update the card image
@@ -82,13 +70,28 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     {
         img.sprite = val;//Set the image sprite
     }
+    private void OnMouseEnter()
+    {
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
+        MainBGOutline.enabled = true;//Enable the main background outline
+    }
+    private void OnMouseExit()
+    {
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
+        MainBGOutline.enabled = false;//Disable the main background outline
+    }
+
     public void ResetAttack()
     {
         IsAttackedThisRound = false;//Set the attack status to false
     }
+
     public void Attack(int i, bool isplayer = false)
     {
-        if (isplayer && PVPManager.Get().P2RemainingHandHealth <= 0) return;//Check if the player 2 remaining hand health is less than or equal to 0
+        if (isplayer && PVPManager.Get().P2RemainingHandHealth <= 0)//Check if the player 2 remaining hand health is less than or equal to 0
+        {
+            return;//Return
+        }
         IsAttackedThisRound = true;//Set the attack status to true
         SpellManager.IsPetAttacking = true;//Set the pet attacking status to true
         GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);//Instantiate the spell projectile prefab
@@ -102,6 +105,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         PVPManager.manager.isCheckWithoutReset = true;//Set the check without reset status to true
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Start the check win coroutine
     }
+
     [PunRPC]
     public void AttackRPC(int i, bool isplayer)
     {
@@ -114,6 +118,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         PVPManager.manager.isCheckWithoutReset = true;//Set the check without reset status to true
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Start the check win coroutine
     }
+
     public void DealDamage(int c)
     {
         Hp -= c;//Decrease the health
@@ -122,6 +127,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         UpdateText(healthTxt, Hp.ToString());//Update the health text
         if (Hp <= 0) Kill();//Check if the health is less than or equal to 0
     }
+
     public void ShowDamage(int c)
     {
         GameObject o = Instantiate(DmgPref, transform);//Instantiate the damage prefab
@@ -135,6 +141,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
             Destroy(o);//Destroy the object
         });
     }
+
     void OnDestroy()//When the object is destroyed
     {
         SpellManager.instance.playerBattleCards.Remove(this);//Remove the card from the player battle cards list
@@ -146,33 +153,43 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         PVPManager.manager.myObj.cards.Remove(card);//Remove the card from the player cards list
         Destroy(gameObject, 0.7f);//Destroy the object
     }
-    public void ChangeCardPostionToCenter() { }
+
+    public void ChangeCardPostionToCenter()//Empty method
+    { }
     public void ChangeParent()//Method to change the parent
     {
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
+
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardBattleObj);//Set the parent to the spell card battle object
     }
     public void ChangeParentShowCase()
     {
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
+
         this.gameObject.transform.SetParent(SpellManager.instance.showCaseParent);//Set the parent to the show case parent
     }
     public void ChangeParentHome()//Method to change the parent
     {
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
+
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardsPlayer);//Set the parent to the spell cards player
         if (SpellManager.instance.isShowCasing) SpellManager.instance.isShowCasing = false;//Check if the show casing status is true
     }
     public void ChangeParent(Transform parent_)//Method to change the parent
     {
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
+
         this.gameObject.transform.SetParent(parent_);//Set the parent to the parent
     }
     public void OnDrag(PointerEventData eventData)
     {
         this.transform.GetComponent<RectTransform>().position = new Vector3(eventData.position.x, eventData.position.y);//Set the position
     }
-    public void OnBeginDrag(PointerEventData eventData) { }
-    public void OnEndDrag(PointerEventData eventData) { }
+
+    public void OnBeginDrag(PointerEventData eventData)//Empty method
+    { }
+
+    public void OnEndDrag(PointerEventData eventData)//Empty method
+    { }
 
 }
