@@ -100,11 +100,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13daad227dc0ce249a5be9c5eba190cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
-  attack: 0
   selectedMove: {fileID: 21300000, guid: 8abe8fa448ad02d4fb9abeff14666e4d, type: 3}
   attackSprite: {fileID: 21300000, guid: 5446c9c00b89b3041a658c79f993e81d, type: 3}
   spriteRenderer: {fileID: 5601901689888383344}
+  controller: {fileID: 0}
+  attack: 0
 --- !u!61 &848929366399133312
 BoxCollider2D:
   m_ObjectHideFlags: 0

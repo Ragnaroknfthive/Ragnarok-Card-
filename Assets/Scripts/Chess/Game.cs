@@ -1477,7 +1477,7 @@ using UnityEngine.Networking;
 using System;
 
 public enum PlayerAction { idle, attack, counterAttack, defend, engage, brace }
-public enum SpellCardPosition { None, petHomePlayer, petHomeOppoent, petBattlePlayer, perBattleOpponent }
+public enum SpellCardPosition { None, petHomePlayer, petHomeOppoent, petBattlePlayer, petBattleOpponent }
 
 public class Game : MonoBehaviour
 {

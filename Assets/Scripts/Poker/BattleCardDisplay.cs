@@ -43,17 +43,19 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     #region Mouse Events
     private void OnMouseEnter()
     {
-        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petBattleOpponent || PVPManager.manager.isResultScreenOn) Debug.Log("BCD_DB1");
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
         MainBGOutline.enabled = true;//Enable the main background outline
     }
     private void OnMouseExit()
     {
-        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.perBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petBattleOpponent || PVPManager.manager.isResultScreenOn) Debug.Log("BCD_DB2");
+        if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer || cardPosition == SpellCardPosition.petBattleOpponent || PVPManager.manager.isResultScreenOn) return;//Check if the current turn player is not the local player or the card position is per battle opponent or the result screen is on
         MainBGOutline.enabled = false;//Disable the main background outline
     }
-
     #endregion
 
+    #region Update Methods
     public void UpdateCardData()
     {
         Hp = card.Health;
@@ -68,7 +70,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
             if (PVPManager.manager.myObj.playerType == PlayerType.Black) UpdateImage(cardImage, card.OppocardSprite);//Update the card image
             else UpdateImage(cardImage, card.MycardSprite);//Update the card image
         }
-        else if (cardPosition == SpellCardPosition.perBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)//Check if the card position is per battle opponent or pet home opponent
+        else if (cardPosition == SpellCardPosition.petBattleOpponent || cardPosition == SpellCardPosition.petHomeOppoent)//Check if the card position is per battle opponent or pet home opponent
         {
             if (PVPManager.manager.opponentObj.playerType == PlayerType.Black) UpdateImage(cardImage, card.OppocardSprite);//Update the card image
             else UpdateImage(cardImage, card.MycardSprite);//Update the card image
@@ -82,6 +84,10 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     {
         img.sprite = val;//Set the image sprite
     }
+
+    #endregion
+
+    #region Attack Methods
     public void ResetAttack()
     {
         IsAttackedThisRound = false;//Set the attack status to false
@@ -114,6 +120,10 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         PVPManager.manager.isCheckWithoutReset = true;//Set the check without reset status to true
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Start the check win coroutine
     }
+
+    #endregion
+
+    #region Damage Methods
     public void DealDamage(int c)
     {
         Hp -= c;//Decrease the health
@@ -135,44 +145,61 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
             Destroy(o);//Destroy the object
         });
     }
+
+    #endregion
+
+    #region Destroy Methods
     void OnDestroy()//When the object is destroyed
     {
+        Debug.Log("BCD_DB13");
         SpellManager.instance.playerBattleCards.Remove(this);//Remove the card from the player battle cards list
         SpellManager.instance.DestroyOb(card.cardId);//Destroy the object
     }
     public void Kill()//Kill the card
     {
+        Debug.Log("BCD_DB14");
         IsDead = true;//Set the dead status to true
         PVPManager.manager.myObj.cards.Remove(card);//Remove the card from the player cards list
         Destroy(gameObject, 0.7f);//Destroy the object
     }
-    public void ChangeCardPostionToCenter() { }
+
+    #endregion
+
+    #region Change Parent
     public void ChangeParent()//Method to change the parent
     {
+        Debug.Log("BCD_DB16");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardBattleObj);//Set the parent to the spell card battle object
     }
     public void ChangeParentShowCase()
     {
+        Debug.Log("BCD_DB17");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.showCaseParent);//Set the parent to the show case parent
     }
     public void ChangeParentHome()//Method to change the parent
     {
+        Debug.Log("BCD_DB18");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardsPlayer);//Set the parent to the spell cards player
         if (SpellManager.instance.isShowCasing) SpellManager.instance.isShowCasing = false;//Check if the show casing status is true
     }
     public void ChangeParent(Transform parent_)//Method to change the parent
     {
+        Debug.Log("BCD_DB19");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(parent_);//Set the parent to the parent
     }
+    #endregion
+
+    #region Drag
     public void OnDrag(PointerEventData eventData)
     {
+        Debug.Log("BCD_DB20");
         this.transform.GetComponent<RectTransform>().position = new Vector3(eventData.position.x, eventData.position.y);//Set the position
     }
     public void OnBeginDrag(PointerEventData eventData) { }
     public void OnEndDrag(PointerEventData eventData) { }
-
+    #endregion
 }

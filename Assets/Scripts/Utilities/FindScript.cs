@@ -1,14 +1,25 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FindScript : MonoBehaviour
 {
-    /*void Update()
-    {
-        var scripts = FindObjectsOfType<MovePlate>(); // Reemplaza "NombreDelScript" con el nombre de tu script.
+    public string scriptName = "SpellCardDisplay";
 
-        if (scripts.Length == 0)
+    void Update()
+    {
+        List<MonoBehaviour> scripts = new List<MonoBehaviour>();
+
+        foreach (var script in FindObjectsOfType<MonoBehaviour>())
         {
-            Debug.LogError("No se encontró ningún objeto con el script 'NombreDelScript' en la escena.");
+            if (script.GetType().Name == scriptName)
+            {
+                scripts.Add(script);
+            }
+        }
+
+        if (scripts.Count == 0)
+        {
+            Debug.Log($"No se encontró ningún objeto con el script '{scriptName}' en la escena.");
         }
         else
         {
@@ -17,5 +28,5 @@ public class FindScript : MonoBehaviour
                 Debug.Log("El script está asignado a: " + script.gameObject.name);
             }
         }
-    }*/
+    }
 }

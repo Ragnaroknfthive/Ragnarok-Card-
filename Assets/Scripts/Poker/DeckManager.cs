@@ -129,16 +129,6 @@ public class DeckManager : MonoBehaviour
 
     public void ClearAll()
     {
-        // for (int i = 0; i < playerDeck.Count; i++)
-        // {
-        //     if(isPetOpen){
-        //         if(playerDeck[i].cardType == CardType.Pet)
-        //             playerDeck.Remove(playerDeck[i]);
-        //     }else{
-        //         if(playerDeck[i].cardType == CardType.Spell)
-        //             playerDeck.Remove(playerDeck[i]);
-        //     }
-        // }
         playerDeck.RemoveAll((i) => i.cardType == (isPetOpen ? CardType.Pet : CardType.Spell));//Remove all the cards
         UpdateDeckPreview(currentScreen);//Update the deck preview
     }
@@ -147,15 +137,7 @@ public class DeckManager : MonoBehaviour
         //playerDeck.Clear();
         if (isPetOpen)//If the pet is open
         {
-            //int i = 0;
             playerDeck.AddRange(PetInventory.Where((i) => i.cardType == CardType.Pet && !playerDeck.Contains(i)));//Add all the pets
-            // while(playerDeck.Where(item=>item.cardType == CardType.Pet).Count() < 33)
-            // {
-            //     if(PetInventory[i].cardType == CardType.Pet){
-            //         playerDeck.Add(PetInventory[i]);
-            //     }
-            //     i++;
-            // }
         }
         else
         {
@@ -180,9 +162,6 @@ public class DeckManager : MonoBehaviour
         else data.Add("PlayerDeck", deckStr);//Add the player deck
         PhotonNetwork.LocalPlayer.CustomProperties = data;//Set the custom properties
         PlayerPrefs.SetString("player_deck", deckStr);//Set the player deck
-
-        //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
-        //Invoke("StarGame",0.3f);
     }
 
 
@@ -193,8 +172,6 @@ public class DeckManager : MonoBehaviour
         {
             if (!PhotonNetwork.PlayerList[i].IsMasterClient) //If the player is not the master client
             {
-
-                //Debug.LogError("Opponent Deck set");//Log the opponent deck set
                 List<int> deckIds = new List<int>();//List of deck ids
                 foreach (var item in playerDeck)//Loop through the player deck
                 {
@@ -208,9 +185,6 @@ public class DeckManager : MonoBehaviour
                 PlayerPrefs.SetString("player_deck", deckStr);//Set the player deck
             }
         }
-
-        //Debug.Log(" _Enkampfen_  /"+PhotonNetwork.LocalPlayer.CustomProperties["PlayerDeck"] +"/ und und und "+ deckStr);
-        //Invoke("StarGame",0.3f);
     }
     public const string DeckCounter = "DeckCounter";//Deck counter
     public int GetNewDeckCounter()//Method to get the new deck counter

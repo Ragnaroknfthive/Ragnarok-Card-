@@ -316,7 +316,7 @@ public class DemoManager : MonoBehaviour
                 cardObj.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(40 * i, 0, 0);
             }
 
-            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
 
             Debug.Log("<color=yellow> if button drawflop other player </color>" + i);
             board_cards.Add(cardObj.GetComponent<Card>());
@@ -342,7 +342,7 @@ public class DemoManager : MonoBehaviour
 
             Debug.Log("<color=yellow> else button drawflop </color>");
 
-            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
 
 
             board_cards.Add(cardObj.GetComponent<Card>());
@@ -381,7 +381,7 @@ public class DemoManager : MonoBehaviour
                 cardObj.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(40 * i, 0, 0);
 
 
-                cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+                cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
                 cardObj.SetActive(false);
                 //Debug.LogError("***Deactivated from here");
                 //Debug.Log("<color=yellow> if button drawflop master player </color>"+i);
@@ -411,7 +411,7 @@ public class DemoManager : MonoBehaviour
             cardObj.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(40 * (num_cards_board - 1), 0, 0);
             Debug.Log("<color=yellow> else button drawflop </color>");
 
-            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
             board_cards.Add(cardObj.GetComponent<Card>());
             deck.Remove(deck[0]);
 
@@ -460,7 +460,7 @@ public class DemoManager : MonoBehaviour
                         cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.5f);
                         cardObj.GetComponent<RectTransform>().pivot = new Vector2(0, 0.5f);
 
-                        cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+                        cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
 
                         player_cards[i].Add(cardObj.GetComponent<Card>());
                         deck.Remove(deck[j]);
@@ -509,7 +509,7 @@ public class DemoManager : MonoBehaviour
                         cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.5f);
                         cardObj.GetComponent<RectTransform>().pivot = new Vector2(0, 0.5f);
 
-                        cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+                        cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
 
                         player_cards[i].Add(cardObj.GetComponent<Card>());
 
@@ -552,7 +552,7 @@ public class DemoManager : MonoBehaviour
         //            cardObj.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0.5f);
         //            cardObj.GetComponent<RectTransform>().pivot = new Vector2(0, 0.5f);
 
-        //            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.EulerRotation(0, 0, 0);
+        //            cardObj.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, 0);
 
         //            player_cards[i].Add(cardObj.GetComponent<Card>());
         //            deck.Remove(deck[j]);
@@ -769,7 +769,7 @@ public class DemoManager : MonoBehaviour
                     }
                 }
             }
-            
+
 
         }
         PVPManager.manager.OpponentPlayerCardPositions[0].GetChild(0).GetChild(1).gameObject.GetComponent<Image>().sprite = PVPManager.manager.opponentCardSprite[0];
