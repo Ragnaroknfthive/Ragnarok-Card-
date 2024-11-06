@@ -87,7 +87,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks
     }
     public void ChangeParentHome()//Change the parent of the card to the home
     {
-        Debug.Log("SCD10___ChangeParentHome:");
+        //Debug.Log("SCD10___ChangeParentHome:");
         animating = false;//Set the animating to false
         return;
     }
@@ -121,7 +121,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks
     #region Update Card Data
     public void UpdateCardData()//Update the card data on the card prefab
     {
-        Debug.Log("SCD: 1" + card.cardName);
+        //Debug.Log("SCD: 1" + card.cardName);
         UpdateText(manaTxt, card.Manacost.ToString());//Update the mana text on the card prefab
         UpdateText(cardNameTxt, card.cardName.ToString());//Update the card name text on the card prefab
         UpdateText(attackTxt, card.Attack.ToString());//Update the attack text on the card prefab

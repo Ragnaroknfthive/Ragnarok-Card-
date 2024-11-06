@@ -57,52 +57,33 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
     void FixedUpdate()
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+
     }
     #endregion
 
     #region Data Reset
     public void ResetData()//Reset the data of the spell cards
     {
+        print("Resetting data");
         spawned_ids = new List<int>();//Clear the spawned ids list
         foreach (Transform item in spellCardsPlayer)//Loop through the spell cards of the player
         {
             DestroyImmediate(item.gameObject);//Destroy the spell card game object
         }
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         photonView.RPC("ResetDataRPC", RpcTarget.Others);//Reset the data of the spell cards of the opponent
     }
 
     [PunRPC]
     public void ResetDataRPC()//Reset the data of the spell cards of the opponent
     {
+        print("Resetting data RPC");
         spawned_ids = new List<int>();//Clear the spawned ids list
         foreach (Transform item in spellCardsPlayer)//Loop through the spell cards of the opponent
         {
             DestroyImmediate(item.gameObject);//Destroy the spell card game object
         }
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         StartCoroutine(PVPManager.manager.SpawnPets());//Spawn the pets
     }
     #endregion
@@ -199,20 +180,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
     public void ExecuteAttack(int i, bool IsPlayer, int cardId, int attacker)//Function to execute the attack
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        print("Executing attack");
+        ClearList();
         photonView.RPC("ExecuteAttackRPC", RpcTarget.Others, i, IsPlayer, cardId, attacker);//Execute the attack on the target
     }
 
     [PunRPC]
     public void ExecuteAttackRPC(int i, bool isplayer, int cardId, int attacker)//Function to execute the attack
     {
+        print("Executing attack RPC");
         SpellCard card = GameData.Get().GetPet(cardId);//Get the spell card
         SpellManager.IsPetAttacking = true;//Set the pet attacking to true
 
@@ -227,14 +203,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.DealDamage = !isplayer;//Set the deal damage
         proj.lifetime = 2f;//Set the lifetime
         PVPManager.manager.isCheckWithoutReset = true;//Set the PVP manager to check without resetting
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Check the win without resetting
     }
     #endregion
@@ -242,41 +211,19 @@ public class SpellManager : MonoBehaviourPunCallbacks
     #region Destroy Object
     public void DestroyOb(int i)//The function to destroy the object
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        print("Destroying object");
+        ClearList();
         photonView.RPC("OnDestroyRPC", RpcTarget.Others, i);//Destroy the object
-        opponentBattleCards.RemoveAll(item => item == null);
-        opponentCards.RemoveAll(item => item == null);
-        opponentCards.RemoveAll(item => item == null);
     }
 
     [PunRPC]
     public void OnDestroyRPC(int cardId)//The function to destroy the object
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        print("Destroying rpc");
+        ClearList();
         BattleCardDisplay battleCard = opponentBattleCards.Find(x => x.card.cardId == cardId);
         SpellManager.instance.opponentBattleCards.Remove(battleCard);
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
     }
     public void RemoveOldSpellData()//Function to remove the old spell data
     {
@@ -286,10 +233,12 @@ public class SpellManager : MonoBehaviourPunCallbacks
             if (playerBattleCards[i])//If the player battle cards at i is not null
             {
                 Destroy(playerBattleCards[i].gameObject);
-                if (opponentBattleCards?.Any() ?? false)
+                print("Destroying player battle cards");
+                /*if (playerBattleCards?.Any() ?? false)
                 {
-                    opponentBattleCards.RemoveAll(item => item == null);
-                }
+                    playerBattleCards.RemoveAll(item => item == null);
+                }*/
+                ClearList();
             }//Destroy the player battle cards at i
         }
         for (int i = 0; i < playerCards.Count; i++)
@@ -297,10 +246,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
             if (playerCards[i])
             {
                 Destroy(playerCards[i].gameObject);
-                if (opponentCards?.Any() ?? false)
-                {
-                    opponentCards.RemoveAll(item => item == null);
-                }
+                print("Destroying player cards");
+                ClearList();
             }
         }
         for (int i = 0; i < opponentCards.Count; i++)
@@ -308,10 +255,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
             if (opponentCards[i])
             {
                 Destroy(opponentCards[i].gameObject);
-                if (opponentBattleCards?.Any() ?? false)
-                {
-                    opponentBattleCards.RemoveAll(item => item == null);
-                }
+                print("Destroying opponent cards");
+                ClearList();
             }
         }
         for (int i = 0; i < opponentBattleCards.Count; i++)
@@ -319,11 +264,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
             if (opponentBattleCards[i])
             {
                 Destroy(opponentBattleCards[i].gameObject);
-
-                if (opponentBattleCards?.Any() ?? false)
-                {
-                    opponentBattleCards.RemoveAll(item => item == null);
-                }
+                print("Destroying opponent battle cards");
+                ClearList();
             }
         }
         playerBattleCards.Clear();//Clear the player battle cards
@@ -366,34 +308,22 @@ public class SpellManager : MonoBehaviourPunCallbacks
     }
     public GameObject InstantiateSpellCard(SpellCard sO, Vector3 pos, Transform parent)//Function to instantiate the spell card
     {
+        print("Instantiating spell card");
         //Instantiate the spell card prefab
         tempSpellCardObj = Instantiate(spellCardPrefab, pos, Quaternion.identity, parent);
         //Set the card of the spell card object
         tempSpellCardObj.GetComponent<SpellCardDisplay>().card = sO;
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         return tempSpellCardObj;//Return the spell card object
     }
     //Function to instantiate the spell battle card
     public GameObject InstantiateSpellBattleCard(SpellCard sO, Vector3 pos, Transform parent, int num_card)
     {
+        print("Instantiating spell battle card");
         tempSpellCardObj = Instantiate(spellBettleCardPrefeb, pos, Quaternion.identity, parent);//Instantiate the spell battle card prefab
         tempSpellCardObj.GetComponent<BattleCardDisplay>().card = sO;//Set the card of the spell card object
         tempSpellCardObj.transform.localScale = Vector3.one;//Set the scale of the spell card object
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         return tempSpellCardObj;//Return the spell card object
     }
     #endregion
@@ -401,6 +331,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     #region Destroy Card
     public void DestroyCard(int i)//Function to destroy the card
     {
+        print("Destroying card");
         GameObject obj = InstantiateSpellCard(spellCardsDeck[i], Vector3.one, MyMainDeck.transform);//Instantiate the spell card
         obj.transform.localPosition = Vector3.zero;//Set the local position of the spell card to zero
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;//Set the card position of the spell card
@@ -418,28 +349,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
                 Instantiate(DestroyCardEffOppo, spellCardsPlayer.position, Quaternion.identity);//Instantiate the destroy card effect
             Destroy(obj.gameObject, 0.1f);//Destroy the spell card game object
         });
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         photonView.RPC("DestroyCardRPC", RpcTarget.Others, i);//Destroy the card
     }
 
     [PunRPC]
     public void DestroyCardRPC(int i)//Destroy the card
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
+        print("Destroying card RPC");
         GameObject obj = InstantiateSpellCard(GameData.Get().GetPet(i), Vector3.one, OppoMainDeck.transform);//Instantiate the spell card
         obj.transform.localPosition = Vector3.zero;//Set the local position of the spell card to zero
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomeOppoent;//Set the card position of the spell card
@@ -462,6 +380,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     #region Generate Cards
     public void GenerateCardsForPlayer(int i)
     {
+        print("Generating cards for player");
         GameObject obj = InstantiateSpellCard(spellCardsDeck[i], Vector3.one, MyMainDeck.transform);//Instantiate the spell card
         obj.transform.localPosition = Vector3.zero;//Set the local position of the spell card to zero
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomePlayer;//Set the card position of the spell card
@@ -477,28 +396,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
             obj.transform.SetParent(spellCardsPlayer);//Set the parent of the spell card to the spell cards player
             obj.transform.position = Vector3.zero;//Set the position of the spell card to zero
         });
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
         photonView.RPC("GenerateCardsForOppnent", RpcTarget.Others, spellCardsDeck[i].cardId);//Generate the cards for the opponent
         PhotonNetwork.SendAllOutgoingCommands();//Send all the outgoing commands
     }
     [PunRPC]
     public void GenerateCardsForOppnent(int i)//Function to generate the cards for the opponent
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
+        print("Generating cards for opponent");
         GameObject obj = InstantiateSpellCard(GameData.Get().GetPet(i), Vector3.one, OppoMainDeck.transform);//Instantiate the spell card
         obj.transform.localPosition = Vector3.zero;//Set the local position of the spell card to zero
         obj.GetComponent<SpellCardDisplay>().cardPosition = SpellCardPosition.petHomeOppoent;//Set the card position of the spell card
@@ -524,17 +430,21 @@ public class SpellManager : MonoBehaviourPunCallbacks
     #region Cast Spell
     public IEnumerator CastSpell(int i)//Function to cast the spell by index
     {
+        print("Casting spell_1");
         SpellCard card = spellCardsDeck[i];//Get the spell card
         StartCoroutine(PVPManager.Get().DistributeSpellAttack(card.Attack));//Distribute the spell attack
         PVPManager.Get().canContinue = false;//Set the can continue to false
         yield return new WaitUntil(() => PVPManager.Get().canContinue);//Wait until the PVP manager can continue
+        ClearList();
     }
 
     public IEnumerator CastSpell(SpellCard card)//Function to cast the spell by card
     {
+        print("Casting spell_2");
         StartCoroutine(PVPManager.Get().DistributeSpellAttack(card.Attack));//Distribute the spell attack
         PVPManager.Get().canContinue = false;//Set the can continue to false
         yield return new WaitUntil(() => PVPManager.Get().canContinue);//Wait until the PVP manager can continue
+        ClearList();
     }
 
     [PunRPC]
@@ -553,6 +463,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void CastSpellRPC(int i)//Function to cast the spell
     {
+        print("Casting spellRPC");
         SpellCard card = GameData.Get().GetPet(i);//Get the spell card
         GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p2Image.gameObject.transform.position, Quaternion.identity);//Instantiate the spell projectile
         Projectile proj = o.GetComponent<Projectile>();//Get the projectile component
@@ -562,6 +473,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.DealDamage = false;//Set the deal damage of the projectile
         proj.lifetime = 2f;//Set the lifetime of the projectile
         Destroy(opponentCards.Find((item) => item.index == i).gameObject);//Destroy the opponent cards
+        ClearList();
     }
 
     #endregion
@@ -569,14 +481,8 @@ public class SpellManager : MonoBehaviourPunCallbacks
     #region Move Opponent Card To Battle Area
     public void MoveOpponentCardToBattleArea(int cardId, int battleId)//Function to move the opponent card to the battle area
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        print("Moving opponent card to battle area");
+        ClearList();
         photonView.RPC("ChangeOpponentCardPostionToCenter_RPC", RpcTarget.Others, cardId, battleId);//Change the opponent card position to the center
         PhotonNetwork.SendAllOutgoingCommands();//Send all the outgoing commands
     }
@@ -584,27 +490,15 @@ public class SpellManager : MonoBehaviourPunCallbacks
     [Photon.Pun.PunRPC]
     public void ChangeOpponentCardPostionToCenter_RPC(int cardId, int battleId)//Function to change the opponent card position to the center
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        print("Changing opponent card position to centerRPC");
+        ClearList();
         SpellManager.instance.opponentCards.Find(x => x.card.cardId == cardId).ChangeOpponentCardPostionToCenter(battleId);//Change the opponent card position to the center
     }
     [PunRPC]
     public void SetDeckIm(bool b)//Set the deck image
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
+        ClearList();
+        print("Setting deck image");
         OppoMainDeck.SetActive(b);//Set the main deck of the opponent to b
     }
     #endregion
@@ -618,14 +512,6 @@ public class SpellManager : MonoBehaviourPunCallbacks
     [Photon.Pun.PunRPC]
     public void MouseEnter_RPC(int cardId, bool isEnter)//Function to mouse enter
     {
-        if (opponentCards?.Any() ?? false)
-        {
-            opponentCards.RemoveAll(item => item == null);
-        }
-        if (opponentBattleCards?.Any() ?? false)
-        {
-            opponentBattleCards.RemoveAll(item => item == null);
-        }
         if (isEnter)
         { SpellManager.instance.opponentCards.Find(x => x.card.cardId == cardId).ShowCaseCard(); }//Show the case card
         else
@@ -634,4 +520,41 @@ public class SpellManager : MonoBehaviourPunCallbacks
         }
     }
     #endregion
+    public void ClearList()//Function to clear the list
+    {
+        if (opponentCards?.Any() ?? false)
+        {
+            int index = opponentCards.FindIndex(item => item == null);
+            print("Index of null element of the list opponentCards: " + index);
+            opponentCards.RemoveAll(item => item == null);
+        }
+
+        if (opponentBattleCards?.Any() ?? false)
+        {
+            int index = opponentBattleCards.FindIndex(item => item == null);
+            print("Index of null element of the list opponentBattleCards: " + index);
+            opponentBattleCards.RemoveAll(item => item == null);
+        }
+
+        if (playerCards?.Any() ?? false)
+        {
+            int index = playerCards.FindIndex(item => item == null);
+            print("Index of null element of the list playerCards: " + index);
+            playerCards.RemoveAll(item => item == null);
+        }
+
+        if (playerBattleCards?.Any() ?? false)
+        {
+            int index = playerBattleCards.FindIndex(item => item == null);
+            print("Index of null element of the list playerBattleCards: " + index);
+            playerBattleCards.RemoveAll(item => item == null);
+        }
+
+        if (spellCardsDeck?.Any() ?? false)
+        {
+            int index = spellCardsDeck.FindIndex(item => item == null);
+            print("Index of null element of the list spellCardsDeck: " + index);
+            spellCardsDeck.RemoveAll(item => item == null);
+        }
+    }
 }

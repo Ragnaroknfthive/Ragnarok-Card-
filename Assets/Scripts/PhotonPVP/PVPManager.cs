@@ -207,6 +207,7 @@ public class PVPManager : MonoBehaviour
     public TextMeshProUGUI P1LastAction, P2LastAction; //Player and Oppoent's last attack location
     public GameObject P1StaminPopup;                   //Stamina warning popup to inform player that stamina is low so he can use higher values for attack
 
+    private SpellManager spellManager;                 //Spell manager reference
     /// <summary>
     /// Set instance in awake method
     /// </summary>
@@ -218,6 +219,7 @@ public class PVPManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        spellManager = GameObject.Find("SpellManager").GetComponent<SpellManager>();
         photonView = GetComponent<PhotonView>();
         int a = 2;
         a *= 2;
@@ -1035,12 +1037,12 @@ public class PVPManager : MonoBehaviour
     /// <summary>
     /// Cast spell
     /// </summary>
-    public void LaunchSpecialAttack()
+    /*public void LaunchSpecialAttack()
     {
         StartCoroutine(SpellManager.instance.CastSpell(p1Char.SpecialAttack));
         SpecialAttackButton.SetActive(false);
         DeductRage(p1Char.SpecialAttackCost);
-    }
+    }*/
     /// <summary>
     /// Poker- Deduct rage value and call RPC
     /// </summary>
@@ -2215,8 +2217,9 @@ public class PVPManager : MonoBehaviour
         //Removed Old Board Cards
         foreach (Card item in DemoManager.instance.board_cards)
         {
-            //Debug.LogError("BOARD CARDS REMOVED");
+            print("PVPM_BOARD CARDS REMOVED");
             Destroy(item.gameObject);
+            spellManager.ClearList();
         }
         //
         DemoManager.instance.board_cards.Clear();
@@ -2225,8 +2228,9 @@ public class PVPManager : MonoBehaviour
         {
             if (child.gameObject.GetComponent<Card>())
             {
-                //Debug.LogError("PLACE HOLDER HAND CARD REMOVED");
+                print("PVPM_PLACE HOLDER HAND CARD REMOVED");
                 Destroy(child.gameObject);
+                spellManager.ClearList();
             }
         }
 
@@ -2255,7 +2259,9 @@ public class PVPManager : MonoBehaviour
             {
                 foreach (Transform itemC in item.transform)
                 {
+                    //print("PVPM_PLAYER CARDS REMOVED" + itemC.gameObject.name);
                     Destroy(itemC.gameObject);
+                    spellManager.ClearList();
                 }
             }
         }
@@ -2271,7 +2277,9 @@ public class PVPManager : MonoBehaviour
             {
                 foreach (Transform itemC in item.transform)
                 {
+                    //print("PVPM_OPPONENT CARDS REMOVED" + itemC.gameObject.name);
                     Destroy(itemC.gameObject);
+                    spellManager.ClearList();
                 }
             }
         }
@@ -2471,6 +2479,7 @@ public class PVPManager : MonoBehaviour
     /// <param name="c">deduction amount</param>
     public void UpdateRemainingHandHealth(int c)
     {
+        //Destroy
         P1RemainingHandHealth -= c;
         if (P1RemainingHandHealth < 0) P1RemainingHandHealth = 0;
         P1HealthBar.value = P1RemainingHandHealth;
@@ -2504,7 +2513,21 @@ public class PVPManager : MonoBehaviour
     {
         GameObject o = Instantiate(Proj, p2Image.transform.position, Quaternion.identity);
         Projectile proj = o.GetComponent<Projectile>();
-        proj.target = isplayer ? p1Image.gameObject : SpellManager.instance.playerBattleCards.Find(x => x.id == targetId).gameObject;
+        int c = 0;
+        foreach (var item in SpellManager.instance.playerBattleCards)
+        {
+            Debug.Log(c + "_Foreach_CARD ID: " + item.card.cardId);
+            c++;
+        }
+        if (isplayer)
+        {
+            proj.target = p1Image.gameObject;
+        }
+        else
+        {
+            proj.target = SpellManager.instance.playerBattleCards.Last().gameObject;
+        }
+
         proj.damage = dmg;
         proj.istargetPlayer = isplayer;
         proj.DealDamage = dealdmg;
@@ -2523,17 +2546,19 @@ public class PVPManager : MonoBehaviour
         Debug.Log(temp + " total attack");
         foreach (var item in SpellManager.instance.opponentBattleCards)
         {
+            Debug.Log("DistributeLog_" + c + "_Foreach_CARD ID: " + item.card.cardId);
             yield return new WaitWhile(() => SpellManager.IsPetAttacking);
             if (temp > item.Hp)
             {
                 temp -= item.Hp;
                 GameObject o = Instantiate(Proj, p1Image.transform.position, Quaternion.identity);
                 Projectile proj = o.GetComponent<Projectile>();
-                proj.target = item.gameObject;
+                proj.target = SpellManager.instance.opponentBattleCards.Last().gameObject;
                 proj.damage = item.Hp;
                 proj.istargetPlayer = false;
                 proj.DealDamage = true;
                 proj.lifetime = 2f;
+
                 photonView.RPC("SimpleAttackRPC", RpcTarget.Others, item.card.cardId, item.Hp, false, true);
                 PhotonNetwork.SendAllOutgoingCommands();
                 yield return new WaitWhile(() => SpellManager.IsPetAttacking);
@@ -2543,7 +2568,7 @@ public class PVPManager : MonoBehaviour
 
                 GameObject o = Instantiate(Proj, p1Image.transform.position, Quaternion.identity);
                 Projectile proj = o.GetComponent<Projectile>();
-                proj.target = item.gameObject;
+                proj.target = SpellManager.instance.opponentBattleCards.Last().gameObject;
                 proj.damage = temp;
                 proj.istargetPlayer = false;
                 proj.DealDamage = true;
@@ -2553,10 +2578,7 @@ public class PVPManager : MonoBehaviour
                 temp = 0;
                 yield return new WaitWhile(() => SpellManager.IsPetAttacking);
             }
-
             if (temp == 0) break;
-
-
         }
 
         if (temp > 0)
@@ -3955,7 +3977,7 @@ public class PVPManager : MonoBehaviour
         P2StaVal = Game.Get().OppoStamina;
 
 
-        Debug.LogError(P1StaVal + " ______________________________");
+        Debug.Log(P1StaVal + " ______________________________");
         //Debug.LogError("Set hp : 1 - " + P1HealthBar.value + " , 2 - " + P2HealthBar.value);
 
 
@@ -4075,6 +4097,7 @@ public class PVPManager : MonoBehaviour
             SpellManager.instance.DrawCard();
         }
     }
+    //destroy
     /// <summary>
     /// Show weakeness  object
     /// </summary>

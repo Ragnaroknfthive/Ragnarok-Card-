@@ -61,35 +61,19 @@ public class DemoManager : MonoBehaviour
         {
             player_cards[i] = new List<Card>();
         }
-        //SecondTimeShuffle();
-        // deck = listofCards;
-        //foreach(Transform item in PVPManager.manager.BoardCards.transform)
-        //{
-        //    Debug.LogError("***CHILD" + item.name);
-        //    Destroy(item.gameObject);
-        //}
         foreach (Transform item in placeholderHand.transform)
         {
             if (item.gameObject.GetComponent<Card>())
             {
-
+                //print("PVPM_Destroying " + item.gameObject.name);
                 Destroy(item.gameObject);
                 //Debug.LogError("***CHILD" + item.name);
             }
         }
         board_cards.Clear();
         PVPManager.manager.BoardCards = placeholderHand;
-        //  Destroy(PVPManager.manager.BoardCards.gameObject);
-        // Destroy(placeholderHand.gameObject);
-
-        //  GameObject obj = Instantiate(Resources.Load("BoardCardParent") as GameObject,PVPManager.manager.BoardCardParent.transform);
-        //  placeholderHand = obj;
-        //   PVPManager.manager.BoardCards = placeholderHand;
         GenerateDeck();
         PhotonNetwork.SendAllOutgoingCommands();
-        //Debug.LogError("SecondTimeSuffleCall"); 
-        //Invoke("SecondTimeShuffle",1f);
-
     }
     public void SecondTimeShuffleCall()
     {
@@ -151,15 +135,16 @@ public class DemoManager : MonoBehaviour
     {
         if (FindObjectOfType<DackPrefab>())
         {
+            //print("GSIST_Destroying DeckPrefab");
             Destroy(FindObjectOfType<DackPrefab>().gameObject);
         }
         GameObject obj = Instantiate(Resources.Load("DeckPrefab") as GameObject, this.gameObject.transform.parent);
         obj.GetComponent<DackPrefab>().DeckCards.Shuffle();
         PVPManager.manager.deckFullList.Shuffle();
-        Debug.Log("FIST ELEM " + listofCards[0].name);
+        //Debug.Log("FIST ELEM " + listofCards[0].name);
         //listofCards = PVPManager.manager.deckFullList.ToList();
         listofCards = obj.GetComponent<DackPrefab>().DeckCards;
-        Debug.Log("FIST ELEM AFTER Shuffle " + listofCards[0].name);
+        //Debug.Log("FIST ELEM AFTER Shuffle " + listofCards[0].name);
         //Debug.LogError("LIST SHUFFLED");
         for (int i = 0; i < listofCards.Count; i++)
         {
@@ -265,7 +250,7 @@ public class DemoManager : MonoBehaviour
         if (PhotonNetwork.IsMasterClient && !isGameOver)
         {
             //Debug.LogError("***Three Cards Generated from here");
-            Debug.Log("CARD GENERATION CALL 1");
+            //Debug.Log("CARD GENERATION CALL 1");
             DemoManager.instance.Generate3CardsStack();
         }
     }
@@ -273,7 +258,7 @@ public class DemoManager : MonoBehaviour
     [PunRPC]
     public void StartWithDealy_RPC()
     {
-        Debug.Log("RPC CALLED ");
+        //Debug.Log("RPC CALLED ");
         Invoke("StartWithDelay", 1);
     }
 

@@ -2269,7 +2269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d5272036d24b2438426ba3c93f6cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scriptName: SpellCardDisplay
 --- !u!4 &76612735
 Transform:
   m_ObjectHideFlags: 0
@@ -19562,6 +19561,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e75ea60a24b4734a8693ed45df6b9be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  background: {fileID: 3452979523652386254}
+  chessBg: {fileID: 570575021}
+  chesspiece: {fileID: 744378045863390000, guid: ed9fddb9f6d79d344ae4170a1ed4851f,
+    type: 3}
+  movePlate: {fileID: 0}
+  Board: {fileID: 1606879900}
+  RotatedBoardSpriteObject: {fileID: 1756163894}
   boardPositions:
   - xBoard: 0
     yboard: 0
@@ -19755,53 +19761,6 @@ MonoBehaviour:
   - xBoard: 7
     yboard: 7
     boardPoint: {fileID: 1473526236}
-  background: {fileID: 3452979523652386254}
-  chessBg: {fileID: 570575021}
-  PlayerStrengths: 
-  PokerHandResults:
-  - 
-  - 
-  MyHighCardValue: -1
-  OpponentHighCardValue: -1
-  MySecondHighCardValue: -1
-  OpponentSecondHighCardValue: -1
-  MyHighCardList: ffffffffffffffffffffffffffffffffffffffff
-  OpponentHighCardList: ffffffffffffffffffffffffffffffffffffffff
-  DestroyedObjects: []
-  DestroyedObjectsOppo: []
-  chesspiece: {fileID: 744378045863390000, guid: ed9fddb9f6d79d344ae4170a1ed4851f,
-    type: 3}
-  movePlate: {fileID: 0}
-  Board: {fileID: 1606879900}
-  RotatedBoardSpriteObject: {fileID: 1756163894}
-  ColorPlate: {fileID: 8918081180470814590, guid: 34ae373289c9bb544b7d3a706130acf6,
-    type: 3}
-  ColorPlateIndicator: {fileID: 8918081180470814590, guid: d600ca4ab6276c3488b6d12d069f86b3,
-    type: 3}
-  ChessCanvas: {fileID: 365319126}
-  PVPCanvas: {fileID: 386037124}
-  board: {fileID: 1606879900}
-  RematchPopUp: {fileID: 257013276}
-  RematchYesNo: {fileID: 220052205}
-  PlayerTurnScreen: {fileID: 938314625}
-  NewBoard: {fileID: 0}
-  loadingScreen: {fileID: 117866777}
-  DeadPieceImage: {fileID: 5918770303389746322, guid: af2e3314929661847ac0a09046a21ae1,
-    type: 3}
-  reviveLisItem: {fileID: 5918770303389746322, guid: 27b373c0257baa04c9132aad07b251de,
-    type: 3}
-  PieceSelectionPanel: {fileID: 1744528623}
-  playerWhite:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   playerBlack:
   - {fileID: 0}
   - {fileID: 0}
@@ -19813,34 +19772,75 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  revivePr: {fileID: 1247650374}
-  myPieces: {fileID: 82705931}
-  OppoPieces: {fileID: 970776231}
-  turn: 0
-  BetAmount: 0
-  localBetAmount: 0
-  MyStamina: 10
-  OppoStamina: 10
-  HealthDemage: 0
-  RestartButtonClicked: 0
+  playerWhite:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   isLocalPlayerTurn: 0
-  IsDefender: 0
-  IsGameComplete: 0
-  LastAttackerColor: 
-  RematchTxt: {fileID: 1781556883}
-  PlayerTurnScreenText: {fileID: 1442693500}
+  ChessCanvas: {fileID: 365319126}
+  PVPCanvas: {fileID: 386037124}
   defChar: {fileID: 0}
+  ColorPlate: {fileID: 8918081180470814590, guid: 34ae373289c9bb544b7d3a706130acf6,
+    type: 3}
+  ColorPlateIndicator: {fileID: 8918081180470814590, guid: d600ca4ab6276c3488b6d12d069f86b3,
+    type: 3}
   BoardBlack: {r: 0.22352943, g: 0.22352943, b: 0.22352943, a: 1}
   BoardWhite: {r: 1, g: 1, b: 1, a: 1}
+  board: {fileID: 1606879900}
+  RematchPopUp: {fileID: 257013276}
+  RematchYesNo: {fileID: 220052205}
+  RematchTxt: {fileID: 1781556883}
+  RestartButtonClicked: 0
+  PlayerTurnScreen: {fileID: 938314625}
+  PlayerTurnScreenText: {fileID: 1442693500}
+  LastAttackerColor: 
+  IsDefender: 0
+  turn: 0
+  HealthDemage: 0
+  BetAmount: 0
+  localBetAmount: 0
   lastAction: 0
+  _playerTurnList: []
+  PlayerStrengths: 
+  PokerHandResults:
+  - 
+  - 
+  MyHighCardValue: -1
+  OpponentHighCardValue: -1
+  MySecondHighCardValue: -1
+  OpponentSecondHighCardValue: -1
+  MyHighCardList: ffffffffffffffffffffffffffffffffffffffff
+  OpponentHighCardList: ffffffffffffffffffffffffffffffffffffffff
+  loadingScreen: {fileID: 117866777}
+  DestroyedObjects: []
+  DestroyedObjectsOppo: []
   MyType: 0
   OppoType: 0
   WinnerTxT: {fileID: 739317124}
   RestartTxT: {fileID: 1575290348}
+  NewBoard: {fileID: 0}
+  MyStamina: 10
+  OppoStamina: 10
+  myPieces: {fileID: 82705931}
+  OppoPieces: {fileID: 970776231}
+  DeadPieceImage: {fileID: 5918770303389746322, guid: af2e3314929661847ac0a09046a21ae1,
+    type: 3}
   playerName: {fileID: 990554136}
   opponentName: {fileID: 1207629844}
   playerProfileImage: {fileID: 1438539352}
   opponentProfileImage: {fileID: 1274060211}
+  IsGameComplete: 0
+  revivePr: {fileID: 1247650374}
+  reviveLisItem: {fileID: 5918770303389746322, guid: 27b373c0257baa04c9132aad07b251de,
+    type: 3}
+  PieceSelectionPanel: {fileID: 1744528623}
 --- !u!4 &590068732
 Transform:
   m_ObjectHideFlags: 0
@@ -33115,9 +33115,7 @@ MonoBehaviour:
   playerBattleCards: []
   showCaseParent: {fileID: 922681839}
   showCaseRef: {fileID: 50343345}
-  offset_card: 50
   photonView: {fileID: 0}
-  isShowCasing: 0
   PetAttk: {fileID: 0}
   Mana: 0
   MyMainDeck: {fileID: 144861245}
@@ -33127,6 +33125,8 @@ MonoBehaviour:
     type: 3}
   DestroyCardEffOppo: {fileID: 7862228594200613705, guid: ea83ee77df6d0ab428dea6f5e900faff,
     type: 3}
+  offset_card: 50
+  isShowCasing: 0
 --- !u!4 &1017387614
 Transform:
   m_ObjectHideFlags: 0

@@ -19,13 +19,13 @@ public class FindScript : MonoBehaviour
 
         if (scripts.Count == 0)
         {
-            Debug.Log($"No se encontró ningún objeto con el script '{scriptName}' en la escena.");
+            //Debug.Log($"No se encontró ningún objeto con el script '{scriptName}' en la escena.");
         }
         else
         {
             foreach (var script in scripts)
             {
-                Debug.Log("El script está asignado a: " + script.gameObject.name);
+                //Debug.Log("El script está asignado a: " + script.gameObject.name);
             }
         }
     }

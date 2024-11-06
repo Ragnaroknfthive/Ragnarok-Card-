@@ -35,7 +35,7 @@ public class PokerButtonManager : MonoBehaviour
         //Do not allow click if result is declared
         if (PVPManager.manager.isResultScreenOn) return;
 
-        Debug.Log("fold brace button click lose this player health and change turn");
+        //Debug.Log("fold brace button click lose this player health and change turn");
         DemoManager.instance._pokerButtons.SetActive(false);
         PVPManager.Get().AttackChoices.SetActive(false);
         // PVPManager.Get().waitPanel.SetActive(true);
@@ -279,7 +279,7 @@ public class PokerButtonManager : MonoBehaviour
             //     finalLoseHealth = 0;
             //     //  finalLoseHealth = _localBetAmount+2;
             // }
-            Debug.Log("LOCAL PLAYER BAT AMOUNT " + _localBetAmount + " Final Lose " + finalLoseHealth);
+            //Debug.Log("LOCAL PLAYER BAT AMOUNT " + _localBetAmount + " Final Lose " + finalLoseHealth);
             PVPManager.manager.P1HealthBar.value -= finalLoseHealth;
             if (PVPManager.manager.P1HealthBar.value < 0) PVPManager.manager.P1HealthBar.value = 0;
 
@@ -307,7 +307,7 @@ public class PokerButtonManager : MonoBehaviour
             //     finalLose = 0;
             //     // finalLose = _localBetAmount + 2;
             // }
-            Debug.Log("NON LOCAL PLAYER BAT AMOUNT " + _localBetAmount + " Final Lose " + finalLose);
+            // Debug.Log("NON LOCAL PLAYER BAT AMOUNT " + _localBetAmount + " Final Lose " + finalLose);
             //if(loseHP <= maxlose)
             //{
             //    finalLose = loseHP;

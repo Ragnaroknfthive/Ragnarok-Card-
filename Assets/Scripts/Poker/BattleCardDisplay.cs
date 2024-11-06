@@ -16,6 +16,7 @@ using ExitGames.Client.Photon;
 public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     #region Attributes
+    private SpellManager spellManager;
     public SpellCard card;
     [SerializeField] private TMPro.TextMeshProUGUI staminaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
     public int Hp;
@@ -36,6 +37,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     }
     void Start()
     {
+        spellManager = GameObject.Find("SpellManager").GetComponent<SpellManager>();
         UpdateCardData();//Update the card data
     }
     #endregion
@@ -92,11 +94,15 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     {
         IsAttackedThisRound = false;//Set the attack status to false
     }
+    //destroy
     public void Attack(int i, bool isplayer = false)
     {
         if (isplayer && PVPManager.Get().P2RemainingHandHealth <= 0) return;//Check if the player 2 remaining hand health is less than or equal to 0
         IsAttackedThisRound = true;//Set the attack status to true
         SpellManager.IsPetAttacking = true;//Set the pet attacking status to true
+
+
+
         GameObject o = Instantiate(card.SpellProjectilePref, transform.position, Quaternion.identity);//Instantiate the spell projectile prefab
         Projectile proj = o.GetComponent<Projectile>();//Get the Projectile component
         proj.target = isplayer ? (PVPManager.Get().p2Image.gameObject) : SpellManager.instance.opponentBattleCards.Find(x => x.card.cardId == i).gameObject;//Set the target
@@ -104,6 +110,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         proj.istargetPlayer = isplayer;//Set the target player
         proj.DealDamage = true;//Set the deal damage status to true
         proj.lifetime = 2f;//Set the lifetime
+
+
+
         SpellManager.instance.ExecuteAttack(i, isplayer, card.cardId, id);//Execute the
         PVPManager.manager.isCheckWithoutReset = true;//Set the check without reset status to true
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Start the check win coroutine
@@ -116,6 +125,9 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
         proj.target = isplayer ? (PVPManager.Get().p1Image.gameObject) : SpellManager.instance.opponentBattleCards[i].gameObject;//Set the target
         proj.damage = card.Attack;//Set the damage
         proj.lifetime = 2f;//Set the lifetime
+
+
+
         SpellManager.IsPetAttacking = false;//Set the pet attacking status to false
         PVPManager.manager.isCheckWithoutReset = true;//Set the check without reset status to true
         StartCoroutine(PVPManager.manager.CheckWinNewWithoutReset(0.1f));//Start the check win coroutine
@@ -151,16 +163,18 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     #region Destroy Methods
     void OnDestroy()//When the object is destroyed
     {
-        Debug.Log("BCD_DB13");
+        //Debug.Log("BCD_DB13");
         SpellManager.instance.playerBattleCards.Remove(this);//Remove the card from the player battle cards list
         SpellManager.instance.DestroyOb(card.cardId);//Destroy the object
+        spellManager.ClearList();
     }
     public void Kill()//Kill the card
     {
-        Debug.Log("BCD_DB14");
+        //Debug.Log("BCD_DB14");
         IsDead = true;//Set the dead status to true
         PVPManager.manager.myObj.cards.Remove(card);//Remove the card from the player cards list
         Destroy(gameObject, 0.7f);//Destroy the object
+        spellManager.ClearList();
     }
 
     #endregion
@@ -168,26 +182,26 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     #region Change Parent
     public void ChangeParent()//Method to change the parent
     {
-        Debug.Log("BCD_DB16");
+        //Debug.Log("BCD_DB16");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardBattleObj);//Set the parent to the spell card battle object
     }
     public void ChangeParentShowCase()
     {
-        Debug.Log("BCD_DB17");
+        //Debug.Log("BCD_DB17");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.showCaseParent);//Set the parent to the show case parent
     }
     public void ChangeParentHome()//Method to change the parent
     {
-        Debug.Log("BCD_DB18");
+        //Debug.Log("BCD_DB18");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(SpellManager.instance.spellCardsPlayer);//Set the parent to the spell cards player
         if (SpellManager.instance.isShowCasing) SpellManager.instance.isShowCasing = false;//Check if the show casing status is true
     }
     public void ChangeParent(Transform parent_)//Method to change the parent
     {
-        Debug.Log("BCD_DB19");
+        //Debug.Log("BCD_DB19");
         if (Game.Get()._currnetTurnPlayer != Photon.Pun.PhotonNetwork.LocalPlayer) return;//Check if the current turn player is not the local player
         this.gameObject.transform.SetParent(parent_);//Set the parent to the parent
     }
@@ -196,7 +210,7 @@ public class BattleCardDisplay : MonoBehaviour, IDragHandler, IBeginDragHandler,
     #region Drag
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("BCD_DB20");
+        //Debug.Log("BCD_DB20");
         this.transform.GetComponent<RectTransform>().position = new Vector3(eventData.position.x, eventData.position.y);//Set the position
     }
     public void OnBeginDrag(PointerEventData eventData) { }
