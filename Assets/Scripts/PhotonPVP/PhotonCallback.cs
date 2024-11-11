@@ -68,7 +68,7 @@ public class PhotonCallback : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Connected to Master " + PhotonNetwork.CloudRegion);
+        //Debug.Log("Connected to Master " + PhotonNetwork.CloudRegion);
         PhotonNetwork.JoinLobby();
         PhotonNetwork.AutomaticallySyncScene = true;
         // Debug.Log(RegionController.GetIndexOfRegion(PhotonNetwork.CloudRegion));
@@ -123,7 +123,7 @@ public class PhotonCallback : MonoBehaviourPunCallbacks
 
         }
         //PhotonNetwork.LocalPlayer.SetCustomProperties=playerProperties;
-        Debug.Log("Joined Lobby" + DisplayAccount.HiveProfileName);
+        //Debug.Log("Joined Lobby" + DisplayAccount.HiveProfileName);
     }
 
     public void QuickMatch()

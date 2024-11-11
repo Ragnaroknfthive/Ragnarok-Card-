@@ -56,7 +56,7 @@ public class VersionIncrementor
             
 
             PlayerSettings.bundleVersion = versionText;
-            Debug.Log("Version Incremented " + PlayerSettings.bundleVersion);
+           // Debug.Log("Version Incremented " + PlayerSettings.bundleVersion);
 
         }
     }

@@ -112,10 +112,10 @@ public class DemoManager : MonoBehaviour
     public void GetSuffledIndex()
     {
         // PVPManager.manager.deckFullList.Shuffle();
-        Debug.Log(" ELEM " + listofCards[0].name);
+        //Debug.Log(" ELEM " + listofCards[0].name);
         listofCards.Shuffle();
 
-        Debug.Log(" ELEM AFTER Shuffle " + listofCards[0].name);
+        //Debug.Log(" ELEM AFTER Shuffle " + listofCards[0].name);
         //Debug.LogError("LIST SHUFFLED");
         for (int i = 0; i < listofCards.Count; i++)
         {

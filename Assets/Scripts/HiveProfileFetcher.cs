@@ -75,7 +75,7 @@ public class HiveProfileFetcher : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject jsonResponse = JObject.Parse(request.downloadHandler.text);
-                Debug.Log("API Response: " + jsonResponse.ToString());
+                //Debug.Log("API Response: " + jsonResponse.ToString());
                 JArray accounts = (JArray)jsonResponse["result"];
 
                 if (accounts.Count > 0)
