@@ -142,7 +142,7 @@ public class MenuUI : MonoBehaviour
         PhotonNetwork.Disconnect(); // Disconnect from the current server
         yield return new WaitUntil(() => PhotonNetwork.NetworkClientState == ClientState.Disconnected); // Wait until disconnected
 
-        Debug.Log("Connecting to region: " + region);
+        //Debug.Log("Connecting to region: " + region);
         PhotonNetwork.ConnectToRegion(region); // Connect to the new region
         PlayerPrefs.SetInt("pun_region", dropdown.value); // Save selected region to PlayerPrefs
     }

@@ -103,7 +103,11 @@ MonoBehaviour:
   selectedMove: {fileID: 21300000, guid: 8abe8fa448ad02d4fb9abeff14666e4d, type: 3}
   attackSprite: {fileID: 21300000, guid: 5446c9c00b89b3041a658c79f993e81d, type: 3}
   spriteRenderer: {fileID: 5601901689888383344}
+  NormalSprite: {fileID: 0}
+  matrixX: 0
+  matrixY: 0
   controller: {fileID: 0}
+  reference: {fileID: 0}
   attack: 0
 --- !u!61 &848929366399133312
 BoxCollider2D:

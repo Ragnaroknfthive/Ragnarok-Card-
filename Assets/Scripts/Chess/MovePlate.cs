@@ -11,16 +11,16 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     [SerializeField] Sprite selectedMove;
     [SerializeField] Sprite attackSprite;
     [SerializeField] SpriteRenderer spriteRenderer;
-    Sprite NormalSprite;
+    public Sprite NormalSprite;
     [Header("Integers")]
-    int matrixX;
-    int matrixY;
+    public int matrixX;
+    public int matrixY;
     [Header("Photon")]
     private PhotonView photonView;
     [Header("GameObjects")]
     public GameObject controller;
     [Header("Chessman")]
-    Chessman reference = null;
+    public Chessman reference = null;
     [Header("Booleans")]
     public bool attack = false;
     #endregion
@@ -48,7 +48,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     public PieceType GetPieceTypeOnThisPlate()
     {
         PieceType type = PieceType.Pawn;
-        GameObject pieceOnthisPlate = Game.Get().GetPosition(matrixX, matrixY);
+        GameObject pieceOnthisPlate = Game.Get().GetPosition(matrixY, matrixX);
         if (pieceOnthisPlate) type = pieceOnthisPlate.GetComponent<Chessman>().type;
         return type;
     }
@@ -87,10 +87,10 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     #endregion
 
     #region Coords Methods
-    public void SetCoords(int x, int y)
+    public void SetCoords(int y, int x)//
     {
-        matrixX = x;
         matrixY = y;
+        matrixX = x;
     }
     #endregion
 
@@ -132,10 +132,10 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
                 PhotonNetwork.SendAllOutgoingCommands();
                 Game.Get().SetPVPMode(true);
                 bool localplayerTurn = Game.Get().isLocalPlayerTurn;
-                if (reference.playerType == PlayerType.White) PVPManager.Get().SetData(new Vector2(reference.GetXboard(), reference.GetYboard()), new Vector2(matrixX, matrixY), localplayerTurn, false);
+                if (reference.playerType == PlayerType.White) PVPManager.Get().SetData(new Vector2(reference.GetYboard(), reference.GetXboard()), new Vector2(matrixY, matrixX), localplayerTurn, false);
                 else
                 {
-                    PVPManager.Get().SetData(new Vector2(matrixX, matrixY), new Vector2(reference.GetXboard(), reference.GetYboard()), localplayerTurn, true);
+                    PVPManager.Get().SetData(new Vector2(matrixY, matrixX), new Vector2(reference.GetYboard(), reference.GetXboard()), localplayerTurn, true);
                     Debug.Log("else --------- else");
                 }
                 reference.DestroyMovePlates();

@@ -223,8 +223,8 @@ public class PVPManager : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         int a = 2;
         a *= 2;
-        Debug.Log("a is " + a);
-        Debug.Log("<color=yellow> pvp manager start  </color>");
+        //Debug.Log("a is " + a);
+        //Debug.Log("<color=yellow> pvp manager start  </color>");
     }
     /// <summary>
     /// Not in use but kept to avoid any issues
@@ -482,7 +482,7 @@ public class PVPManager : MonoBehaviour
 
             PVPManager.manager.tempPieceOpp = type;
             oppPieceType = oppPiece;
-            photonView.RPC("SetAttackedPiece", RpcTarget.Others, oppPiece.GetXboard(), oppPiece.GetYboard());
+            photonView.RPC("SetAttackedPiece", RpcTarget.Others, oppPiece.GetYboard(), oppPiece.GetXboard());
             PhotonNetwork.SendAllOutgoingCommands();
             //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
         }
@@ -493,9 +493,9 @@ public class PVPManager : MonoBehaviour
     /// <param name="x"></param>
     /// <param name="y"></param>
     [PunRPC]
-    public void SetAttackedPiece(int x, int y)
+    public void SetAttackedPiece(int y, int x)
     {
-        MyAttackedPiece = Game.Get().GetPosition(x, y).GetComponent<Chessman>();
+        MyAttackedPiece = Game.Get().GetPosition(y, x).GetComponent<Chessman>();
     }
     /// <summary>
     /// RPC- Set player and oppoent piece type on player's devices
@@ -3894,8 +3894,8 @@ public class PVPManager : MonoBehaviour
         p1Pos = posP1;
         p2Pos = posP2;
 
-        p1Obj = Game.Get().GetPosition((int)posP1.x, (int)posP1.y).GetComponent<Chessman>();
-        p2Obj = Game.Get().GetPosition((int)posP2.x, (int)posP2.y).GetComponent<Chessman>();
+        p1Obj = Game.Get().GetPosition((int)posP1.y, (int)posP1.x).GetComponent<Chessman>();
+        p2Obj = Game.Get().GetPosition((int)posP2.y, (int)posP2.x).GetComponent<Chessman>();
 
         if (isReverse && Game.Get().IsDefender)
         {

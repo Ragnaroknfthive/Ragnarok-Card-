@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/indexLayout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/3_Art/Sprites/NewDesign_ChessBoard/chess-board (2).png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/3_Art/Sprites/NewDesign_ChessBoard/chess-board (2).png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/PokerGame/Editor/VersionIncrementor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/PokerGame/Editor/VersionIncrementor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/PokerGame/Scripts/DemoManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/PokerGame/Scripts/DemoManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/Resources/ChessPiece.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/Resources/ChessPiece.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/Resources/ColorPlate.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/Resources/ColorPlate.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/Resources/ColorPlateIndicator.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/Resources/ColorPlateIndicator.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/5_Others/Resources/MovePlate.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/5_Others/Resources/MovePlate.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Photon/PhotonUnityNetworking/Code/PhotonNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Photon/PhotonUnityNetworking/Code/PhotonNetwork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Chess/Chessman.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Chess/Chessman.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Chess/MovePlate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Chess/MovePlate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/HiveProfileFetcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/HiveProfileFetcher.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MenuUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MenuUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PhotonPVP/PVPManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PhotonPVP/PVPManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PhotonPVP/PhotonCallback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PhotonPVP/PhotonCallback.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/b7/9c8c245f/Color.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/d4/dc2ede93/Object.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2oXgUW9FOFzD4MwXuBQt4tznJ21" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Cesar__RFD&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.build.unityPlugin&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
+    <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Build/Chess2D.exe" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Build" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2021.2.15f1\Editor\Unity.exe" />
+      <option name="PROGRAM_PARAMETERS" value="-projectPath &quot;C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-&quot; -debugCodeOptimization" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unit Tests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
+      <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\2021.2.15f1\Editor\Unity.exe" />
+      <option name="PROGRAM_PARAMETERS" value="-runTests -batchmode -projectPath &quot;C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-&quot; -testResults Logs/results.xml -logFile Logs/Editor.log -testPlatform EditMode -debugCodeOptimization" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="pid" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="" />
+      <created>1731021354024</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731021354024</updated>
+      <workItem from="1731021356608" duration="9290000" />
+      <workItem from="1731172410086" duration="18731000" />
+      <workItem from="1731263444875" duration="21682000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="UnityProjectDiscoverer">
+    <option name="hasUnityReference" value="true" />
+    <option name="unityProject" value="true" />
+    <option name="unityProjectFolder" value="true" />
+  </component>
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="GitHub.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>597</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22966" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22978" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>596</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22832" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22957" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>595</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22756" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22823" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>594</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22725" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22747" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>593</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22715" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22716" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
+          <line>598</line>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
+            <startOffsets>
+              <option value="22983" />
+            </startOffsets>
+            <endOffsets>
+              <option value="22984" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
