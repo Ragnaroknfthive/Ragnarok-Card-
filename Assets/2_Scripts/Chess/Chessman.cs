@@ -1,10 +1,16 @@
-using System.Collections;
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: Chessman.cs
+//FileType: C# Source file
+//Description : This script is used to handle "Chess Piece" in the chess mode
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine.UI;
 
+/// <summary>
+/// Chess piece type - King, Queen etc...
+/// </summary>
 public enum PieceType
 {
     Queen,
@@ -15,16 +21,26 @@ public enum PieceType
     Bishop,
     Pawn
 }
+/// <summary>
+/// Chess player type - Black / White
+/// </summary>
 public enum PlayerType
 {
     Black,
     White,
     None
 }
+
+/// <summary>
+/// Interface for healthbar update
+/// </summary>
 public interface IHealthBar
 {
     public void UpdateHealth(float _health);
 }
+/// <summary>
+/// Interface for saving  pvp mode - attack position (poker game attack position on body)
+/// </summary>
 public interface ISaveHighLowLeftRightMedle
 {
     public void SaveHighLowLeftRightMedle(float high, float low, float left, float right, float medle);
@@ -33,9 +49,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 {
     #region Attributes
     [Header("GameObjects")]
-    public GameObject controller;
-    public GameObject movePlate;
-    [SerializeField] private GameObject healthBar;
+    public GameObject controller;               //controller - "Game" script reference. "Game" script handles chess game.
+    public GameObject movePlate;                //Move plate - used to highlight available attack positions 
+    [SerializeField] private GameObject healthBar;      //Healthbar object displayed on this chess piece
 
     [Header("Booleans")]
     [SerializeField] private bool pawn;
@@ -44,11 +60,11 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
 
     [Header("References")]
     private PawnClass pawnClass;//PawnClass reference
-    private PhotonView photonView;
+    private PhotonView photonView;              //Used to handle multiplayer mode functionalities and sync this piece on network
 
     [Header("Integers")]
-    public int xBoard = -1;
-    public int yBoard = -1;
+    public int xBoard = -1;                     //X-Position coordinates on board for this piece
+    public int yBoard = -1;                     //Y-Position coordinates on board for this piece
     public int PieceIndex;
 
     [Header("Floats")]
@@ -56,30 +72,33 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
     [SerializeField] float scaleValue;
 
     [Header("Sprites")]
-    public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
-    public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
+    public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;   //chess  piece sprites (Black set)
+    public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;   //chess piece sprites (White set)
 
     [Header("Lists")]
-    public static List<Chessman> pieces = new List<Chessman>();
-    public List<SpellCard> cards;
+    public static List<Chessman> pieces = new List<Chessman>(); //Static list of current pieces
+    public List<SpellCard> cards;                       //List of spell cards that can be used in poker battle
 
     [Header("Strings")]
-    public string player;
+    public string player;                       //Text string of player type (black / white)
 
     [Header("Vector3")]
     private Vector3 localScale;
 
     [Header("Class References")]
-    public CharacterData character;
+    public CharacterData character;             //Character scriptable data for this piece
     public CharacterRuntimeData pData;
 
     [Header("Enums")]
-    public PieceType type;
-    public PlayerType playerType;
-    public PieceType myPiece, opponentpiece;
+    public PieceType type;                      //Type of this chess piece
+    public PlayerType playerType;               //Player type who owns this piece (black or white)
+    public PieceType myPiece, opponentpiece;            //Player and  Opponent piece types
     #endregion
 
     #region Unity Methods
+    /// <summary>
+    /// Sets photonview reference , spell card deck from data
+    /// </summary>
     private void Start()
     {
         //pawnClass = GetComponent<PawnClass>();
@@ -94,6 +113,9 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             cards.Add(GameData.Get().GetPet(System.Convert.ToInt32(item)));
         }
     }
+    /// <summary>
+    /// Updates piece's healt
+    /// </summary>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) Debug.Log(pawnClass.IsMoved());
@@ -987,6 +1009,10 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
     #endregion
 
     #region HealthMethod
+    /// <summary>
+    /// Updates healthbar sprite
+    /// </summary>
+    /// <param name="_health">health value</param>
     public void UpdateHealth(float _health)
     {
         healthBar.GetComponent<Image>().fillAmount = _health / character.health;

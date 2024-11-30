@@ -1,3 +1,8 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//FileName: VolumeSettings.cs
+//FileType: C# Source file
+//Description : This script is used to save and update mixer volume sliders
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -43,6 +48,9 @@ public class VolumeSettings : MonoBehaviour
     {
         Mixer.SetFloat(MIXER_AMBIENCE,Mathf.Log10(val) * 20);
     }
+    /// <summary>
+    /// Update mixer volume slider values with respect to saved data
+    /// </summary>
     public void UpdateSliderValues() 
     {
        
@@ -67,6 +75,9 @@ public class VolumeSettings : MonoBehaviour
     {
         SaveVolumeSettings();
     }
+    /// <summary>
+    /// Save volume settings
+    /// </summary>
     public void SaveVolumeSettings() 
     {
         PlayerPrefs.SetFloat(AudioManager.MusicKey,Music.value);
