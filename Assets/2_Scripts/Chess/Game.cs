@@ -164,9 +164,9 @@ public class Game : MonoBehaviour
                 plates[i, j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
                 SpriteRenderer sr = plates[i, j].GetComponent<SpriteRenderer>();
                 
-                platesIndicator[i, j] = Instantiate(ColorPlateIndicator, new Vector3(plateX, plateY, -0.1f), Quaternion.identity);
+                platesIndicator[i, j] = Instantiate(ColorPlateIndicator, new Vector3(plateX, plateY - .05f, -0.1f), Quaternion.identity);
                 platesIndicator[i, j].transform.SetParent(board.transform);
-                platesIndicator[i, j].transform.localScale = new Vector3(8.8f, 8.8f, 8.8f);
+                platesIndicator[i, j].transform.localScale = new Vector3(1f, 1f, 1f);
                 platesIndicator[i, j].GetComponent<SpriteRenderer>().color = (i + j) % 2 == 0 ? BoardBlack : BoardWhite;
                 SpriteRenderer srIndicator = platesIndicator[i, j].GetComponent<SpriteRenderer>();
                 
@@ -190,6 +190,8 @@ public class Game : MonoBehaviour
                     Vector3 pos = plates[i, j].transform.position;
                     pos.y = pos.x * (-1);
                     pos.x = pos.y * (-1);
+                    plates[i, j].transform.position = new Vector3(plates[i, j].transform.position.x, plates[i, j].transform.position.y + .05f, plates[i, j].transform.position.z);
+                    platesIndicator[i, j].transform.position = new Vector3(platesIndicator[i, j].transform.position.x, platesIndicator[i, j].transform.position.y + .05f, platesIndicator[i, j].transform.position.z);
                     LeanTween.rotate(plates[i, j], new Vector3(0, 0, -180), 0);
                     LeanTween.rotate(platesIndicator[i, j], new Vector3(0, 0, -180), 0);
                 }
