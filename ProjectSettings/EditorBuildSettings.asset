@@ -5,6 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/1_Scenes/Login/Login-Scene.unity
+    guid: 14a826462f6c55f45aff2627f6b6409b
+  - enabled: 0
+    path: Assets/1_Scenes/Login/LoadingScreen.unity
+    guid: bdb96219d667895469355e82c2a50498
+  - enabled: 0
+    path: Assets/1_Scenes/Login/HiveLogin.unity
+    guid: 863529c0a3549c8449837ebd6eb5680e
   - enabled: 1
     path: Assets/1_Scenes/NewMainMenu.unity
     guid: 8272e928991d07b4bad8e233bc8a089f

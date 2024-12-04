@@ -190,7 +190,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
     {
         if (!Game.Get().IsGameOver() && Game.Get().GetCurrentPlayer() == player && Game.Get().isLocalPlayerTurn)
         {
-            if (type == PieceType.King && Game.Get().checkForKing())
+            if (type == PieceType.King/* && !Game.Get().checkForKing()*/)
             {
                 photonView.RPC("DestroyMovePlatesRPC", RpcTarget.AllViaServer);
                 photonView.RPC("InitiateMovePlatesRPC", RpcTarget.AllViaServer, type);
@@ -386,7 +386,14 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         object[] data = new object[] { playerType, type, matrixY, matrixX, false, PieceIndex };
         Vector3 pos = Game.Get().boardPositions.Find(x => x.yboard == matrixY && x.xBoard == matrixX).boardPoint.position;
         pos.z = -3f;
-        GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.identity, 0, data);
+        if (playerType == PlayerType.Black)
+        {
+            GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.Euler(180f, 0f, 0f), 0, data);
+        }
+        else
+        {
+            GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.identity, 0, data);
+        }
     }
     public void MovePlateAttackSpawn(int matrixY, int matrixX)
     {
@@ -399,7 +406,14 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         Vector3 pos = Game.Get().boardPositions.Find(x => x.yboard == matrixY && x.xBoard == matrixX).boardPoint.position;
         pos.z = -3f;
         object[] data = new object[] { playerType, type, matrixY, matrixX, true, PieceIndex };
-        GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.identity, 0, data);
+        if (playerType == PlayerType.Black)
+        {
+            GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.Euler(180f, 0f, 0f), 0, data);
+        }
+        else
+        {
+            GameObject mp = PhotonNetwork.Instantiate("movePlate", pos, Quaternion.identity, 0, data);
+        }
     }
     #endregion
 
@@ -482,8 +496,8 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 foreach (var item in vecs)
                 {
 
-                    int x = xBoard + (int)item.x;
-                    int y = yBoard + (int)item.y;
+                    int x = xBoard + (int)item.y;
+                    int y = yBoard + (int)item.x;
                     GameObject[,] prev_present = sc.GetPresent();
 
                     while (sc.FuturePositionOnBoard(y, x) && sc.GetFuturePosition(y, x) == null)
@@ -749,7 +763,55 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
         switch (type)
         {
             case PieceType.Pawn:
-                /*for (int i = 1; i <= 2; i++)
+                if (playerType == PlayerType.Black)
+                {
+                    vecs = new List<Vector2>() 
+                    { 
+                        new Vector2(1, -1),  // Diagonal izquierda hacia arriba
+                        new Vector2(1, 1)    // Diagonal derecha hacia arriba
+                    };
+                }
+                else
+                {
+                    vecs = new List<Vector2>() 
+                    { 
+                        new Vector2(-1, -1), // Diagonal izquierda hacia abajo
+                        new Vector2(-1, 1)   // Diagonal derecha hacia abajo
+                    };
+                }
+
+                foreach (var item in vecs)
+                {
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+
+                    if (sc.PositionOnBoard(y, x)) // Verificar si la posición está dentro del tablero
+                    {
+                        GameObject cp = sc.GetPosition(y, x);
+                        if (cp?.GetComponent<Chessman>().playerType != playerType) // Asegurarse de que no es una pieza aliada
+                        {
+                            isCheck = cp?.GetComponent<Chessman>().type == PieceType.King; // Verificar si es el rey
+                            if (isCheck) break;
+                        }
+                    }
+                }
+                
+                /*vecs = new List<Vector2>() { new Vector2(1, 2), new Vector2(-1, 2), new Vector2(2, 1), new Vector2(2, -1), new Vector2(1, -2), new Vector2(-1, -2), new Vector2(-2, 1), new Vector2(-2, -1) };
+                foreach (var item in vecs)
+                {
+                    int x = xBoard + (int)item.x;
+                    int y = yBoard + (int)item.y;
+                    if (sc.PositionOnBoard(y, x))
+                    {
+                        GameObject cp = sc.GetPosition(y, x);
+                        if (cp?.GetComponent<Chessman>().playerType != playerType)
+                        {
+                            isCheck = cp?.GetComponent<Chessman>().type == PieceType.King;
+                            if (isCheck) break;
+                        }
+                    }
+                }
+                for (int i = 1; i <= 2; i++)
                 {
                     //if (pawnClass.IsMoved() && i > 1) break;
                     if (playerType == PlayerType.Black)
@@ -793,6 +855,21 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                         }
                     }
                 }*/
+                
+                /*
+                 if (playerType == PlayerType.Black)
+                {
+                    PawnMovePlate(yBoard - 1, xBoard);
+                    PawnAttackMovePlate(yBoard - 1, xBoard + 1);
+                    PawnAttackMovePlate(yBoard - 1, xBoard - 1);
+                }
+                else
+                {
+                    PawnMovePlate(yBoard + 1, xBoard);
+                    PawnAttackMovePlate(yBoard + 1, xBoard + 1);
+                    PawnAttackMovePlate(yBoard + 1, xBoard - 1);
+                }                 
+                 */
                 break;
             case PieceType.Bishop:
                 vecs = new List<Vector2>() { new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, 1), new Vector2(-1, -1) };
@@ -831,7 +908,7 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 }
                 break;
             case PieceType.Knight:
-                vecs = new List<Vector2>() { new Vector2(1, 2), new Vector2(-1, 2), new Vector2(2, 1), new Vector2(2, -1), new Vector2(1, -2), new Vector2(-1, -2), new Vector2(-2, 1), new Vector2(-2, -1) };
+                vecs = new List<Vector2>() { new Vector2(2, 1), new Vector2(2, -1), new Vector2(1, 2), new Vector2(-1, 2), new Vector2(-2, 1), new Vector2(-2, -1), new Vector2(1, -2), new Vector2(-1, -2) };
                 foreach (var item in vecs)
                 {
                     int x = xBoard + (int)item.x;

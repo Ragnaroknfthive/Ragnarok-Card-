@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="" />
+    <list default="true" id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Login/LoadingScreen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Login/LoadingScreen.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Login/Login-Scene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Login/Login-Scene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/NewMainMenu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/NewMainMenu.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebBuild/TemplateData/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebBuild/TemplateData/style.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,6 +31,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/b7/9c8c245f/Color.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/d4/dc2ede93/Object.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/2_Scripts/Chess/SetBoard.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -26,22 +42,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Development",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.build.unityPlugin",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Cesar__RFD&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.build.unityPlugin&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Build/Chess2D.exe" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Build\Chess2D.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Build" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -96,6 +112,11 @@
       <workItem from="1731021356608" duration="9290000" />
       <workItem from="1731172410086" duration="18731000" />
       <workItem from="1731263444875" duration="21682000" />
+      <workItem from="1733012858278" duration="11460000" />
+      <workItem from="1733267328736" duration="1568000" />
+      <workItem from="1733430074442" duration="6563000" />
+      <workItem from="1734190583559" duration="3434000" />
+      <workItem from="1734207766938" duration="3215000" />
     </task>
     <servers />
   </component>
@@ -140,79 +161,37 @@
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>597</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22966" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22978" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>596</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22832" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22957" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>595</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22756" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22823" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>594</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22725" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22747" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>593</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22715" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22716" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Assets/Scripts/Chess/Game.cs</url>
           <line>598</line>
-          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'">
-            <startOffsets>
-              <option value="22983" />
-            </startOffsets>
-            <endOffsets>
-              <option value="22984" />
-            </endOffsets>
-          </properties>
+          <properties documentPath="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Assets\Scripts\Chess\Game.cs" containingFunctionPresentation="Method 'Create'" />
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>

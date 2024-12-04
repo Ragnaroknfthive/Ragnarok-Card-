@@ -82,7 +82,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.2}
+  m_Size: {x: 5.6, y: 4.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedMove: {fileID: 21300000, guid: 8abe8fa448ad02d4fb9abeff14666e4d, type: 3}
-  attackSprite: {fileID: 21300000, guid: 5446c9c00b89b3041a658c79f993e81d, type: 3}
+  attackSprite: {fileID: 21300000, guid: 654ecb3fab0016f4ca7e987a79332db1, type: 3}
   spriteRenderer: {fileID: 5601901689888383344}
   NormalSprite: {fileID: 0}
   matrixX: 0
@@ -127,7 +127,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1.46, y: 1.58}
-    newSize: {x: 0.2, y: 0.2}
+    newSize: {x: 5.6, y: 4.7}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

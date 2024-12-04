@@ -421,7 +421,7 @@ public class Game : MonoBehaviour
     }
     public bool FuturePositionOnBoard(int y, int x)
     {
-        if (x < 0 || y < 0 || x >= Fpositions.GetLength(0) || y >= Fpositions.GetLength(1)) return false;
+        if (x < 0 || y < 0 || x >= Fpositions.GetLength(1) || y >= Fpositions.GetLength(0)) return false;
         return true;
     }
     #endregion
@@ -725,7 +725,7 @@ public class Game : MonoBehaviour
     }
     public void ChangePawnToNewPiece(int i)
     {
-        /*Chessman pawn = pawntobeRenewed;
+        Chessman pawn = pawntobeRenewed;
         PieceSelectionPanel.SetActive(false);
         if (DestroyedObjects != null)
         {
@@ -738,7 +738,7 @@ public class Game : MonoBehaviour
             photonView.RPC("DestroyPiece", RpcTarget.All, pawn.PieceIndex);
             photonView.RPC("SetPosRPC", RpcTarget.All);
             Get().NextTurn();
-        }*/
+        }
     }
     public void DestroyPieceObject(Chessman man)
     {

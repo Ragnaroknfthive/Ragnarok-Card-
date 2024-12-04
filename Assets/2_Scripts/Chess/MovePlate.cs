@@ -24,7 +24,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
     [Header("Booleans")]
     public bool attack = false;
     #endregion
-
+    
     #region Unity Methods
     public void Start()
     {
