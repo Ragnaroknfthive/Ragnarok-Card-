@@ -271,29 +271,29 @@ public class Game : MonoBehaviour
         Debug.Log("Spawning Black Pieces");
         playerBlack = new Chessman[] {
                 Create("black_rook"     ,PieceType.Rook     ,PlayerType.Black, 0, 5 ,17),
+                Create("black_queen"    ,PieceType.Queen    ,PlayerType.Black, 3, 5 ,19),
                 Create("black_bishop"   ,PieceType.Bishop   ,PlayerType.Black, 1, 5 ,20),
                 Create("black_king"     ,PieceType.King     ,PlayerType.Black, 2, 5 ,21),
-                Create("black_queen"    ,PieceType.Queen    ,PlayerType.Black, 3, 5 ,19),
                 Create("black_knight"   ,PieceType.Knight   ,PlayerType.Black, 4, 5 ,23),
 
-                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 0, 4 ,29),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 1, 4 ,24),
-                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 2, 4 ,33),
+                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 0, 4 ,29),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 3, 4 ,31),
+                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 2, 4 ,33),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 4, 4 ,35)
             };
         yield return new WaitForSeconds(0.2f);
         Debug.Log("Spawning White Pieces");
         playerWhite = new Chessman[] {
-                Create("white_knight"   ,PieceType.Knight   ,PlayerType.White, 0,0 ,4),
-                Create("white_queen"    ,PieceType.Queen    ,PlayerType.White, 1,0 ,2),
                 Create("white_king"     ,PieceType.King     ,PlayerType.White, 2,0 ,1),
-                Create("white_bishop"   ,PieceType.Bishop   ,PlayerType.White, 3,0 ,8),
+                Create("white_queen"    ,PieceType.Queen    ,PlayerType.White, 1,0 ,2),
                 Create("white_rook"     ,PieceType.Rook     ,PlayerType.White, 4,0 ,3),
+                Create("white_knight"   ,PieceType.Knight   ,PlayerType.White, 0,0 ,4),
+                Create("white_bishop"   ,PieceType.Bishop   ,PlayerType.White, 3,0 ,8),
 
-                Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 0,1 ,11),
-                Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 1,1 ,10),
                 Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 2,1 ,9),
+                Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 1,1 ,10),
+                Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 0,1 ,11),
                 Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 3,1 ,36),
                 Create("white_pawn"     ,PieceType.Pawn     ,PlayerType.White, 4,1 ,37)
             };

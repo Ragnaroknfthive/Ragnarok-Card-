@@ -262,15 +262,15 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             case PieceType.Pawn:
                 if (playerType == PlayerType.Black)
                 {
-                    PawnMovePlate(yBoard - 1, xBoard);
-                    PawnAttackMovePlate(yBoard - 1, xBoard + 1);
-                    PawnAttackMovePlate(yBoard - 1, xBoard - 1);
+                    PointMovePlate(yBoard - 1, xBoard);
+                    PointMoveAttackPlate(yBoard - 1, xBoard + 1);
+                    PointMoveAttackPlate(yBoard - 1, xBoard - 1);
                 }
                 else
                 {
-                    PawnMovePlate(yBoard + 1, xBoard);
-                    PawnAttackMovePlate(yBoard + 1, xBoard + 1);
-                    PawnAttackMovePlate(yBoard + 1, xBoard - 1);
+                    PointMovePlate(yBoard + 1, xBoard);
+                    PointMoveAttackPlate(yBoard + 1, xBoard + 1);
+                    PointMoveAttackPlate(yBoard + 1, xBoard - 1);
                 }
                 break;
         }
@@ -280,7 +280,47 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             isPlateInstantiated = false;
         }
     }
-    public void LineMovePlate(int yIncrement, int xIncrement)
+    public void LMovePlate()//knight
+    {
+        PointMovePlate(yBoard - 2, xBoard - 1);
+        PointMovePlate(yBoard + 2, xBoard - 1);
+        PointMovePlate(yBoard - 1, xBoard - 2);
+        PointMovePlate(yBoard - 1, xBoard + 2);
+        PointMovePlate(yBoard - 2, xBoard + 1);
+        PointMovePlate(yBoard + 2, xBoard + 1);
+        PointMovePlate(yBoard + 1, xBoard - 2);
+        PointMovePlate(yBoard + 1, xBoard + 2);
+        
+        PointMoveAttackPlate(yBoard - 2, xBoard - 1);
+        PointMoveAttackPlate(yBoard + 2, xBoard - 1);
+        PointMoveAttackPlate(yBoard - 1, xBoard - 2);
+        PointMoveAttackPlate(yBoard - 1, xBoard + 2);
+        PointMoveAttackPlate(yBoard - 2, xBoard + 1);
+        PointMoveAttackPlate(yBoard + 2, xBoard + 1);
+        PointMoveAttackPlate(yBoard + 1, xBoard - 2);
+        PointMoveAttackPlate(yBoard + 1, xBoard + 2);
+    }
+    public void SurroundMovePlate()//king
+    {
+        PointMovePlate(yBoard, xBoard + 1);
+        PointMovePlate(yBoard, xBoard - 1);
+        PointMovePlate(yBoard - 1, xBoard);
+        PointMovePlate(yBoard + 1, xBoard);
+        PointMovePlate(yBoard - 1, xBoard + 1);
+        PointMovePlate(yBoard - 1, xBoard - 1);
+        PointMovePlate(yBoard + 1, xBoard + 1);
+        PointMovePlate(yBoard + 1, xBoard - 1);
+        
+        PointMoveAttackPlate(yBoard, xBoard + 1);
+        PointMoveAttackPlate(yBoard, xBoard - 1);
+        PointMoveAttackPlate(yBoard - 1, xBoard);
+        PointMoveAttackPlate(yBoard + 1, xBoard);
+        PointMoveAttackPlate(yBoard - 1, xBoard + 1);
+        PointMoveAttackPlate(yBoard - 1, xBoard - 1);
+        PointMoveAttackPlate(yBoard + 1, xBoard + 1);
+        PointMoveAttackPlate(yBoard + 1, xBoard - 1);
+    }
+    public void LineMovePlate(int yIncrement, int xIncrement)//queen, rook, bishop
     {
         Game sc = controller.GetComponent<Game>();
         int x = xBoard + xIncrement;
@@ -302,28 +342,6 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
             isPlateInstantiated = true;
         }
     }
-    public void LMovePlate()
-    {
-        PointMovePlate(yBoard - 2, xBoard - 1);
-        PointMovePlate(yBoard + 2, xBoard - 1);
-        PointMovePlate(yBoard - 1, xBoard - 2);
-        PointMovePlate(yBoard - 1, xBoard + 2);
-        PointMovePlate(yBoard - 2, xBoard + 1);
-        PointMovePlate(yBoard + 2, xBoard + 1);
-        PointMovePlate(yBoard + 1, xBoard - 2);
-        PointMovePlate(yBoard + 1, xBoard + 2);
-    }
-    public void SurroundMovePlate()
-    {
-        PointMovePlate(yBoard, xBoard + 1);
-        PointMovePlate(yBoard, xBoard - 1);
-        PointMovePlate(yBoard - 1, xBoard);
-        PointMovePlate(yBoard + 1, xBoard);
-        PointMovePlate(yBoard - 1, xBoard + 1);
-        PointMovePlate(yBoard - 1, xBoard - 1);
-        PointMovePlate(yBoard + 1, xBoard + 1);
-        PointMovePlate(yBoard + 1, xBoard - 1);
-    }
     public void PointMovePlate(int y, int x)
     {
         Game sc = controller.GetComponent<Game>();
@@ -335,7 +353,15 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
                 MovePlateSpawn(y, x);
                 isPlateInstantiated = true;
             }
-            else if (cp.GetComponent<Chessman>().player != player)
+        }
+    }
+    public void PointMoveAttackPlate(int y, int x)
+    {
+        Game sc = controller.GetComponent<Game>();
+        if (sc.PositionOnBoard(y, x))
+        {
+            GameObject cp = sc.GetPosition(y, x);
+            if (cp != null && cp.GetComponent<Chessman>().player != player)
             {
                 Chessman chessman = sc.GetPosition(y, x).GetComponent<Chessman>();
                 PieceType pieceType = chessman.type;

@@ -439,7 +439,6 @@ public class PVPManager : MonoBehaviour
     {
         if (selectedMove != null)
         {
-
             Debug.Log("SELECTED MOVE TYPE " + selectedMove.GetReference().type);
             selectedMove.SetNormalSprite();
             selectedMove.GetPieceTypeOnThisPlate();

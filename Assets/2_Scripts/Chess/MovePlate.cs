@@ -113,14 +113,16 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         if (attack)
         {
             Debug.Log(reference.type + " Ref Type" + PVPManager.manager.tempPieceOpp);
-            if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer && PVPManager.manager.tempPieceOpp == PieceType.Pawn || (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn))
+            if (true/*PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer && PVPManager.manager.tempPieceOpp == PieceType.Pawn ||
+                (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn)*/)
             {
                 Debug.Log("IN Pawn Condition");
-                Game.Get().SetPositionsEmpty(reference.GetXboard(), reference.GetYboard());
+                Game.Get().SetPositionsEmpty(reference.GetYboard(), reference.GetXboard());
                 reference.SetXBoard(matrixX);
                 reference.SetYBoard(matrixY);
                 reference.SetCoords();
                 Game.Get().SetPosition(reference);
+                Debug.Log("IN Position");
                 reference.DestroyMovePlates();
                 PhotonNetwork.SendAllOutgoingCommands();
                 Game.Get().NextTurn();
@@ -128,6 +130,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             }
             else
             {
+                Debug.Log("NOT IN Pawn Condition");
                 reference.DestroyMovePlates();
                 PhotonNetwork.SendAllOutgoingCommands();
                 Game.Get().SetPVPMode(true);
@@ -146,6 +149,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         }
         else
         {
+            print("PieceType else pawn");
             if (reference.type == PieceType.Pawn)
             {
                 PawnClass pawn = reference.GetComponent<PawnClass>();

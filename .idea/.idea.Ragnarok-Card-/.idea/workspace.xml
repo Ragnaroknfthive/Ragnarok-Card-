@@ -6,19 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Login/LoadingScreen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Login/LoadingScreen.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Login/Login-Scene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Login/Login-Scene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/MatchScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/NewMainMenu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/NewMainMenu.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ShaderGraphSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/MovePlate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/MovePlate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/PhotonPVP/PVPManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/PhotonPVP/PVPManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/MovePlate.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/MovePlate.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebBuild/TemplateData/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebBuild/TemplateData/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +26,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/b7/9c8c245f/Color.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/d4/dc2ede93/Object.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d44b17e136d09081da1e8fd0e8c83fde60e11818b9f2442d7ed8cb733fae895e/System.Collections.Generic.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/2_Scripts/Chess/SetBoard.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -57,7 +53,7 @@
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Build\Chess2D.exe" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Build/Chess2D.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="C:\Users\HP\Documents\GitHub Pruebas\Ragnarok-Card-\Build" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -117,6 +113,7 @@
       <workItem from="1733430074442" duration="6563000" />
       <workItem from="1734190583559" duration="3434000" />
       <workItem from="1734207766938" duration="3215000" />
+      <workItem from="1734644119778" duration="7632000" />
     </task>
     <servers />
   </component>
