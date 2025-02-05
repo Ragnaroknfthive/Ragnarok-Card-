@@ -446,6 +446,7 @@ public class Game : MonoBehaviour
     }
     public void NextTurn()
     {
+        Debug.LogError("Next Turn Called");
         if (IsGameOver())
         {
             PVPManager.manager.TimerObject.SetActive(false);
@@ -779,6 +780,7 @@ public class Game : MonoBehaviour
             GameObject o = Instantiate(DeadPieceImage, OppoPieces);
             o.GetComponent<Image>().sprite = item.GetSprite();
         }
+        Debug.Log("Destroy");
         photonView.RPC("UpdateDeadPiecesMyRPC", RpcTarget.Others);
     }
     public void UpdateDeadPieces()
@@ -855,7 +857,7 @@ public class Game : MonoBehaviour
         foreach (var Ptype in types_lis)
         {
             Chessman piece = pieces.Find((t) => t.type == Ptype);
-            KingLives = piece.canDefendKing();
+            KingLives = piece.canDefendKingUpdated(); //piece.canDefendKing();
             if (KingLives) { Debug.Log("King Defended by " + piece.type); break; }
         }
         return !KingLives;

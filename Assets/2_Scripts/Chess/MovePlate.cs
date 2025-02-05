@@ -52,6 +52,13 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         if (pieceOnthisPlate) type = pieceOnthisPlate.GetComponent<Chessman>().type;
         return type;
     }
+    public Chessman GetPieceOnThisPlate()
+    {
+        Chessman type = null;
+        GameObject pieceOnthisPlate = Game.Get().GetPosition(matrixY,matrixX);
+        if(pieceOnthisPlate) type = pieceOnthisPlate.GetComponent<Chessman>();
+        return type;
+    }
     public void MovePiece()
     {
         if (Game.Get().isLocalPlayerTurn)
@@ -113,18 +120,46 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         if (attack)
         {
             Debug.Log(reference.type + " Ref Type" + PVPManager.manager.tempPieceOpp);
-            if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer && PVPManager.manager.tempPieceOpp == PieceType.Pawn || (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn))
+            //if (PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer && PVPManager.manager.tempPieceOpp == PieceType.Pawn || (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn))
+
+            bool CurrentPlayerAndPlayerIsAttacker = PhotonNetwork.LocalPlayer == Game.Get()._currnetTurnPlayer;// && PVPManager.manager.tempPieceOpp == PieceType.Pawn;
+
+            bool NotCurrentPlayerAndPlayerUnderAttack = (PhotonNetwork.LocalPlayer != Game.Get()._currnetTurnPlayer);// && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn) ;
+
+            Chessman pieceOnThisPlate = null;
+            if(CurrentPlayerAndPlayerIsAttacker) 
             {
-                Debug.Log("IN Pawn Condition");
+                Debug.LogError("X:" + matrixX + "- Y:" + matrixY);
+                pieceOnThisPlate = PVPManager.manager.pieceUnderAttacks.Find(piece => piece.x == matrixX && piece.y == matrixY).pieceUnderAttack;
+                PVPManager.manager.tempPieceOpp = pieceOnThisPlate.type;
+                PVPManager.manager.oppPieceType = pieceOnThisPlate;
+                Debug.LogError("Piece attacked " + PVPManager.manager.oppPieceType.type);
+            }
+            else if( NotCurrentPlayerAndPlayerUnderAttack) 
+            {
+
+                Debug.LogError("X:" + matrixX + "- Y:" + matrixY);
+                pieceOnThisPlate = PVPManager.manager.MypiecesUnderAttack.Find(piece => piece.x == matrixX && piece.y == matrixY).pieceUnderAttack;
+                PVPManager.manager.MyAttackedPiece = pieceOnThisPlate; //GetPieceOnThisPlate();
+                Debug.LogError("Piece Under attack " + PVPManager.manager.MyAttackedPiece.type);
+            }
+          
+        
+
+            if(CurrentPlayerAndPlayerIsAttacker && PVPManager.manager.tempPieceOpp == PieceType.Pawn || NotCurrentPlayerAndPlayerUnderAttack  && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn)
+            {
+               
+                  
+                Debug.Log("IN Pawn Condition : ");
                 Game.Get().SetPositionsEmpty(reference.GetXboard(), reference.GetYboard());
                 reference.SetXBoard(matrixX);
                 reference.SetYBoard(matrixY);
                 reference.SetCoords();
                 Game.Get().SetPosition(reference);
                 reference.DestroyMovePlates();
+                Game.Get().DestroyPieceObjectForPawnTaken(CurrentPlayerAndPlayerIsAttacker? PVPManager.manager.oppPieceType:PVPManager.manager.MyAttackedPiece);
                 PhotonNetwork.SendAllOutgoingCommands();
-                Game.Get().NextTurn();
-                Game.Get().DestroyPieceObjectForPawnTaken(PVPManager.manager.oppPieceType);
+                Game.Get().NextTurn();   
             }
             else
             {

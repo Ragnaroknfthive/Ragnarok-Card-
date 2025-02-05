@@ -172,9 +172,12 @@ public class PVPManager : MonoBehaviour
     public MovePlate selectedMove;                           //Selected moveplate in chess game
 
     public PieceType myPiece, opponentpiece, tempPiece, opponentPieceAttack, tempPieceOpp;
+    
     //Player's chess piece type, opponent's piece type, temp piece - used to hold piece reference, temp piece(opponent player) 
     //Temp piece used to check if attacked piece and attacker piece in case of attacked by pawn
     public Chessman oppPieceType, MyAttackedPiece;
+    public List<PieceUnderAttack> pieceUnderAttacks = new List<PieceUnderAttack>(); //List of pieces that are under attack
+    public List<PieceUnderAttack> MypiecesUnderAttack; // List of pieces which can be attacked by player in this turn
     //Attacked piece types
     public Sprite black_queen, black_knight, black_bishop, black_king, black_rook, black_pawn;
     public Sprite white_queen, white_knight, white_bishop, white_king, white_rook, white_pawn;
@@ -482,6 +485,8 @@ public class PVPManager : MonoBehaviour
 
             PVPManager.manager.tempPieceOpp = type;
             oppPieceType = oppPiece;
+            pieceUnderAttacks.Add(new PieceUnderAttack() { pieceType = type,pieceUnderAttack = oppPiece,x=oppPiece.GetXboard(),y= oppPiece.GetYboard() });
+            Debug.LogError("Opp Piece under Attack : " + oppPiece.type);
             photonView.RPC("SetAttackedPiece", RpcTarget.Others, oppPiece.GetYboard(), oppPiece.GetXboard());
             PhotonNetwork.SendAllOutgoingCommands();
             //  photonView.RPC("SetOpponentAttackPiecePieceType",RpcTarget.Others,type);
@@ -495,7 +500,8 @@ public class PVPManager : MonoBehaviour
     [PunRPC]
     public void SetAttackedPiece(int y, int x)
     {
-        MyAttackedPiece = Game.Get().GetPosition(y, x).GetComponent<Chessman>();
+        MyAttackedPiece = Game.Get().GetPosition(y,x).GetComponent<Chessman>();
+        MypiecesUnderAttack.Add(new PieceUnderAttack { pieceType = MyAttackedPiece.type,pieceUnderAttack = MyAttackedPiece, x=x,y=y });
     }
     /// <summary>
     /// RPC- Set player and oppoent piece type on player's devices
@@ -728,6 +734,7 @@ public class PVPManager : MonoBehaviour
     {
         selectedMove.SetNormalSprite();
         selectedMove = null;
+       
         moveChoiceConfirmation.gameObject.SetActive(false);
     }
     //bool to check if end turn timer is started or not
@@ -893,6 +900,8 @@ public class PVPManager : MonoBehaviour
         SpellManager.instance.spawned_ids = new List<int>();
         if (PhotonNetwork.LocalPlayer.IsMasterClient)
         {
+            Debug.LogError(" Piece 1 pos : x :  "+posP1.x + "- y: " + posP1.y);
+            Debug.LogError(" Piece 2 pos : x :  " + posP2.x + "- y: " + posP2.y);
             photonView.RPC("SetDataRPC", RpcTarget.AllBuffered, posP1, posP2, isReverse);
             PhotonNetwork.SendAllOutgoingCommands();
         }
@@ -3893,9 +3902,11 @@ public class PVPManager : MonoBehaviour
 
         p1Pos = posP1;
         p2Pos = posP2;
+        Debug.Log("P1 : Y  : " + (int)posP1.y +"  X: " +(int) posP1.x);
 
-        p1Obj = Game.Get().GetPosition((int)posP1.y, (int)posP1.x).GetComponent<Chessman>();
-        p2Obj = Game.Get().GetPosition((int)posP2.y, (int)posP2.x).GetComponent<Chessman>();
+        Debug.Log("P2 : Y  : " + (int)posP2.y + "  X: " + (int)posP2.x);
+        p1Obj = Game.Get().GetPosition((int)posP1.x, (int)posP1.y).GetComponent<Chessman>();
+        p2Obj = Game.Get().GetPosition((int)posP2.x, (int)posP2.y).GetComponent<Chessman>();
 
         if (isReverse && Game.Get().IsDefender)
         {
@@ -4467,4 +4478,11 @@ public class PVPManager : MonoBehaviour
         P1StaminPopup.SetActive(false);
         LeanTween.scale(P1StaminPopup, Vector3.zero, 0f);
     }
+}
+[System.Serializable]
+public class PieceUnderAttack 
+{
+    public PieceType pieceType;
+    public Chessman pieceUnderAttack;
+    public int x=-1, y = -1;
 }

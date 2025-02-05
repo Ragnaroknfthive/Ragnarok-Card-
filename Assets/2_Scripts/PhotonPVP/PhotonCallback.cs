@@ -285,7 +285,10 @@ public class PhotonCallback : MonoBehaviourPunCallbacks
             // PhotonNetwork.PlayerList[0].NickName = "Player 1";
             // PhotonNetwork.PlayerList[1].NickName = "Player 2";
             DeckManager.instance.SetDeck();
+
+            PhotonNetwork.CurrentRoom.IsOpen = false;//Close room when 2 players joined
             PhotonNetwork.LoadLevel("Game");
+
 
         }
         else
