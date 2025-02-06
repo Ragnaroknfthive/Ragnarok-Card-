@@ -39273,8 +39273,12 @@ MonoBehaviour:
   tempPiece: 0
   opponentPieceAttack: 0
   tempPieceOpp: 0
+  pieceUnderAttacks:
+  - pieceType: 0
+    pieceUnderAttack: {fileID: 0}
   oppPieceType: {fileID: 0}
   MyAttackedPiece: {fileID: 0}
+  MypiecesUnderAttack: []
   black_queen: {fileID: 21300000, guid: 4e2af84aec7c0ab4592293b1cc8e55e9, type: 3}
   black_knight: {fileID: 21300000, guid: e7aa256dd0761c0439d5eb528830ed92, type: 3}
   black_bishop: {fileID: 21300000, guid: c18253b4f7d75b24a903107d38181d84, type: 3}
