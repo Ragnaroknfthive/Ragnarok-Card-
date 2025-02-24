@@ -138,7 +138,7 @@ Once spells and pets have resolved, both players’ gods move into a direct comb
     Clear, readable fonts and iconography to help new players recognize different gods, spells, or phases.  
     Color-blind friendly design for elemental squares or card suits.
 
-### 9. Roadmap and Future Plans
+### 9. Future Plans
 
 - **Beta & Balancing:**  
     Collect user feedback to refine gameplay balance, especially synergy between Chess movement and Poker-based combat.
