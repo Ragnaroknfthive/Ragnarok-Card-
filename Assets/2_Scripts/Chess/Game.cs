@@ -328,6 +328,7 @@ public class Game : MonoBehaviour
     {
         //PieceSelectionPanel.SetActive(false);
         PawnCrownedSelector.SetActive(false);
+        PawnCrownedSelector.SetActive(false);
         PlayerTurnScreen.SetActive(true);
         PlayerTurnScreenText.text = namePlayer + "turn";
         yield return new WaitForSecondsRealtime(1f);
@@ -434,6 +435,21 @@ public class Game : MonoBehaviour
     #endregion
 
     #region Methods
+    
+    public bool CheckLocalPlayer()
+    {
+        return PhotonNetwork.LocalPlayer.IsMasterClient;
+    }
+
+    public Chessman[] WhitePlayerList()
+    {
+        return playerWhite;
+    }
+    public Chessman[] BlackPlayerList()
+    {
+        return playerBlack;
+    }
+    
     public GameObject GetPosition(int y, int x)
     {
         return positions[y, x];
@@ -643,8 +659,15 @@ public class Game : MonoBehaviour
 
     public void ReplacePawnWithQueen(Chessman obj)
     {
-        Destroy(obj.gameObject);
+        _obj = obj;
     }
+
+    private Chessman _obj;
+    public Chessman SetPawnToCrown()
+    {
+        return _obj;
+    }
+    
     public void ShowReviveOption(Chessman pawn)/////////////////////////////////////////////////////////////////////////////////
     {
         pawntobeRenewed = pawn;
@@ -662,6 +685,13 @@ public class Game : MonoBehaviour
         }
         //PieceSelectionPanel.SetActive(true);
         PawnCrownedSelector.SetActive(true);
+    }
+    public void ShowPawnCrownedSelector()
+    {
+        PawnCrownedSelector.SetActive(true);
+    }public void HidePawnCrownedSelector()
+    {
+        PawnCrownedSelector.SetActive(false);
     }
     public void ChangePawnToNewPiece(int i)
     {

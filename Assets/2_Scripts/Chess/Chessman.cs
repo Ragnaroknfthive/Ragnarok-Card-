@@ -94,6 +94,36 @@ public class Chessman : MonoBehaviour, IPunInstantiateMagicCallback, IHealthBar,
     public PlayerType playerType;               //Player type who owns this piece (black or white)
     public PieceType myPiece, opponentpiece;            //Player and  Opponent piece types
     #endregion
+    
+    #region Types
+    public void PawnToQueen()
+    {
+        type = PieceType.Queen;
+        if(playerType == PlayerType.Black) GetComponent<SpriteRenderer>().sprite = black_queen;
+        else GetComponent<SpriteRenderer>().sprite = white_queen;
+    }
+
+    public void PawnToRook()
+    {
+        type = PieceType.Rook;
+        if (playerType == PlayerType.Black) GetComponent<SpriteRenderer>().sprite = black_rook;
+        else GetComponent<SpriteRenderer>().sprite = white_rook;
+    }
+
+    public void PawnToKnight()
+    {
+        type = PieceType.Knight;
+        if (playerType == PlayerType.Black) GetComponent<SpriteRenderer>().sprite = black_knight;
+        else GetComponent<SpriteRenderer>().sprite = white_knight;
+    }
+
+    public void PawnToBishop()
+    {
+        type = PieceType.Bishop;
+        if (playerType == PlayerType.Black) GetComponent<SpriteRenderer>().sprite = black_bishop;
+        else GetComponent<SpriteRenderer>().sprite = white_bishop;
+    }
+    #endregion
 
     #region Unity Methods
     /// <summary>

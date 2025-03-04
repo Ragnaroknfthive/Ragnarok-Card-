@@ -199,6 +199,7 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
                         /*if (Game.Get().DestroyedObjects.Count > 0) Game.Get().ShowReviveOption(reference);
                         else Game.Get().NextTurn();*/
                         Game.Get().ReplacePawnWithQueen(reference);
+                        Game.Get().ShowPawnCrownedSelector();
                     }
                 }
                 else Game.Get().NextTurn();
