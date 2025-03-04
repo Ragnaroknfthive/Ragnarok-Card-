@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.Experimental.Rendering.RenderGraphModule;
 
 public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
 {
@@ -137,7 +138,6 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             }
             else if( NotCurrentPlayerAndPlayerUnderAttack) 
             {
-
                 Debug.LogError("X:" + matrixX + "- Y:" + matrixY);
                 pieceOnThisPlate = PVPManager.manager.MypiecesUnderAttack.Find(piece => piece.x == matrixX && piece.y == matrixY).pieceUnderAttack;
                 PVPManager.manager.MyAttackedPiece = pieceOnThisPlate; //GetPieceOnThisPlate();
@@ -148,8 +148,6 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
 
             if(CurrentPlayerAndPlayerIsAttacker && PVPManager.manager.tempPieceOpp == PieceType.Pawn || NotCurrentPlayerAndPlayerUnderAttack  && PVPManager.manager.MyAttackedPiece != null && PVPManager.manager.MyAttackedPiece.type == PieceType.Pawn)
             {
-               
-                  
                 Debug.Log("IN Pawn Condition : ");
                 Game.Get().SetPositionsEmpty(reference.GetXboard(), reference.GetYboard());
                 reference.SetXBoard(matrixX);
@@ -181,11 +179,11 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
         }
         else
         {
-            if (reference.type == PieceType.Pawn)
+            /*if (reference.type == PieceType.Pawn)
             {
                 PawnClass pawn = reference.GetComponent<PawnClass>();
                 if (pawn != null) pawn.SetMoved(true);
-            }
+            }*////////////////////////////////////////////////////////////This is no longer useful, the pawns always move one box by turn
             Game.Get().SetPositionsEmpty(reference.GetXboard(),
             reference.GetYboard());
             reference.SetXBoard(matrixX);
@@ -194,12 +192,13 @@ public class MovePlate : MonoBehaviour, IPunInstantiateMagicCallback
             Game.Get().SetPosition(reference);
             if (reference.type == PieceType.Pawn)
             {
-                if ((reference.playerType == PlayerType.White && reference.GetYboard() == Game.Get().GetMaxY() - 1) || (reference.playerType == PlayerType.Black && reference.GetYboard() == 0))
+                if ((reference.playerType == PlayerType.White && reference.GetYboard() == Game.Get().GetMaxY()) || (reference.playerType == PlayerType.Black && reference.GetYboard() == 0))
                 {
                     if (Game.Get().isLocalPlayerTurn)
                     {
-                        if (Game.Get().DestroyedObjects.Count > 0) Game.Get().ShowReviveOption(reference);
-                        else Game.Get().NextTurn();
+                        /*if (Game.Get().DestroyedObjects.Count > 0) Game.Get().ShowReviveOption(reference);
+                        else Game.Get().NextTurn();*/
+                        Game.Get().ReplacePawnWithQueen(reference);
                     }
                 }
                 else Game.Get().NextTurn();

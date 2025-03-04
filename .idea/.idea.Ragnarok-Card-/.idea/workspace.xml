@@ -5,15 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eaf95f2b-1512-4087-ab14-c3f142d2a72f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ragnarok-Card-/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Chessman.cs" afterDir="false" />
+<<<<<<< Updated upstream
+      <change beforePath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/1_Scenes/Game.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/Game.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Chess/MovePlate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Chess/MovePlate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/PhotonPVP/PVPManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/PhotonPVP/PVPManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Poker/SpellCardDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Poker/SpellCardDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/Poker/SpellManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/Poker/SpellManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/2_Scripts/RevivePieceItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/2_Scripts/RevivePieceItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/ChessPiece.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/ChessPiece.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/MovePlate.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/4_Prefabs/Resources/MovePlate.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+=======
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-2021.dwlt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,11 +31,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/b7/9c8c245f/Color.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/d4/dc2ede93/Object.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13e6546058e340ada820e34dce3b245e157400/78/8e3a0698/Component.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d44b17e136d09081da1e8fd0e8c83fde60e11818b9f2442d7ed8cb733fae895e/System.Collections.Generic.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/2_Scripts/Chess/SetBoard.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 1
@@ -38,9 +45,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< Updated upstream
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;Cesar__RFD&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -49,8 +58,22 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.build.unityPlugin&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Development",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.build.unityPlugin",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> Stashed changes
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Build/Chess2D.exe" />
@@ -81,6 +104,9 @@
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
       <option name="projectPathOnTarget" />
+      <option name="runtimes">
+        <list />
+      </option>
       <option name="selectedOptions">
         <list />
       </option>
@@ -91,6 +117,9 @@
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
       <option name="projectPathOnTarget" />
+      <option name="runtimes">
+        <list />
+      </option>
       <option name="selectedOptions">
         <list />
       </option>
@@ -114,12 +143,29 @@
       <workItem from="1734190583559" duration="3434000" />
       <workItem from="1734207766938" duration="3215000" />
       <workItem from="1734644119778" duration="7632000" />
+<<<<<<< Updated upstream
+      <workItem from="1738894111893" duration="1251000" />
+      <workItem from="1739058157551" duration="3214000" />
+      <workItem from="1739303183582" duration="2667000" />
+      <workItem from="1739312637357" duration="6915000" />
+      <workItem from="1739388560158" duration="7486000" />
+      <workItem from="1739918094727" duration="5054000" />
+      <workItem from="1740189585926" duration="6329000" />
+      <workItem from="1740260174096" duration="1820000" />
+      <workItem from="1740339508223" duration="14105000" />
+      <workItem from="1740612037945" duration="1307000" />
+      <workItem from="1740691449203" duration="3604000" />
+      <workItem from="1740768344178" duration="2663000" />
+=======
+      <workItem from="1741076278026" duration="366000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />

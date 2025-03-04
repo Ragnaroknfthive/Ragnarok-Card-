@@ -8,6 +8,7 @@ TagManager:
   - WinnerText
   - RestartText
   - dontRemove
+  - SpellManager
   layers:
   - Default
   - TransparentFX

@@ -47,6 +47,9 @@ public class Game : MonoBehaviour
     public GameObject DeadPieceImage;
     public GameObject reviveLisItem;
     public GameObject PieceSelectionPanel;
+    [SerializeField] private GameObject PawnCrownedSelector;
+    [SerializeField] private GameObject chessBoard;
+    [SerializeField] private GameObject chessBoardInv;
 
     [Header("GameObjects")]
     [SerializeField] private GameObject[,] positions = new GameObject[6, 5];
@@ -181,7 +184,7 @@ public class Game : MonoBehaviour
                 }
                 else
                 {
-                    Color c = sr.color;
+                    Color c = sr.color; 
                     c.a = .7f;
                     srIndicator.color = c;
                 }
@@ -190,8 +193,8 @@ public class Game : MonoBehaviour
                     Vector3 pos = plates[i, j].transform.position;
                     pos.y = pos.x * (-1);
                     pos.x = pos.y * (-1);
-                    plates[i, j].transform.position = new Vector3(plates[i, j].transform.position.x, plates[i, j].transform.position.y + .05f, plates[i, j].transform.position.z);
-                    platesIndicator[i, j].transform.position = new Vector3(platesIndicator[i, j].transform.position.x, platesIndicator[i, j].transform.position.y + .05f, platesIndicator[i, j].transform.position.z);
+                    plates[i, j].transform.position = new Vector3(plates[i, j].transform.position.x - 0.03f, plates[i, j].transform.position.y + .05f, plates[i, j].transform.position.z);
+                    platesIndicator[i, j].transform.position = new Vector3(platesIndicator[i, j].transform.position.x - 0.03f, platesIndicator[i, j].transform.position.y + .05f, platesIndicator[i, j].transform.position.z);
                     LeanTween.rotate(plates[i, j], new Vector3(0, 0, -180), 0);
                     LeanTween.rotate(platesIndicator[i, j], new Vector3(0, 0, -180), 0);
                 }
@@ -232,6 +235,9 @@ public class Game : MonoBehaviour
         gameOver = false;
         MyStamina = 10;
         OppoStamina = 10;
+        
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) chessBoard.SetActive(false);
+        if (PhotonNetwork.LocalPlayer.IsMasterClient) chessBoardInv.SetActive(false);
     }
     public void Update()
     {
@@ -277,7 +283,7 @@ public class Game : MonoBehaviour
                 Create("black_knight"   ,PieceType.Knight   ,PlayerType.Black, 4, 5 ,23),
 
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 1, 4 ,24),
-                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 0, 4 ,29),
+                Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 0, 4,29),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 3, 4 ,31),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 2, 4 ,33),
                 Create("black_pawn"     ,PieceType.Pawn     ,PlayerType.Black, 4, 4 ,35)
@@ -320,7 +326,8 @@ public class Game : MonoBehaviour
     }
     private IEnumerator COR_playerTurnNameShow(string namePlayer, Player _player)
     {
-        PieceSelectionPanel.SetActive(false);
+        //PieceSelectionPanel.SetActive(false);
+        PawnCrownedSelector.SetActive(false);
         PlayerTurnScreen.SetActive(true);
         PlayerTurnScreenText.text = namePlayer + "turn";
         yield return new WaitForSecondsRealtime(1f);
@@ -633,7 +640,12 @@ public class Game : MonoBehaviour
         sr.color = indicator;
         srInidcator.color = c;
     }
-    public void ShowReviveOption(Chessman pawn)
+
+    public void ReplacePawnWithQueen(Chessman obj)
+    {
+        Destroy(obj.gameObject);
+    }
+    public void ShowReviveOption(Chessman pawn)/////////////////////////////////////////////////////////////////////////////////
     {
         pawntobeRenewed = pawn;
         foreach (Transform item in revivePr)
@@ -648,7 +660,27 @@ public class Game : MonoBehaviour
             o.GetComponent<RevivePieceItem>().id = i;
             i++;
         }
-        PieceSelectionPanel.SetActive(true);
+        //PieceSelectionPanel.SetActive(true);
+        PawnCrownedSelector.SetActive(true);
+    }
+    public void ChangePawnToNewPiece(int i)
+    {
+        i=i;
+        Chessman pawn = pawntobeRenewed;
+        //PieceSelectionPanel.SetActive(false);
+        PawnCrownedSelector.SetActive(false);
+        if (DestroyedObjects != null)
+        {
+            Chessman c = DestroyedObjects[i];
+
+            Create("New_" + c.gameObject.name, c.type, c.playerType, pawn.GetXboard(), pawn.GetYboard(), 30 + DestroyedObjects.Count);
+            //Chessman.pieces.Remove(pawn);
+            DestroyedObjects.Remove(c);
+            photonView.RPC("DestroyPiece", RpcTarget.All, c.PieceIndex);
+            photonView.RPC("DestroyPiece", RpcTarget.All, pawn.PieceIndex);
+            photonView.RPC("SetPosRPC", RpcTarget.All);
+            Get().NextTurn();
+        }
     }
     public void SwitchPlayerTurn_RPCCall()
     {
@@ -724,23 +756,7 @@ public class Game : MonoBehaviour
             photonView.RPC("PlayerWon", RpcTarget.Others, -1);
         }
     }
-    public void ChangePawnToNewPiece(int i)
-    {
-        Chessman pawn = pawntobeRenewed;
-        PieceSelectionPanel.SetActive(false);
-        if (DestroyedObjects != null)
-        {
-            Chessman c = DestroyedObjects[i];
-
-            Create("New_" + c.gameObject.name, c.type, c.playerType, pawn.GetXboard(), pawn.GetYboard(), 30 + DestroyedObjects.Count);
-            //Chessman.pieces.Remove(pawn);
-            DestroyedObjects.Remove(c);
-            photonView.RPC("DestroyPiece", RpcTarget.All, c.PieceIndex);
-            photonView.RPC("DestroyPiece", RpcTarget.All, pawn.PieceIndex);
-            photonView.RPC("SetPosRPC", RpcTarget.All);
-            Get().NextTurn();
-        }
-    }
+    
     public void DestroyPieceObject(Chessman man)
     {
         man.transform.position = new Vector3(1000f, 1000f, 1000f);
@@ -1130,11 +1146,14 @@ public class Game : MonoBehaviour
             foreach (var item in playerBlack)
             {
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
+                item.gameObject.transform.position = new Vector3(item.gameObject.transform.position.x - 0.05f, item.gameObject.transform.position.y, item.gameObject.transform.position.z);
+
                 item.gameObject.GetComponent<PhotonView>().TransferOwnership(PhotonNetwork.PlayerList[1]);
             }
             foreach (var item in playerWhite)
             {
                 item.gameObject.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 180f));
+                item.gameObject.transform.position = new Vector3(item.gameObject.transform.position.x - 0.05f, item.gameObject.transform.position.y, item.gameObject.transform.position.z);
             }
         }
 

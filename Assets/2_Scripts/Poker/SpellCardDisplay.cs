@@ -11,10 +11,16 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Photon.Pun;
+using Random = System.Random;
+using System.Threading.Tasks;
 
 public class SpellCardDisplay : MonoBehaviourPunCallbacks
 {
     #region Attributes
+
+    private int listIndex;
+    private SpellManager _spellManager;
+    public double indexDouble;
     public SpellCard card;
     [SerializeField] private TMPro.TextMeshProUGUI manaTxt, attackTxt, healthTxt, cardNameTxt, DescriptionTxt, SpeedTxt;
     public Image Bg, cardImage, BackSide;
@@ -102,6 +108,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks
     #region Unity Methods
     void Start()
     {
+        _spellManager = GameObject.Find("SpellManager").GetComponent<SpellManager>();
         UpdateCardData();//Update the card data on the card prefab
         phtnView = GetComponent<PhotonView>();//Get the photon view component
         startSortOrder = canvas.sortingOrder;//Get the starting sorting order of the card
@@ -115,6 +122,7 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks
                 ResetCard();//Reset the card
             }
         }
+        
     }
     #endregion
 
@@ -220,13 +228,21 @@ public class SpellCardDisplay : MonoBehaviourPunCallbacks
             return;
 
         if (PVPManager.manager.P2RemainingHandHealth <= 0)//Check if the player 2 remaining hand health is less than or equal to 0
-            return;
+            return;//CastSpell
 
         PVPManager.Get().DeductMana(card.Manacost);//Deduct the mana cost
         StartCoroutine(SpellManager.instance.CastSpell(index));//Start the cast spell coroutine
-
-        Destroy(this.gameObject, 0.1f);//Destroy the game object
+        Random random = new Random();
+        indexDouble = random.NextDouble() * 100;
+        GetIndex();
+        Destroy(gameObject, 1.5f);//Destroy the game object
     }
+    public async Task GetIndex()
+    {
+        _spellManager.GetIndexSpell(indexDouble);
+        Destroy(gameObject, 1.5f);//Destroy the game object
+    }
+    
     public void set(bool isShow)//Set the card data on the card prefab
     {
         manaTxt.transform.parent.gameObject.SetActive(isShow);//Set the mana text on the card prefab

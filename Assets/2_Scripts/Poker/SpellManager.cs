@@ -11,6 +11,9 @@ using UnityEngine.UI;
 using Photon.Pun;
 using System.Linq;
 using Unity.Collections;
+using System;
+using System.Threading.Tasks;
+using Random = UnityEngine.Random;
 
 public class SpellManager : MonoBehaviourPunCallbacks
 {
@@ -55,9 +58,19 @@ public class SpellManager : MonoBehaviourPunCallbacks
     {
         photonView = GetComponent<PhotonView>();//Get the photon view component
     }
-    void FixedUpdate()
+    void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            photonView.RPC("hardCodeRPC", RpcTarget.Others);
+        }
+    }
+    [PunRPC]
+    private void hardCodeRPC()
+    {
+        print("hardCodeRPC");
+        Destroy(opponentCards[0].gameObject);
+        opponentCards.RemoveAt(0);
     }
     #endregion
 
@@ -438,13 +451,30 @@ public class SpellManager : MonoBehaviourPunCallbacks
         ClearList();
     }
 
-    public IEnumerator CastSpell(SpellCard card)//Function to cast the spell by card
+    /*public IEnumerator CastSpell(SpellCard card)//Function to cast the spell by card
     {
         print("Casting spell_2");
         StartCoroutine(PVPManager.Get().DistributeSpellAttack(card.Attack));//Distribute the spell attack
         PVPManager.Get().canContinue = false;//Set the can continue to false
         yield return new WaitUntil(() => PVPManager.Get().canContinue);//Wait until the PVP manager can continue
         ClearList();
+    }*/
+    public void GetIndexSpell(double ind)
+    {
+        foreach (SpellCardDisplay card in playerCards)
+        {
+            if(card.indexDouble == ind)
+            {
+                photonView.RPC("DestroyRPC", RpcTarget.Others, playerCards.IndexOf(card));
+            }
+        }
+    }
+    [PunRPC]
+    public void DestroyRPC(int var)
+    {
+        print("Destroy RPC");
+        Destroy(opponentCards[var].gameObject);
+        opponentCards.RemoveAt(var);
     }
 
     [PunRPC]
@@ -458,12 +488,13 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = true;//Set the is target player of the projectile
         proj.DealDamage = false;//Set the deal damage of the projectile
         proj.lifetime = 2f;//Set the lifetime of the projectile
+        print("Casting spell");
     }
 
     [PunRPC]
     public void CastSpellRPC(int i)//Function to cast the spell
     {
-        print("Casting spellRPC");
+        print("Casting spellRPC______________________________________________________________");
         SpellCard card = GameData.Get().GetPet(i);//Get the spell card
         GameObject o = Instantiate(card.SpellProjectilePref, PVPManager.Get().p2Image.gameObject.transform.position, Quaternion.identity);//Instantiate the spell projectile
         Projectile proj = o.GetComponent<Projectile>();//Get the projectile component
@@ -472,6 +503,7 @@ public class SpellManager : MonoBehaviourPunCallbacks
         proj.istargetPlayer = true;//Set the is target player of the projectile
         proj.DealDamage = false;//Set the deal damage of the projectile
         proj.lifetime = 2f;//Set the lifetime of the projectile
+        
         Destroy(opponentCards.Find((item) => item.index == i).gameObject);//Destroy the opponent cards
         ClearList();
     }

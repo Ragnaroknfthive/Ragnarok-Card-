@@ -139,6 +139,10 @@ MonoBehaviour:
   - SetAttackedPiece
   - GetMessage
   - MoveOpponentCardToBattleArea
+  - DestroySpellCardRPC
+  - SetDestroySpellCardRPC
+  - hardCodeRPC
+  - DestroyRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
